@@ -1,23 +1,46 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
     font-family: 'Inter', system-ui, sans-serif;
-    background-color: #FAFAF8;
-    color: #1A1F2E;
+    background-color: #F8F6F0;
+    color: #10284A;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
-  h1, h2, h3, h4 { letter-spacing: -0.02em; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', 'Inter', sans-serif; letter-spacing: -0.02em; }
+  ::selection { background: #FFD66B; color: #10284A; }
+}
+
+@layer utilities {
+  .font-display { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+  .text-balance { text-wrap: balance; }
+  .dotgrid {
+    background-image: radial-gradient(rgba(69,199,199,0.30) 1.2px, transparent 1.2px);
+    background-size: 22px 22px;
+  }
+  .dotgrid-light {
+    background-image: radial-gradient(rgba(255,255,255,0.16) 1.2px, transparent 1.2px);
+    background-size: 22px 22px;
+  }
+}
+
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.animate-floaty { animation: floaty 7s ease-in-out infinite; }
+@keyframes floaty-slow { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.animate-floaty-slow { animation: floaty-slow 9s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-floaty, .animate-floaty-slow { animation: none; }
+  html { scroll-behavior: auto; }
 }
 
 @media print {
   header, nav, button, .no-print { display: none !important; }
-  body { background: white; }
+  body { background: #fff; }
 }
