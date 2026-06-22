@@ -3,14 +3,14 @@ import { motion } from 'framer-motion'
 
 /**
  * Intro animée : des points se connectent pour dessiner un parcours de décision,
- * le chemin s'éclaire, puis le wordmark marchepublic.be apparaît.
+ * le chemin s'éclaire, puis le wordmark marchepublic.be apparaît et reste lisible.
  */
 export function Intro({ onDone }: { onDone: () => void }) {
   const [leaving, setLeaving] = useState(false)
 
   useEffect(() => {
-    const t1 = window.setTimeout(() => setLeaving(true), 2400)
-    const t2 = window.setTimeout(onDone, 3050)
+    const t1 = window.setTimeout(() => setLeaving(true), 4200)
+    const t2 = window.setTimeout(onDone, 4850)
     return () => { window.clearTimeout(t1); window.clearTimeout(t2) }
   }, [onDone])
 
@@ -73,7 +73,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
         className="mt-2 text-center px-6"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ delay: 1.6, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         <p className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
           marchepublic<span className="text-teal">.be</span>

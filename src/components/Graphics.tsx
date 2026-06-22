@@ -1,24 +1,25 @@
 /** Motifs graphiques réutilisables : parcours de décision, panneaux, repères. */
 
 /**
- * LogoMark — le zigzag de l'écran de chargement, redressé en « M ».
- * Mêmes codes que l'intro : traçé teal, nœuds blancs, dernier nœud coral.
+ * LogoMark — le zigzag de l'écran de chargement, en version compacte.
+ * Mêmes proportions et mêmes codes que l'intro : traçé teal, nœuds clairs,
+ * dernier nœud coral (le point d'arrivée). Se place à gauche du wordmark.
  */
-export function LogoMark({ className = '' }: { className?: string }) {
+export function LogoMark({ className = '', nodeColor = '#FFFFFF' }: { className?: string; nodeColor?: string }) {
   const nodes = [
-    { x: 4, y: 25 },
-    { x: 11, y: 7 },
-    { x: 16, y: 16 },
-    { x: 21, y: 7 },
-    { x: 28, y: 25 },
+    { x: 10, y: 40 },
+    { x: 34, y: 22 },
+    { x: 60, y: 36 },
+    { x: 86, y: 18 },
+    { x: 110, y: 30 },
   ]
-  const path = 'M4 25 L11 7 L16 16 L21 7 L28 25'
+  const path = 'M10 40 L34 22 L60 36 L86 18 L110 30'
   return (
-    <svg viewBox="0 0 32 32" className={className} fill="none" aria-hidden>
+    <svg viewBox="0 0 120 48" className={className} fill="none" aria-hidden>
       <path
         d={path}
         stroke="#45C7C7"
-        strokeWidth={3}
+        strokeWidth={4}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -27,8 +28,8 @@ export function LogoMark({ className = '' }: { className?: string }) {
           key={i}
           cx={n.x}
           cy={n.y}
-          r={i === nodes.length - 1 ? 3 : 2.3}
-          fill={i === nodes.length - 1 ? '#FF735C' : '#FFFFFF'}
+          r={i === nodes.length - 1 ? 6.5 : 5}
+          fill={i === nodes.length - 1 ? '#FF735C' : nodeColor}
         />
       ))}
     </svg>
