@@ -1,15 +1,12 @@
-/** Motifs graphiques réutilisables : parcours de décision, panneaux, illustrations. */
+/** Système graphique du M : points, lignes, traçés, glyphes et progression. */
+import { motion } from 'framer-motion'
 
 /**
  * LogoMark — le zigzag de l'écran de chargement, en version compacte.
  */
 export function LogoMark({ className = '', nodeColor = '#FFFFFF' }: { className?: string; nodeColor?: string }) {
   const nodes = [
-    { x: 10, y: 40 },
-    { x: 34, y: 22 },
-    { x: 60, y: 36 },
-    { x: 86, y: 18 },
-    { x: 110, y: 30 },
+    { x: 10, y: 40 }, { x: 34, y: 22 }, { x: 60, y: 36 }, { x: 86, y: 18 }, { x: 110, y: 30 },
   ]
   const path = 'M10 40 L34 22 L60 36 L86 18 L110 30'
   return (
@@ -23,74 +20,76 @@ export function LogoMark({ className = '', nodeColor = '#FFFFFF' }: { className?
 }
 
 /**
- * RisingPath — un parcours ascendant ponctué d'étapes, vers une flèche.
- * « De l'incertitude à la décision. »
+ * ParcoursProgress — le traçé du M comme barre de progression à 5 étapes.
+ * La ligne colorée se dessine jusqu'à l'étape courante ; les nœuds s'activent.
  */
-export function RisingPath({ className = '', stroke = '#10284A', hollow = '#F8F6F0' }: { className?: string; stroke?: string; hollow?: string }) {
-  return (
-    <svg viewBox="0 0 220 180" className={className} fill="none" aria-hidden>
-      <path
-        d="M18 162 C 46 162, 42 126, 66 120 S 96 104, 104 84 C 112 66, 138 66, 150 50 S 178 28, 198 20"
-        stroke={stroke} strokeWidth={7} strokeLinecap="round" strokeLinejoin="round"
-      />
-      {/* flèche */}
-      <path d="M198 20 l-18 1 M198 20 l-2 18" stroke={stroke} strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" />
-      {/* départ plein */}
-      <circle cx="18" cy="162" r="9" fill={stroke} />
-      {/* étapes creuses */}
-      <circle cx="66" cy="120" r="11" fill={hollow} stroke={stroke} strokeWidth={6} />
-      <circle cx="139" cy="58" r="14" fill={hollow} stroke={stroke} strokeWidth={6} />
-    </svg>
-  )
-}
-
-/**
- * ChecklistCard — une carte de diagnostic légèrement inclinée :
- * barre de progression en haut, points validés, lignes de contenu.
- */
-export function ChecklistCard({ className = '' }: { className?: string }) {
-  const navy = '#10284A'
-  const cream = '#F8F6F0'
-  const rows = [
-    { y: 96, lineEnd: 214 },
-    { y: 134, lineEnd: 198 },
-    { y: 172, lineEnd: 184 },
+export function ParcoursProgress({ current, total = 5 }: { current: number; total?: number }) {
+  const nodes = [
+    { x: 10, y: 40 }, { x: 34, y: 22 }, { x: 60, y: 36 }, { x: 86, y: 18 }, { x: 110, y: 30 },
   ]
+  const path = 'M10 40 L34 22 L60 36 L86 18 L110 30'
+  const frac = total > 1 ? Math.max(0, Math.min(1, (current - 1) / (total - 1))) : 0
   return (
-    <svg viewBox="0 0 300 215" className={className} fill="none" aria-hidden>
-      <g transform="rotate(-4 150 107)">
-        <rect x="14" y="14" width="272" height="187" rx="18" fill={cream} stroke={navy} strokeWidth={4} />
-        {/* barre de progression */}
-        <line x1="46" y1="50" x2="150" y2="50" stroke={navy} strokeWidth={4} strokeLinecap="round" />
-        <circle cx="46" cy="50" r="7" fill={navy} />
-        <circle cx="100" cy="50" r="7" fill={navy} />
-        <circle cx="150" cy="50" r="8" fill={cream} stroke={navy} strokeWidth={4} />
-        <line x1="164" y1="50" x2="244" y2="50" stroke={navy} strokeWidth={3} strokeLinecap="round" strokeDasharray="1 9" />
-        <circle cx="210" cy="50" r="4" fill={navy} />
-        <circle cx="252" cy="50" r="8" fill={cream} stroke={navy} strokeWidth={4} />
-        {/* lignes validées */}
-        {rows.map((r, i) => (
+    <svg viewBox="0 0 120 48" className="w-full" fill="none" aria-hidden>
+      <path d={path} stroke="rgba(255,255,255,0.16)" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+      <motion.path
+        d={path} stroke="#45C7C7" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"
+        initial={{ pathLength: 0 }} animate={{ pathLength: frac }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      />
+      {nodes.map((n, i) => {
+        const done = i < current - 1
+        const cur = i === current - 1
+        return (
           <g key={i}>
-            <circle cx="56" cy={r.y} r="15" fill={navy} />
-            <path d={`M49 ${r.y} l5 5 l9 -10`} stroke="#fff" strokeWidth={3.5} strokeLinecap="round" strokeLinejoin="round" />
-            <line x1="84" y1={r.y} x2={r.lineEnd} y2={r.y} stroke={navy} strokeWidth={4} strokeLinecap="round" />
+            {cur && <motion.circle cx={n.x} cy={n.y} r={9} fill="#FF735C" opacity={0.25} initial={{ scale: 0.6 }} animate={{ scale: [0.8, 1.15, 0.9] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }} style={{ transformOrigin: `${n.x}px ${n.y}px` }} />}
+            <circle cx={n.x} cy={n.y} r={cur ? 5.5 : 4.5} fill={done ? '#45C7C7' : cur ? '#FF735C' : '#10284A'} stroke={done || cur ? 'none' : 'rgba(255,255,255,0.4)'} strokeWidth={1.5} />
           </g>
-        ))}
-        {/* groupes de points à droite */}
-        <g fill={navy}>
-          <circle cx="244" cy="96" r="4" /><circle cx="262" cy="96" r="4" />
-          <circle cx="244" cy="134" r="4" /><circle cx="262" cy="134" r="4" />
-          <circle cx="244" cy="172" r="4" />
-        </g>
-      </g>
+        )
+      })}
     </svg>
   )
 }
 
-/**
- * TangleToArrow — un enchevêtrement qui se dénoue en une flèche droite.
- * « Le labyrinthe juridique, transformé en parcours clair. »
- */
+/** StepGlyph — mini-illustrations monochromes par étape (langage du traçé). */
+export function StepGlyph({ name, className = '' }: { name: string; className?: string }) {
+  const s = { fill: 'none', stroke: 'currentColor', strokeWidth: 2.4, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
+  const dot = (x: number, y: number, r = 2.4) => <circle cx={x} cy={y} r={r} fill="currentColor" />
+  let body
+  if (name === 'structure') body = (<>
+    <path d="M12 26 L32 14 L52 26" {...s} />
+    <path d="M12 50 H52" {...s} />
+    <path d="M20 30 V48 M32 30 V48 M44 30 V48" {...s} />
+    {dot(32, 14, 3)}
+  </>)
+  else if (name === 'financement') body = (<>
+    <circle cx={32} cy={32} r={18} {...s} />
+    <path d="M23 38 L29 31 L35 35 L42 25" {...s} />
+    <path d="M42 25 l-5 0 M42 25 l0 5" {...s} />
+    {dot(23, 38, 2.6)}
+  </>)
+  else if (name === 'gouvernance') body = (<>
+    <path d="M32 34 L16 20 M32 34 L48 20 M32 34 L32 52" {...s} />
+    {dot(32, 34, 4)}
+    <circle cx={16} cy={20} r={4} {...s} />
+    <circle cx={48} cy={20} r={4} {...s} />
+    <circle cx={32} cy={52} r={4} {...s} />
+  </>)
+  else if (name === 'projet') body = (<>
+    <rect x={14} y={16} width={36} height={32} rx={4} {...s} />
+    <path d="M14 25 H50" {...s} />
+    <path d="M20 40 L28 32 L36 38 L44 28" {...s} />
+    {dot(20, 21, 1.6)} {dot(25, 21, 1.6)}
+  </>)
+  else body = (<>
+    <path d="M14 44 A18 18 0 0 1 50 44" {...s} />
+    <path d="M32 44 L43 30" {...s} />
+    {dot(32, 44, 3)}
+    <path d="M18 41 l3 -1 M46 41 l-3 -1 M32 26 v3" {...s} />
+  </>)
+  return <svg viewBox="0 0 64 64" className={className} aria-hidden>{body}</svg>
+}
+
+/** TangleToArrow — enchevêtrement qui se dénoue en une flèche droite. */
 export function TangleToArrow({ className = '', stroke = '#10284A' }: { className?: string; stroke?: string }) {
   return (
     <svg viewBox="0 0 310 120" className={className} fill="none" aria-hidden>
@@ -104,42 +103,77 @@ export function TangleToArrow({ className = '', stroke = '#10284A' }: { classNam
   )
 }
 
-/**
- * Constellation — un réseau de points reliés formant un parcours,
- * orbites en pointillés et repères satellites. Motif d'ambiance.
- */
+/** ChecklistCard — carte de diagnostic légèrement inclinée. */
+export function ChecklistCard({ className = '' }: { className?: string }) {
+  const navy = '#10284A'
+  const cream = '#F8F6F0'
+  const rows = [{ y: 96, lineEnd: 214 }, { y: 134, lineEnd: 198 }, { y: 172, lineEnd: 184 }]
+  return (
+    <svg viewBox="0 0 300 215" className={className} fill="none" aria-hidden>
+      <g transform="rotate(-4 150 107)">
+        <rect x="14" y="14" width="272" height="187" rx="18" fill={cream} stroke={navy} strokeWidth={4} />
+        <line x1="46" y1="50" x2="150" y2="50" stroke={navy} strokeWidth={4} strokeLinecap="round" />
+        <circle cx="46" cy="50" r="7" fill={navy} />
+        <circle cx="100" cy="50" r="7" fill={navy} />
+        <circle cx="150" cy="50" r="8" fill={cream} stroke={navy} strokeWidth={4} />
+        <line x1="164" y1="50" x2="244" y2="50" stroke={navy} strokeWidth={3} strokeLinecap="round" strokeDasharray="1 9" />
+        <circle cx="210" cy="50" r="4" fill={navy} />
+        <circle cx="252" cy="50" r="8" fill={cream} stroke={navy} strokeWidth={4} />
+        {rows.map((r, i) => (
+          <g key={i}>
+            <circle cx="56" cy={r.y} r="15" fill={navy} />
+            <path d={`M49 ${r.y} l5 5 l9 -10`} stroke="#fff" strokeWidth={3.5} strokeLinecap="round" strokeLinejoin="round" />
+            <line x1="84" y1={r.y} x2={r.lineEnd} y2={r.y} stroke={navy} strokeWidth={4} strokeLinecap="round" />
+          </g>
+        ))}
+        <g fill={navy}>
+          <circle cx="244" cy="96" r="4" /><circle cx="262" cy="96" r="4" />
+          <circle cx="244" cy="134" r="4" /><circle cx="262" cy="134" r="4" />
+          <circle cx="244" cy="172" r="4" />
+        </g>
+      </g>
+    </svg>
+  )
+}
+
+/** RisingPath — parcours ascendant ponctué d'étapes, vers une flèche. */
+export function RisingPath({ className = '', stroke = '#10284A', hollow = '#F8F6F0' }: { className?: string; stroke?: string; hollow?: string }) {
+  return (
+    <svg viewBox="0 0 220 180" className={className} fill="none" aria-hidden>
+      <path d="M18 162 C 46 162, 42 126, 66 120 S 96 104, 104 84 C 112 66, 138 66, 150 50 S 178 28, 198 20" stroke={stroke} strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M198 20 l-18 1 M198 20 l-2 18" stroke={stroke} strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="18" cy="162" r="9" fill={stroke} />
+      <circle cx="66" cy="120" r="11" fill={hollow} stroke={stroke} strokeWidth={6} />
+      <circle cx="139" cy="58" r="14" fill={hollow} stroke={stroke} strokeWidth={6} />
+    </svg>
+  )
+}
+
+/** Constellation — réseau de points reliés formant un parcours. Motif d'ambiance. */
 export function Constellation({ className = '', hollow = '#10284A' }: { className?: string; hollow?: string }) {
   return (
     <svg viewBox="0 0 320 250" className={className} fill="none" aria-hidden>
       <g stroke="currentColor">
-        {/* orbite */}
         <ellipse cx="160" cy="110" rx="145" ry="72" strokeWidth={1.5} transform="rotate(-18 160 110)" />
         <path d="M40 158 C 70 200, 130 210, 175 196" strokeWidth={1.5} strokeLinecap="round" strokeDasharray="1 8" />
-        {/* liaisons principales (le V du parcours) */}
         <path d="M80 72 L162 150 L245 72" strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />
-        {/* tiges verticales */}
         <line x1="80" y1="72" x2="80" y2="208" strokeWidth={4} strokeLinecap="round" />
         <line x1="245" y1="72" x2="245" y2="206" strokeWidth={4} strokeLinecap="round" />
         <line x1="162" y1="150" x2="162" y2="226" strokeWidth={2} strokeLinecap="round" strokeDasharray="1 7" />
       </g>
       <g fill="currentColor">
-        {/* nœuds planètes (anneaux) */}
         <circle cx="80" cy="72" r="14" fill={hollow} stroke="currentColor" strokeWidth={3} />
         <circle cx="80" cy="72" r="5" opacity={0.35} />
         <circle cx="245" cy="72" r="14" fill={hollow} stroke="currentColor" strokeWidth={3} />
         <circle cx="245" cy="72" r="5" opacity={0.35} />
-        {/* nœud central */}
         <circle cx="162" cy="150" r="10" />
-        {/* points des tiges */}
         <circle cx="80" cy="122" r="6" />
         <circle cx="80" cy="208" r="9" />
         <circle cx="245" cy="128" r="6" />
         <circle cx="245" cy="206" r="6" fill={hollow} stroke="currentColor" strokeWidth={3} />
-        {/* satellites */}
         <circle cx="298" cy="96" r="4" />
         <circle cx="178" cy="30" r="5" fill={hollow} stroke="currentColor" strokeWidth={2.5} />
         <circle cx="34" cy="150" r="4" />
-        {/* étoile */}
         <path d="M162 224 l4 9 l-4 9 l-4 -9 z" />
         <path d="M153 233 l9 4 l9 -4 -9 -4 z" />
       </g>
@@ -150,10 +184,8 @@ export function Constellation({ className = '', hollow = '#10284A' }: { classNam
 export function HeroPathScene({ className = '' }: { className?: string }) {
   return (
     <svg viewBox="0 0 420 380" className={className} fill="none" aria-hidden>
-      <path d="M40 340 C 80 260, 60 210, 140 190 S 250 150, 230 90 S 320 40, 380 60"
-        stroke="#DDF7F4" strokeWidth={2.5} strokeLinecap="round" strokeDasharray="2 10" opacity={0.7} />
-      <path d="M40 340 C 80 260, 60 210, 140 190 S 250 150, 230 90 S 320 40, 380 60"
-        stroke="#45C7C7" strokeWidth={3} strokeLinecap="round" />
+      <path d="M40 340 C 80 260, 60 210, 140 190 S 250 150, 230 90 S 320 40, 380 60" stroke="#DDF7F4" strokeWidth={2.5} strokeLinecap="round" strokeDasharray="2 10" opacity={0.7} />
+      <path d="M40 340 C 80 260, 60 210, 140 190 S 250 150, 230 90 S 320 40, 380 60" stroke="#45C7C7" strokeWidth={3} strokeLinecap="round" />
       <path d="M140 190 C 180 210, 240 230, 300 215" stroke="#FFD66B" strokeWidth={2.5} strokeLinecap="round" strokeDasharray="6 8" />
       <circle cx="40" cy="340" r="8" fill="#FFFFFF" stroke="#45C7C7" strokeWidth={3} />
       <circle cx="140" cy="190" r="7" fill="#10284A" />
