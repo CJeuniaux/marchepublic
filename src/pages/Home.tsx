@@ -439,7 +439,7 @@ function Footer({ onStart }: { onStart: () => void }) {
         </div>
         <div className="border-t border-white/10 pt-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-xs">© {new Date().getFullYear()} marchepublic.be — Tous droits réservés.</p>
-          <p className="text-xs">Un outil développé par <span className="text-white font-semibold">Nomadic Impact</span></p>
+          <p className="text-xs">Un outil développé par <a href="https://nomadimpact.org" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-teal transition-colors">Nomad Impact</a></p>
         </div>
       </div>
     </footer>
