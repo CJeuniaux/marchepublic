@@ -77,9 +77,7 @@ function Header({ onStart }: { onStart: () => void }) {
     <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-cream/90 backdrop-blur-md border-b border-navy/10 shadow-[0_2px_20px_rgba(16,40,74,0.05)]' : 'bg-transparent'}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <a href="#top" className="flex items-center gap-2.5">
-          <span className="w-8 h-8 rounded-xl bg-navy flex items-center justify-center">
-            <LogoMark className="w-5 h-5" />
-          </span>
+          <LogoMark className="h-6 w-auto" nodeColor="#10284A" />
           <span className="font-display font-bold text-navy text-[15px]">marchepublic<span className="text-teal">.be</span></span>
         </a>
         <nav className="hidden md:flex items-center gap-8">
@@ -410,7 +408,7 @@ function Footer({ onStart }: { onStart: () => void }) {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-3">
-              <span className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center"><LogoMark className="w-5 h-5" /></span>
+              <LogoMark className="h-6 w-auto" />
               <span className="font-display font-bold text-white text-[15px]">marchepublic<span className="text-teal">.be</span></span>
             </div>
             <p className="text-xs leading-relaxed">Outil indépendant de pré-diagnostic marchés publics pour les ASBL, fondations et structures subsidiées.</p>
