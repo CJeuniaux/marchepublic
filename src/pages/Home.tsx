@@ -5,7 +5,7 @@ import {
   Globe, Cloud, Users, PenTool, Code2, Boxes, GraduationCap, Server,
   ChevronDown, Check, FileSearch, ListChecks,
 } from 'lucide-react'
-import { HeroPathScene } from '../components/Graphics'
+import { HeroPathScene, LogoMark } from '../components/Graphics'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 26 },
@@ -78,7 +78,7 @@ function Header({ onStart }: { onStart: () => void }) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <a href="#top" className="flex items-center gap-2.5">
           <span className="w-8 h-8 rounded-xl bg-navy flex items-center justify-center">
-            <Compass className="w-4.5 h-4.5 text-teal" strokeWidth={2.5} />
+            <LogoMark className="w-5 h-5" />
           </span>
           <span className="font-display font-bold text-navy text-[15px]">marchepublic<span className="text-teal">.be</span></span>
         </a>
@@ -410,7 +410,7 @@ function Footer({ onStart }: { onStart: () => void }) {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-3">
-              <span className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center"><Compass className="w-4.5 h-4.5 text-teal" strokeWidth={2.5} /></span>
+              <span className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center"><LogoMark className="w-5 h-5" /></span>
               <span className="font-display font-bold text-white text-[15px]">marchepublic<span className="text-teal">.be</span></span>
             </div>
             <p className="text-xs leading-relaxed">Outil indépendant de pré-diagnostic marchés publics pour les ASBL, fondations et structures subsidiées.</p>
