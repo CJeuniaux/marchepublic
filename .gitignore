@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Vite
+.vite/
+
+# TypeScript
+*.tsbuildinfo
+
+# Misc
+.DS_Store
+.env
+.env.local
