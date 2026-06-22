@@ -1,5 +1,40 @@
 /** Motifs graphiques réutilisables : parcours de décision, panneaux, repères. */
 
+/**
+ * LogoMark — le zigzag de l'écran de chargement, redressé en « M ».
+ * Mêmes codes que l'intro : traçé teal, nœuds blancs, dernier nœud coral.
+ */
+export function LogoMark({ className = '' }: { className?: string }) {
+  const nodes = [
+    { x: 4, y: 25 },
+    { x: 11, y: 7 },
+    { x: 16, y: 16 },
+    { x: 21, y: 7 },
+    { x: 28, y: 25 },
+  ]
+  const path = 'M4 25 L11 7 L16 16 L21 7 L28 25'
+  return (
+    <svg viewBox="0 0 32 32" className={className} fill="none" aria-hidden>
+      <path
+        d={path}
+        stroke="#45C7C7"
+        strokeWidth={3}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {nodes.map((n, i) => (
+        <circle
+          key={i}
+          cx={n.x}
+          cy={n.y}
+          r={i === nodes.length - 1 ? 3 : 2.3}
+          fill={i === nodes.length - 1 ? '#FF735C' : '#FFFFFF'}
+        />
+      ))}
+    </svg>
+  )
+}
+
 export function HeroPathScene({ className = '' }: { className?: string }) {
   return (
     <svg viewBox="0 0 420 380" className={className} fill="none" aria-hidden>
