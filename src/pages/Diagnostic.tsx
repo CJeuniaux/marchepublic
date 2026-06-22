@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ChevronLeft, ChevronRight, RotateCcw, Copy, Printer, Check,
   HelpCircle, ChevronDown, ChevronUp, ShieldCheck, Compass,
-  CircleCheck, TriangleAlert, OctagonAlert, ArrowRight, ListChecks, BookOpen,
+  ArrowRight, ListChecks, FileDown, FileText, Target, Sparkles, Info,
 } from 'lucide-react'
 
 interface DiagState {
@@ -18,8 +18,6 @@ interface DiagState {
   reglesSubsidiant: string | null
 }
 
-type RiskLevel = 'faible' | 'attention' | 'eleve'
-
 const INITIAL_STATE: DiagState = {
   step: 1,
   structureType: null,
@@ -32,91 +30,168 @@ const INITIAL_STATE: DiagState = {
   reglesSubsidiant: null,
 }
 
-// Logique de scoring inchangée — elle fonctionne, on ne la casse pas.
-function computeRisk(s: DiagState): RiskLevel {
-  if (s.structureType === 'organisme_public') return 'eleve'
-  if (s.reglesSubsidiant === 'oui') return 'eleve'
+/**
+ * Score de probabilité (0–100) que les règles des marchés publics s'appliquent.
+ * Additif et pondéré, avec planchers pour les cas déterministes forts.
+ */
+function computeScore(s: DiagState): number {
+  let score = 0
+  const st = s.structureType ?? ''
+  if (st === 'organisme_public') score += 50
+  else if (['asbl', 'fondation', 'ong', 'federation'].includes(st)) score += 8
+  else if (st === 'autre') score += 5
+  else score += 2 // pme, cooperative
 
-  let paScore = 0
-  if (s.financementPct === 'plus_50') paScore += 4
-  else if (s.financementPct === 'nsp') paScore += 2
-  else if (s.financementPct === 'entre_10_50') paScore += 1
+  if (s.financementPct === 'plus_50') score += 22
+  else if (s.financementPct === 'entre_10_50') score += 10
+  else if (s.financementPct === 'nsp') score += 8
 
-  if (s.controlCA === 'oui') paScore += 4
-  else if (s.controlCA === 'nsp') paScore += 1
+  if (s.controlCA === 'oui') score += 20
+  else if (s.controlCA === 'nsp') score += 5
 
-  if (s.controlGestion === 'oui') paScore += 3
-  else if (s.controlGestion === 'nsp') paScore += 1
+  if (s.controlGestion === 'oui') score += 16
+  else if (s.controlGestion === 'nsp') score += 4
 
-  if (s.subsidieSpecifique === 'oui') paScore += 2
-  else if (s.subsidieSpecifique === 'nsp') paScore += 1
+  if (s.reglesSubsidiant === 'oui') score += 45
+  else if (s.reglesSubsidiant === 'nsp') score += 6
 
-  if (s.reglesSubsidiant === 'nsp') paScore += 2
+  if (s.subsidieSpecifique === 'oui') score += 8
+  else if (s.subsidieSpecifique === 'nsp') score += 4
 
-  const amtMap: Record<string, number> = { moins_3k: 0, '3k_30k': 1, '30k_seuil': 2, sup_seuil: 3, nsp: 2 }
-  const amt = amtMap[s.montant ?? ''] ?? 0
+  if (s.montant === '3k_30k') score += 3
+  else if (s.montant === '30k_seuil') score += 8
+  else if (s.montant === 'sup_seuil') score += 12
+  else if (s.montant === 'nsp') score += 5
 
-  if (paScore >= 5 && amt >= 2) return 'eleve'
-  if (paScore >= 4 && amt >= 1) return 'eleve'
-  if (paScore >= 3 || amt >= 2) return 'attention'
-  return 'faible'
+  let pct = Math.min(100, score)
+  if (st === 'organisme_public') pct = Math.max(pct, 88)
+  if (s.reglesSubsidiant === 'oui') pct = Math.max(pct, 82)
+  return Math.round(pct)
 }
 
-interface ResultConfig {
-  badge: string
-  Icon: typeof CircleCheck
+interface Band {
+  key: string
+  min: number
+  max: number
+  label: string
   color: string
   tint: string
   ring: string
-  segIndex: number
-  title: string
-  summary: string
-  warning: string
-  points: string[]
+  phrase: string
+  meaning: string
   steps: string[]
-  resources: { label: string; url: string }[]
 }
 
-const RESULTS: Record<RiskLevel, ResultConfig> = {
-  faible: {
-    badge: 'Risque faible', Icon: CircleCheck, color: '#138A6E', tint: '#E6F6F0', ring: '#9DDcC7', segIndex: 0,
-    title: "Peu d'indices d'assujettissement",
-    summary: "Sur la base de vos réponses, votre organisation présente peu d'indices suggérant qu'elle serait soumise aux règles des marchés publics pour cette dépense.",
-    warning: "Ce résultat n'est pas une certitude juridique. Des éléments non couverts ici pourraient modifier la situation.",
-    points: ['Votre structure ne semble pas être un organisme public au sens de la loi', 'La part de financement public paraît limitée', 'Le montant envisagé reste en dessous des seuils critiques', "Aucun indice fort de contrôle public n'a été détecté"],
-    steps: ['Conservez ce résultat comme trace dans votre dossier de décision', 'Vérifiez les clauses spécifiques de vos conventions de subvention', 'Consultez votre pouvoir subsidiant en cas de doute ponctuel', 'Réévaluez si votre situation financière évolue'],
-    resources: [
-      { label: 'Loi belge du 17 juin 2016 sur les marchés publics', url: 'https://www.ejustice.just.fgov.be/cgi_loi/change_lg.pl?language=fr&la=F&cn=2016061701&table_name=loi' },
-      { label: 'Portail marchés publics — Wallonie', url: 'https://marchespublics.wallonie.be' },
+const BANDS: Band[] = [
+  {
+    key: 'tres_faible', min: 0, max: 20, label: 'Risque très faible', color: '#138A6E', tint: '#E6F6F0', ring: '#9DDCC7',
+    phrase: "Probabilité très faible que les règles des marchés publics s'appliquent à ce projet.",
+    meaning: "Votre organisation ne présente quasiment aucun des critères qui rendent un acheteur soumis aux marchés publics, et le montant en jeu reste limité. Vous pouvez avancer sereinement, en gardant une trace écrite de votre raisonnement.",
+    steps: [
+      'Gardez une trace écrite de ce diagnostic dans votre dossier de décision.',
+      "Demandez tout de même 2 à 3 offres comparatives : c'est une bonne pratique de saine gestion.",
+      'Si votre projet est financé par un subside spécifique, vérifiez aussi les règles imposées par votre convention de subvention.',
+      'Refaites le diagnostic si votre financement ou votre montant évolue.',
     ],
   },
-  attention: {
-    badge: "Zone d'attention", Icon: TriangleAlert, color: '#C97A18', tint: '#FDF3E1', ring: '#F4D69A', segIndex: 1,
-    title: 'Plusieurs indices à vérifier',
-    summary: "Votre situation présente des éléments qui méritent une vérification. L'assujettissement n'est pas exclu et dépend de facteurs que ce diagnostic ne peut pas trancher seul.",
-    warning: "Une vérification est recommandée avant d'engager la dépense. Ne pas faire de marché public alors que vous y êtes tenu·e expose votre organisation à des risques sérieux.",
-    points: ["Un ou plusieurs indices d'assujettissement ont été détectés", 'Le financement public ou le montant crée une zone grise', 'Des éléments de gouvernance méritent d\'être vérifiés', 'Le type de prestation peut déclencher des obligations'],
-    steps: ['Contactez votre pouvoir subsidiant pour clarifier vos obligations', 'Relisez en détail les clauses de votre convention de subvention', 'Envisagez l\'avis d\'un·e juriste spécialisé·e', 'En cas de doute persistant, appliquez les règles par précaution', 'Documentez votre analyse et votre décision'],
-    resources: [
-      { label: 'Loi belge du 17 juin 2016 sur les marchés publics', url: 'https://www.ejustice.just.fgov.be/cgi_loi/change_lg.pl?language=fr&la=F&cn=2016061701&table_name=loi' },
-      { label: 'Portail marchés publics — Wallonie', url: 'https://marchespublics.wallonie.be' },
-      { label: 'e-Procurement — Marchés publics fédéraux', url: 'https://www.publicprocurement.be' },
+  {
+    key: 'faible', min: 21, max: 40, label: 'Risque faible à documenter', color: '#2F9E6F', tint: '#EAF6EE', ring: '#A7DCBE',
+    phrase: "Probabilité faible, mais quelques éléments méritent d'être documentés avant d'avancer.",
+    meaning: "Les règles ont peu de chances de s'appliquer. Une mise en concurrence légère et quelques justificatifs suffisent généralement à sécuriser votre décision et à la rendre défendable.",
+    steps: [
+      'Sollicitez plusieurs prestataires et comparez-les sur des critères clairs et écrits.',
+      'Conservez les offres reçues et la justification de votre choix.',
+      'Vérifiez les clauses d\'achat de votre convention de subvention si le projet est subsidié.',
+      'Documentez votre analyse : en cas de contrôle, vous montrez une démarche sérieuse.',
     ],
   },
-  eleve: {
-    badge: 'Risque élevé', Icon: OctagonAlert, color: '#D6473C', tint: '#FCE9E7', ring: '#F4B3AC', segIndex: 2,
-    title: "Indices forts d'assujettissement",
-    summary: "Les informations fournies indiquent un risque élevé que votre organisation soit soumise aux règles des marchés publics pour cette dépense.",
-    warning: "Procéder sans respecter ces règles peut exposer votre organisation à des sanctions, à la remise en cause de vos subventions, voire à des poursuites. Consultez un·e juriste avant d'aller plus loin.",
-    points: ["Votre structure ou financement présente des traits d'un pouvoir adjudicateur", 'Le montant atteint ou dépasse des seuils légaux significatifs', 'Des indices de contrôle public ont été identifiés', 'Votre pouvoir subsidiant impose peut-être explicitement ces règles'],
-    steps: ['Consultez impérativement un·e juriste spécialisé·e en marchés publics', 'Contactez votre pouvoir subsidiant pour confirmer vos obligations', "Ne signez aucun contrat avant d'avoir clarifié votre situation", 'Si assujetti·e, lancez la procédure adaptée à votre montant', 'Documentez toutes vos démarches'],
-    resources: [
-      { label: 'Loi belge du 17 juin 2016 sur les marchés publics', url: 'https://www.ejustice.just.fgov.be/cgi_loi/change_lg.pl?language=fr&la=F&cn=2016061701&table_name=loi' },
-      { label: 'Portail marchés publics — Wallonie', url: 'https://marchespublics.wallonie.be' },
-      { label: 'e-Procurement — Marchés publics fédéraux', url: 'https://www.publicprocurement.be' },
-      { label: 'Seuils européens en vigueur', url: 'https://www.publicprocurement.be' },
+  {
+    key: 'grise', min: 41, max: 60, label: 'Zone grise', color: '#C97A18', tint: '#FDF3E1', ring: '#F4D69A',
+    phrase: "Situation ambiguë : l'application des règles ne peut être ni écartée ni confirmée avec certitude.",
+    meaning: "Plusieurs critères se compensent ou restent incertains. Le réflexe le plus sûr est de préparer votre achat comme s'il pouvait être soumis, puis de lever les doutes restants sur les points précis identifiés ci-dessous.",
+    steps: [
+      "Adoptez le scénario prudent : préparez votre achat comme s'il pouvait être soumis.",
+      'Formalisez une mise en concurrence : besoin écrit, critères, plusieurs offres comparées.',
+      'Levez les incertitudes sur les critères clés (financement public, contrôle, montant).',
+      'Si le projet est subsidié, confrontez votre convention de subvention à ses obligations d\'achat.',
     ],
   },
+  {
+    key: 'forte', min: 61, max: 80, label: 'Forte probabilité', color: '#E2603C', tint: '#FCEAE3', ring: '#F5C0AB',
+    phrase: "Votre projet présente de forts indices d'assujettissement aux règles des marchés publics.",
+    meaning: "La majorité des critères pointent vers un assujettissement. Le plus prudent est de traiter ce projet comme probablement soumis : structurez une mise en concurrence traçable et choisissez la procédure adaptée à votre montant.",
+    steps: [
+      'Traitez ce projet comme probablement soumis aux règles des marchés publics.',
+      'Choisissez la procédure adaptée à votre montant (de la simple facture acceptée à la procédure négociée).',
+      'Rédigez un cahier des charges et mettez en concurrence de façon traçable.',
+      'Faites valider votre approche par une personne compétente avant de signer.',
+      'Vérifiez aussi les exigences propres à votre convention de subvention.',
+    ],
+  },
+  {
+    key: 'tres_forte', min: 81, max: 100, label: 'Très forte probabilité', color: '#D6473C', tint: '#FCE9E7', ring: '#F4B3AC',
+    phrase: "Votre projet présente une très forte probabilité d'être soumis aux règles des marchés publics.",
+    meaning: "Presque tous les critères convergent. Le plus prudent est de structurer dès maintenant votre achat comme un marché public et de faire sécuriser la procédure avant tout engagement.",
+    steps: [
+      'Structurez votre achat comme un marché public dès maintenant.',
+      'Déterminez la procédure exacte selon votre montant et publiez si requis.',
+      "Préparez les documents : cahier des charges, critères de sélection et d'attribution.",
+      'Faites sécuriser la procédure par un·e juriste ou un service marchés publics avant tout engagement.',
+      'Vérifiez les obligations complémentaires de votre convention de subvention.',
+    ],
+  },
+]
+
+function bandFor(pct: number): Band {
+  return BANDS.find(b => pct >= b.min && pct <= b.max) ?? BANDS[0]
+}
+
+function explain(s: DiagState): { positives: string[]; protective: string[] } {
+  const pos: string[] = []
+  const pro: string[] = []
+  if (s.structureType === 'organisme_public') pos.push("Vous êtes un organisme public : vous êtes en principe directement visé·e par la réglementation des marchés publics.")
+  if (s.reglesSubsidiant === 'oui') pos.push("Votre pouvoir subsidiant impose explicitement le respect des marchés publics : cette obligation contractuelle prime.")
+  if (s.financementPct === 'plus_50') pos.push("Plus de la moitié de votre budget provient de fonds publics — un critère central de la qualification de pouvoir adjudicateur.")
+  else if (s.financementPct === 'entre_10_50') pos.push("Une part significative de votre financement est publique.")
+  else if (s.financementPct === 'moins_10') pro.push("Votre financement public paraît marginal.")
+  if (s.controlCA === 'oui') pos.push("Une autorité publique contrôle la majorité de votre conseil d'administration.")
+  if (s.controlGestion === 'oui') pos.push("Votre gestion est soumise au contrôle d'une autorité publique.")
+  if (s.controlCA === 'non' && s.controlGestion === 'non') pro.push("Aucun contrôle public de votre gouvernance n'a été identifié.")
+  if (s.subsidieSpecifique === 'oui') pos.push("La dépense est financée par une subvention dédiée à ce projet.")
+  if (s.montant === '30k_seuil') pos.push("Le montant estimé dépasse 30.000 € HTVA, seuil à partir duquel les procédures se formalisent.")
+  if (s.montant === 'sup_seuil') pos.push("Le montant atteint le seuil européen, déclenchant les procédures les plus encadrées.")
+  if (s.montant === 'moins_3k') pro.push("Le montant envisagé est faible.")
+  const nspCount = [s.financementPct, s.controlCA, s.controlGestion, s.subsidieSpecifique, s.reglesSubsidiant, s.montant].filter(v => v === 'nsp').length
+  if (nspCount >= 2) pos.push("Plusieurs éléments restent incertains (réponses « je ne sais pas ») : par prudence, le risque est rehaussé.")
+  if (pos.length === 0) pos.push("Aucun indice fort d'assujettissement n'a été détecté dans vos réponses.")
+  return { positives: pos, protective: pro }
+}
+
+interface Doc { id: string; title: string; summary: string; level: string; file: string }
+
+const DOCS: Record<string, Doc> = {
+  sous30k: { id: 'sous30k', title: 'Acheter ou commander une prestation sous 30.000 € HTVA', summary: "Les bons réflexes pour commander en règle quand le montant reste sous le seuil.", level: 'Idéal sous 30.000 € HTVA', file: '/resources/acheter-sous-30000.pdf' },
+  comparer: { id: 'comparer', title: 'Comparer plusieurs prestataires simplement', summary: "Une méthode claire pour mettre en concurrence sans alourdir votre projet.", level: 'Bonne pratique à tout niveau', file: '/resources/comparer-prestataires.pdf' },
+  cadrer_digital: { id: 'cadrer_digital', title: 'Cadrer un projet digital avant de demander des prix', summary: "Définir votre besoin web ou logiciel pour obtenir des offres comparables.", level: 'Projets digitaux', file: '/resources/cadrer-projet-digital.pdf' },
+  over30k: { id: 'over30k', title: 'Que faire si votre projet dépasse 30.000 € HTVA ?', summary: "Les procédures qui se déclenchent au-delà du seuil et comment les aborder.", level: 'Dès 30.000 € HTVA ou risque élevé', file: '/resources/au-dela-de-30000.pdf' },
+  asbl_subsidiee: { id: 'asbl_subsidiee', title: "ASBL subsidiée : quelles obligations d'achat vérifier ?", summary: "Les points à contrôler dans vos conventions de subvention avant d'acheter.", level: 'ASBL & structures subsidiées', file: '/resources/asbl-subsidiee-obligations.pdf' },
+}
+
+function recommendDocs(s: DiagState, bandKey: string): Doc[] {
+  const ids = new Set<string>()
+  const high = bandKey === 'forte' || bandKey === 'tres_forte'
+  const under30k = ['moins_3k', '3k_30k'].includes(s.montant ?? '')
+  const over30k = ['30k_seuil', 'sup_seuil'].includes(s.montant ?? '')
+  const assocType = ['asbl', 'fondation', 'ong', 'federation'].includes(s.structureType ?? '')
+
+  ids.add('comparer')
+  if (under30k || s.montant === 'nsp' || !high) ids.add('sous30k')
+  if (over30k || high) ids.add('over30k')
+  if (s.prestationType === 'digital') ids.add('cadrer_digital')
+  if (assocType && (s.subsidieSpecifique !== 'non' || s.financementPct !== 'moins_10' || high)) ids.add('asbl_subsidiee')
+
+  const order = ['sous30k', 'comparer', 'cadrer_digital', 'over30k', 'asbl_subsidiee']
+  return order.filter(id => ids.has(id)).map(id => DOCS[id])
 }
 
 function OptionCard({ value, label, description, selected, onSelect }: {
@@ -171,136 +246,191 @@ function StepShell({ title, subtitle, children }: { title: string; subtitle: str
   )
 }
 
-function RiskMeter({ active }: { active: number }) {
-  const segs = [
-    { label: 'Faible', color: '#138A6E' },
-    { label: 'Attention', color: '#C97A18' },
-    { label: 'Élevé', color: '#D6473C' },
-  ]
+function ScoreDial({ pct, color }: { pct: number; color: string }) {
+  const r = 52
+  const c = 2 * Math.PI * r
+  const off = c * (1 - pct / 100)
   return (
-    <div className="flex gap-2">
-      {segs.map((s, i) => (
-        <div key={s.label} className="flex-1">
-          <div className="h-2.5 rounded-full transition-all" style={{ background: i === active ? s.color : '#E4E7EC' }} />
-          <p className="mt-1.5 text-[11px] font-semibold text-center" style={{ color: i === active ? s.color : '#98A2B3' }}>{s.label}</p>
-        </div>
-      ))}
+    <svg viewBox="0 0 140 140" className="w-36 h-36 shrink-0">
+      <circle cx={70} cy={70} r={r} stroke="#E4E7EC" strokeWidth={12} fill="none" />
+      <motion.circle
+        cx={70} cy={70} r={r} stroke={color} strokeWidth={12} fill="none" strokeLinecap="round"
+        strokeDasharray={c} transform="rotate(-90 70 70)"
+        initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: off }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+      />
+      <text x={70} y={66} textAnchor="middle" className="font-display" fontSize={30} fontWeight={700} fill={color}>{pct}%</text>
+      <text x={70} y={88} textAnchor="middle" fontSize={9} fill="#98A2B3" letterSpacing={1}>PROBABILITÉ</text>
+    </svg>
+  )
+}
+
+function BandStrip({ activeKey }: { activeKey: string }) {
+  return (
+    <div className="flex gap-1.5">
+      {BANDS.map(b => {
+        const on = b.key === activeKey
+        return (
+          <div key={b.key} className="flex-1">
+            <div className="h-2 rounded-full transition-all" style={{ background: on ? b.color : '#E4E7EC' }} />
+            <p className="mt-1.5 text-[9px] sm:text-[10px] font-semibold text-center leading-tight" style={{ color: on ? b.color : '#B4BCC8' }}>{b.min}–{b.max}%</p>
+          </div>
+        )
+      })}
     </div>
   )
 }
 
 function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () => void }) {
-  const risk = computeRisk(state)
-  const r = RESULTS[risk]
+  const pct = computeScore(state)
+  const band = bandFor(pct)
+  const { positives, protective } = explain(state)
+  const docs = recommendDocs(state, band.key)
   const [copied, setCopied] = useState(false)
 
-  const summaryText = [
+  const summaryLines = [
     'Résultat du pré-diagnostic — marchepublic.be',
     '',
-    'Niveau de risque : ' + r.badge,
-    r.title,
+    'Probabilité estimée que les règles de marchés publics s\'appliquent : ' + pct + '%',
+    'Niveau d\'obligation estimé : ' + band.label,
     '',
-    r.summary,
+    band.phrase,
     '',
-    'Points clés :',
-    ...r.points.map(p => '• ' + p),
+    'Ce que cela signifie :',
+    band.meaning,
     '',
-    'Prochaines étapes :',
-    ...r.steps.map((s, i) => (i + 1) + '. ' + s),
+    'Pourquoi ce résultat :',
+    ...positives.map(p => '• ' + p),
+    ...protective.map(p => '– ' + p),
     '',
-    'Avertissement : ' + r.warning,
+    'Ce que vous devriez faire maintenant :',
+    ...band.steps.map((s, i) => (i + 1) + '. ' + s),
     '',
-    "Ce diagnostic est fourni à titre informatif. Il ne constitue pas un avis juridique et ne remplace pas l'analyse d'un·e juriste, d'un pouvoir subsidiant ou d'un service compétent.",
-  ].join('\n')
+    'Documents recommandés :',
+    ...docs.map(d => '• ' + d.title),
+    '',
+    'Estimation indicative et non contractuelle. Ce diagnostic ne constitue pas un avis juridique.',
+  ]
+  const summaryText = summaryLines.join('\n')
 
   const handleCopy = () => {
     navigator.clipboard.writeText(summaryText).then(() => { setCopied(true); window.setTimeout(() => setCopied(false), 2000) })
   }
+  const handleDownload = () => {
+    const blob = new Blob([summaryText], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'diagnostic-marchepublic.txt'
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  }
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="max-w-2xl mx-auto px-4 py-8 space-y-5">
-      {/* En-tête résultat */}
-      <div className="rounded-3xl overflow-hidden shadow-card border" style={{ borderColor: r.ring }}>
-        <div className="px-6 py-7" style={{ background: r.tint }}>
-          <div className="flex items-center gap-3 mb-4">
-            <span className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: r.color }}>
-              <r.Icon className="w-6 h-6 text-white" />
-            </span>
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: r.color }}>Niveau de risque</p>
-              <h2 className="font-display text-2xl font-bold" style={{ color: r.color }}>{r.badge}</h2>
+      {/* 1. Votre score */}
+      <div className="rounded-3xl overflow-hidden shadow-card border" style={{ borderColor: band.ring }}>
+        <div className="px-6 py-7" style={{ background: band.tint }}>
+          <p className="text-[11px] font-semibold uppercase tracking-widest mb-4" style={{ color: band.color }}>Probabilité estimée que les règles de marchés publics s'appliquent</p>
+          <div className="flex flex-col sm:flex-row items-center gap-5">
+            <ScoreDial pct={pct} color={band.color} />
+            <div className="text-center sm:text-left">
+              <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: band.color }}>Niveau d'obligation estimé</p>
+              <h2 className="font-display text-2xl font-bold mt-0.5" style={{ color: band.color }}>{band.label}</h2>
+              <p className="mt-2 text-sm text-navy/80 leading-relaxed">{band.phrase}</p>
             </div>
           </div>
-          <RiskMeter active={r.segIndex} />
-        </div>
-        <div className="bg-white px-6 py-5">
-          <h3 className="font-display font-bold text-navy text-lg mb-1.5">{r.title}</h3>
-          <p className="text-sm text-slate leading-relaxed">{r.summary}</p>
+          <div className="mt-6"><BandStrip activeKey={band.key} /></div>
         </div>
       </div>
 
-      {/* Avertissement */}
-      <div className="rounded-2xl px-5 py-4 flex items-start gap-3" style={{ background: r.tint, border: `1px solid ${r.ring}` }}>
-        <TriangleAlert className="w-5 h-5 shrink-0 mt-0.5" style={{ color: r.color }} />
-        <p className="text-sm font-medium" style={{ color: r.color }}>{r.warning}</p>
-      </div>
-
-      {/* Points clés */}
+      {/* 2. Ce que cela signifie */}
       <div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
-        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><Compass className="w-4 h-4" /> Points clés identifiés</h3>
+        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-3"><Info className="w-4 h-4" /> Ce que cela signifie</h3>
+        <p className="text-sm text-navy/90 leading-relaxed">{band.meaning}</p>
+      </div>
+
+      {/* 3. Pourquoi ce résultat */}
+      <div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
+        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><Target className="w-4 h-4" /> Pourquoi ce résultat ?</h3>
         <ul className="space-y-2.5">
-          {r.points.map((p, i) => (
-            <li key={i} className="flex items-start gap-2.5 text-sm text-navy/90"><span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: r.color }} />{p}</li>
+          {positives.map((p, i) => (
+            <li key={'p' + i} className="flex items-start gap-2.5 text-sm text-navy/90"><span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: band.color }} />{p}</li>
+          ))}
+          {protective.map((p, i) => (
+            <li key={'q' + i} className="flex items-start gap-2.5 text-sm text-slate"><Check className="w-4 h-4 shrink-0 mt-0.5 text-[#2F9E6F]" strokeWidth={2.5} />{p}</li>
           ))}
         </ul>
       </div>
 
-      {/* Prochaines étapes */}
+      {/* 4. Ce que vous devriez faire maintenant */}
       <div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
-        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><ListChecks className="w-4 h-4" /> Prochaines étapes</h3>
+        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><ListChecks className="w-4 h-4" /> Ce que vous devriez faire maintenant</h3>
         <ol className="space-y-3">
-          {r.steps.map((step, i) => (
+          {band.steps.map((step, i) => (
             <li key={i} className="flex items-start gap-3 text-sm text-navy/90">
-              <span className="shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold text-white" style={{ background: r.color }}>{i + 1}</span>{step}
+              <span className="shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold text-white" style={{ background: band.color }}>{i + 1}</span>{step}
             </li>
           ))}
         </ol>
       </div>
 
-      {/* Ressources */}
+      {/* 5. Documents recommandés */}
       <div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
-        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><BookOpen className="w-4 h-4" /> Pour aller plus loin</h3>
-        <ul className="space-y-2">
-          {r.resources.map((res, i) => (
-            <li key={i}><a href={res.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm text-ink hover:text-navy hover:underline"><ArrowRight className="w-3.5 h-3.5" /> {res.label}</a></li>
+        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><FileText className="w-4 h-4" /> Documents recommandés</h3>
+        <div className="space-y-3">
+          {docs.map(d => (
+            <div key={d.id} className="rounded-2xl border border-navy/10 p-4 hover:border-teal/50 transition-colors">
+              <div className="flex items-start gap-3">
+                <span className="w-10 h-10 rounded-xl bg-aqua flex items-center justify-center shrink-0"><FileText className="w-5 h-5 text-ink" /></span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-display font-semibold text-navy text-sm leading-snug">{d.title}</p>
+                  <p className="text-xs text-slate mt-1 leading-relaxed">{d.summary}</p>
+                  <span className="inline-block mt-2 text-[10px] font-semibold uppercase tracking-wide text-ink bg-aqua px-2 py-0.5 rounded-full">{d.level}</span>
+                </div>
+              </div>
+              <a href={d.file} download className="mt-3 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-navy text-white text-sm font-semibold hover:brightness-110 transition-all">
+                <FileDown className="w-4 h-4" /> Télécharger la fiche
+              </a>
+            </div>
           ))}
-        </ul>
+        </div>
+        <p className="text-[11px] text-slate/70 mt-3">Fiches pratiques au format PDF. Contenu en cours de finalisation.</p>
       </div>
 
-      {/* Préparer la suite */}
+      {/* 6. Télécharger mon résumé */}
       <div className="rounded-2xl bg-navy text-white px-6 py-6 relative overflow-hidden">
         <div className="absolute inset-0 dotgrid-light opacity-30" />
         <div className="relative">
-          <h3 className="font-display font-bold text-lg mb-1">Préparer la suite</h3>
-          <p className="text-sm text-aqua/80 mb-4">Gardez une trace de ce résultat pour votre dossier ou pour en discuter avec votre pouvoir subsidiant ou un·e juriste.</p>
+          <h3 className="flex items-center gap-2 font-display font-bold text-lg mb-1"><Sparkles className="w-4 h-4 text-teal" /> Télécharger mon résumé</h3>
+          <p className="text-sm text-aqua/80 mb-4">Gardez une trace de ce résultat pour votre dossier de décision ou pour en discuter avec une personne compétente.</p>
           <div className="flex flex-wrap gap-2.5 print:hidden">
-            <button onClick={handleCopy} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-sm font-semibold hover:bg-white/15 transition-colors">
-              {copied ? <><Check className="w-4 h-4 text-teal" /> Copié</> : <><Copy className="w-4 h-4" /> Copier le résumé</>}
+            <button onClick={handleDownload} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all">
+              <FileDown className="w-4 h-4" /> Télécharger (.txt)
             </button>
             <button onClick={() => window.print()} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-sm font-semibold hover:bg-white/15 transition-colors">
               <Printer className="w-4 h-4" /> Imprimer / PDF
             </button>
-            <button onClick={onRestart} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all">
-              <RotateCcw className="w-4 h-4" /> Recommencer
+            <button onClick={handleCopy} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 border border-white/20 text-sm font-semibold hover:bg-white/15 transition-colors">
+              {copied ? <><Check className="w-4 h-4 text-teal" /> Copié</> : <><Copy className="w-4 h-4" /> Copier</>}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Disclaimer */}
+      {/* 7. Recommencer */}
+      <div className="text-center print:hidden">
+        <button onClick={onRestart} className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-navy/15 bg-white text-sm font-semibold text-navy hover:border-navy/30 transition-colors">
+          <RotateCcw className="w-4 h-4" /> Recommencer le diagnostic
+        </button>
+      </div>
+
+      {/* Disclaimer discret */}
       <div className="rounded-2xl bg-white/60 border border-navy/[0.07] px-5 py-4 flex items-start gap-2.5">
         <ShieldCheck className="w-4 h-4 text-slate shrink-0 mt-0.5" />
-        <p className="text-xs text-slate leading-relaxed">Ce diagnostic est fourni à titre informatif. Il ne constitue pas un avis juridique et ne remplace pas l'analyse d'un·e juriste, d'un pouvoir subsidiant ou d'un service compétent. Les résultats dépendent exclusivement des informations que vous avez saisies.</p>
+        <p className="text-xs text-slate leading-relaxed">Estimation indicative et non contractuelle, calculée à partir de vos seules réponses. Elle ne constitue pas un avis juridique définitif et ne remplace pas l'analyse d'un·e juriste ou d'un service compétent. Si votre projet est financé par un subside spécifique, vérifiez aussi les règles imposées par votre convention de subvention.</p>
       </div>
     </motion.div>
   )
@@ -376,7 +506,6 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
             </div>
             <span className="ml-auto text-xs text-aqua/70 font-medium">{state.step} / {TOTAL_STEPS}</span>
           </div>
-          {/* checkpoints */}
           <div className="flex items-center gap-1.5">
             {STEP_LABELS.map((label, i) => {
               const n = i + 1
