@@ -75,6 +75,7 @@ interface Band {
   min: number
   max: number
   label: string
+  verdict: string
   color: string
   tint: string
   ring: string
@@ -85,18 +86,18 @@ interface Band {
 
 const BANDS: Band[] = [
   {
-    key: 'tres_faible', min: 0, max: 20, label: 'Risque très faible', color: '#138A6E', tint: '#E6F6F0', ring: '#9DDCC7',
+    key: 'tres_faible', min: 0, max: 20, label: 'Risque très faible', verdict: 'Votre parcours indique un risque très faible', color: '#138A6E', tint: '#E6F6F0', ring: '#9DDCC7',
     phrase: "Probabilité très faible que les règles des marchés publics s'appliquent à ce projet.",
     meaning: "Votre organisation ne présente quasiment aucun des critères qui rendent un acheteur soumis aux marchés publics, et le montant en jeu reste limité. Vous pouvez avancer sereinement, en gardant une trace écrite de votre raisonnement.",
     steps: [
-      'Gardez une trace écrite de ce diagnostic dans votre dossier de décision.',
+      'Gardez une trace écrite de ce parcours dans votre dossier de décision.',
       "Demandez tout de même 2 à 3 offres comparatives : c'est une bonne pratique de saine gestion.",
-      'Si votre projet est financé par un subside spécifique, vérifiez aussi les règles imposées par votre convention de subvention.',
-      'Refaites le diagnostic si votre financement ou votre montant évolue.',
+      'Si votre projet dépend d\'une convention de subvention spécifique, vérifiez aussi les règles imposées par ce financement.',
+      'Refaites le parcours si votre financement ou votre montant évolue.',
     ],
   },
   {
-    key: 'faible', min: 21, max: 40, label: 'Risque faible à documenter', color: '#2F9E6F', tint: '#EAF6EE', ring: '#A7DCBE',
+    key: 'faible', min: 21, max: 40, label: 'Vigilance à documenter', verdict: 'Votre parcours indique une vigilance à documenter', color: '#2F9E6F', tint: '#EAF6EE', ring: '#A7DCBE',
     phrase: "Probabilité faible, mais quelques éléments méritent d'être documentés avant d'avancer.",
     meaning: "Les règles ont peu de chances de s'appliquer. Une mise en concurrence légère et quelques justificatifs suffisent généralement à sécuriser votre décision et à la rendre défendable.",
     steps: [
@@ -107,7 +108,7 @@ const BANDS: Band[] = [
     ],
   },
   {
-    key: 'grise', min: 41, max: 60, label: 'Zone grise', color: '#C97A18', tint: '#FDF3E1', ring: '#F4D69A',
+    key: 'grise', min: 41, max: 60, label: "Zone d'attention", verdict: "Votre parcours indique une zone d'attention", color: '#C97A18', tint: '#FDF3E1', ring: '#F4D69A',
     phrase: "Situation ambiguë : l'application des règles ne peut être ni écartée ni confirmée avec certitude.",
     meaning: "Plusieurs critères se compensent ou restent incertains. Le réflexe le plus sûr est de préparer votre achat comme s'il pouvait être soumis, puis de lever les doutes restants sur les points précis identifiés ci-dessous.",
     steps: [
@@ -118,7 +119,7 @@ const BANDS: Band[] = [
     ],
   },
   {
-    key: 'forte', min: 61, max: 80, label: 'Forte probabilité', color: '#E2603C', tint: '#FCEAE3', ring: '#F5C0AB',
+    key: 'forte', min: 61, max: 80, label: 'Forte probabilité', verdict: 'Votre parcours indique une forte probabilité', color: '#E2603C', tint: '#FCEAE3', ring: '#F5C0AB',
     phrase: "Votre projet présente de forts indices d'assujettissement aux règles des marchés publics.",
     meaning: "La majorité des critères pointent vers un assujettissement. Le plus prudent est de traiter ce projet comme probablement soumis : structurez une mise en concurrence traçable et choisissez la procédure adaptée à votre montant.",
     steps: [
@@ -130,7 +131,7 @@ const BANDS: Band[] = [
     ],
   },
   {
-    key: 'tres_forte', min: 81, max: 100, label: 'Très forte probabilité', color: '#D6473C', tint: '#FCE9E7', ring: '#F4B3AC',
+    key: 'tres_forte', min: 81, max: 100, label: 'Très forte probabilité', verdict: 'Votre parcours indique une très forte probabilité', color: '#D6473C', tint: '#FCE9E7', ring: '#F4B3AC',
     phrase: "Votre projet présente une très forte probabilité d'être soumis aux règles des marchés publics.",
     meaning: "Presque tous les critères convergent. Le plus prudent est de structurer dès maintenant votre achat comme un marché public et de faire sécuriser la procédure avant tout engagement.",
     steps: [
@@ -151,7 +152,7 @@ function explain(s: DiagState): { positives: string[]; protective: string[] } {
   const pos: string[] = []
   const pro: string[] = []
   if (s.structureType === 'organisme_public') pos.push("Vous êtes un organisme public : vous êtes en principe directement visé·e par la réglementation des marchés publics.")
-  if (s.reglesSubsidiant === 'oui') pos.push("Votre pouvoir subsidiant impose explicitement le respect des marchés publics : cette obligation contractuelle prime.")
+  if (s.reglesSubsidiant === 'oui') pos.push("Votre convention de subvention impose explicitement le respect des marchés publics : cette obligation contractuelle prime.")
   if (s.financementPct === 'plus_50') pos.push("Plus de la moitié de votre budget provient de fonds publics — un critère central de la qualification de pouvoir adjudicateur.")
   else if (s.financementPct === 'entre_10_50') pos.push("Une part significative de votre financement est publique.")
   else if (s.financementPct === 'moins_10') pro.push("Votre financement public paraît marginal.")
@@ -213,7 +214,6 @@ function selectSources(pct: number, montant: string | null): Source[] {
   const ids: string[] = []
   const add = (id: string) => { if (!ids.includes(id)) ids.push(id) }
 
-  // Les marchés de faible montant priment dans l'affichage
   if (under30k) add('bosa_faible')
 
   if (pct < 40) { add('spf_procedures'); add('bosa_regles'); add('wal_faq') }
@@ -321,30 +321,30 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
   const [copied, setCopied] = useState(false)
 
   const summaryLines = [
-    'Résultat du pré-diagnostic — marchepublic.be',
+    'Résultat du parcours — marchepublic.be',
     '',
     'Probabilité estimée que les règles de marchés publics s\'appliquent : ' + pct + '%',
-    'Niveau d\'obligation estimé : ' + band.label,
+    band.verdict,
     '',
     band.phrase,
     '',
     'Ce que cela signifie :',
     band.meaning,
     '',
-    'Pourquoi ce résultat :',
+    'Ce qui a influencé votre score :',
     ...positives.map(p => '• ' + p),
     ...protective.map(p => '– ' + p),
     '',
-    'Ce que vous devriez faire maintenant :',
+    'Chemin recommandé :',
     ...band.steps.map((s, i) => (i + 1) + '. ' + s),
     '',
-    'Documents recommandés :',
+    'Documents utiles :',
     ...docs.map(d => '• ' + d.title),
     '',
-    'Sources officielles utiles :',
+    'Sources officielles à vérifier :',
     ...sources.map(s => '• ' + s.title + ' — ' + s.url),
     '',
-    'Estimation indicative et non contractuelle. Ce diagnostic ne constitue pas un avis juridique.',
+    'Estimation indicative et non contractuelle. Ce parcours ne constitue pas un avis juridique.',
   ]
   const summaryText = summaryLines.join('\n')
 
@@ -356,7 +356,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'diagnostic-marchepublic.txt'
+    a.download = 'parcours-marchepublic.txt'
     document.body.appendChild(a)
     a.click()
     a.remove()
@@ -373,7 +373,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
             <ScoreDial pct={pct} color={band.color} />
             <div className="text-center sm:text-left">
               <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: band.color }}>Niveau d'obligation estimé</p>
-              <h2 className="font-display text-2xl font-bold mt-0.5" style={{ color: band.color }}>{band.label}</h2>
+              <h2 className="font-display text-2xl font-bold mt-0.5 leading-tight" style={{ color: band.color }}>{band.verdict}</h2>
               <p className="mt-2 text-sm text-navy/80 leading-relaxed">{band.phrase}</p>
             </div>
           </div>
@@ -387,9 +387,9 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
         <p className="text-sm text-navy/90 leading-relaxed">{band.meaning}</p>
       </div>
 
-      {/* 3. Pourquoi ce résultat */}
+      {/* 3. Ce qui a influencé votre score */}
       <div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
-        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><Target className="w-4 h-4" /> Pourquoi ce résultat ?</h3>
+        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><Target className="w-4 h-4" /> Ce qui a influencé votre score</h3>
         <ul className="space-y-2.5">
           {positives.map((p, i) => (
             <li key={'p' + i} className="flex items-start gap-2.5 text-sm text-navy/90"><span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: band.color }} />{p}</li>
@@ -400,9 +400,9 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
         </ul>
       </div>
 
-      {/* 4. Ce que vous devriez faire maintenant */}
+      {/* 4. Chemin recommandé */}
       <div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
-        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><ListChecks className="w-4 h-4" /> Ce que vous devriez faire maintenant</h3>
+        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><ListChecks className="w-4 h-4" /> Chemin recommandé</h3>
         <ol className="space-y-3">
           {band.steps.map((step, i) => (
             <li key={i} className="flex items-start gap-3 text-sm text-navy/90">
@@ -412,9 +412,9 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
         </ol>
       </div>
 
-      {/* 5. Documents recommandés */}
+      {/* 5. Documents utiles */}
       <div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
-        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><FileText className="w-4 h-4" /> Documents recommandés</h3>
+        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><FileText className="w-4 h-4" /> Documents utiles</h3>
         <div className="space-y-3">
           {docs.map(d => (
             <div key={d.id} className="rounded-2xl border border-navy/10 p-4 hover:border-teal/50 transition-colors">
@@ -435,10 +435,10 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
         <p className="text-[11px] text-slate/70 mt-3">Fiches pratiques au format PDF. Contenu en cours de finalisation.</p>
       </div>
 
-      {/* 6. Sources officielles utiles */}
+      {/* 6. Sources officielles à vérifier */}
       <div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
-        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-1"><Landmark className="w-4 h-4" /> Sources officielles utiles</h3>
-        <p className="text-xs text-slate mb-4">Pour vérifier par vous-même auprès des sources de référence.</p>
+        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-1"><Landmark className="w-4 h-4" /> Sources officielles à vérifier</h3>
+        <p className="text-xs text-slate mb-4">Pour confirmer la procédure applicable auprès des sources de référence.</p>
         <div className="space-y-2.5">
           {sources.map(s => (
             <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block rounded-2xl border border-navy/10 p-4 hover:border-teal/50 hover:bg-aqua/20 transition-colors">
@@ -463,7 +463,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
         <div className="absolute inset-0 dotgrid-light opacity-30" />
         <div className="relative">
           <h3 className="flex items-center gap-2 font-display font-bold text-lg mb-1"><Sparkles className="w-4 h-4 text-teal" /> Télécharger mon résumé</h3>
-          <p className="text-sm text-aqua/80 mb-4">Gardez une trace de ce résultat pour votre dossier de décision ou pour en discuter avec une personne compétente.</p>
+          <p className="text-sm text-aqua/80 mb-4">Gardez une trace de votre parcours pour votre dossier de décision ou pour en discuter avec une personne compétente.</p>
           <div className="flex flex-wrap gap-2.5 print:hidden">
             <button onClick={handleDownload} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all">
               <FileDown className="w-4 h-4" /> Télécharger (.txt)
@@ -481,14 +481,14 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
       {/* 8. Recommencer */}
       <div className="text-center print:hidden">
         <button onClick={onRestart} className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-navy/15 bg-white text-sm font-semibold text-navy hover:border-navy/30 transition-colors">
-          <RotateCcw className="w-4 h-4" /> Recommencer le diagnostic
+          <RotateCcw className="w-4 h-4" /> Recommencer le parcours
         </button>
       </div>
 
       {/* Disclaimer discret */}
       <div className="rounded-2xl bg-white/60 border border-navy/[0.07] px-5 py-4 flex items-start gap-2.5">
         <ShieldCheck className="w-4 h-4 text-slate shrink-0 mt-0.5" />
-        <p className="text-xs text-slate leading-relaxed">Estimation indicative et non contractuelle, calculée à partir de vos seules réponses. Elle ne constitue pas un avis juridique définitif et ne remplace pas l'analyse d'un·e juriste ou d'un service compétent. Si votre projet est financé par un subside spécifique, vérifiez aussi les règles imposées par votre convention de subvention.</p>
+        <p className="text-xs text-slate leading-relaxed">Estimation indicative et non contractuelle, calculée à partir de vos seules réponses. Elle ne constitue pas un avis juridique définitif et ne remplace pas l'analyse d'un·e juriste ou d'un service compétent. Si votre projet dépend d'une convention de subvention spécifique, vérifiez aussi les règles imposées par ce financement.</p>
       </div>
     </motion.div>
   )
@@ -560,7 +560,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
             <button onClick={goBack} className="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/15 flex items-center justify-center transition-colors"><ChevronLeft size={18} /></button>
             <div className="flex items-center gap-2">
               <Compass className="w-4 h-4 text-teal" />
-              <span className="font-display font-semibold text-sm">Pré-diagnostic</span>
+              <span className="font-display font-semibold text-sm">Votre parcours</span>
             </div>
             <span className="ml-auto text-xs text-aqua/70 font-medium">{state.step} / {TOTAL_STEPS}</span>
           </div>
