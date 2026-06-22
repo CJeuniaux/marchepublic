@@ -5,7 +5,7 @@ import {
   Globe, Cloud, Users, PenTool, Code2, Boxes, GraduationCap, Server,
   ChevronDown, Check, FileSearch, ListChecks,
 } from 'lucide-react'
-import { HeroPathScene, LogoMark } from '../components/Graphics'
+import { HeroPathScene, LogoMark, TangleToArrow, ChecklistCard, RisingPath, Constellation } from '../components/Graphics'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 26 },
@@ -112,6 +112,7 @@ function Hero({ onStart }: { onStart: () => void }) {
       <div className="absolute inset-0 dotgrid-light opacity-40" />
       <div className="absolute -top-32 -right-24 w-[28rem] h-[28rem] rounded-full bg-teal/20 blur-3xl" />
       <div className="absolute -bottom-40 -left-24 w-96 h-96 rounded-full bg-coral/15 blur-3xl" />
+      <Constellation className="hidden lg:block absolute top-24 left-[-60px] w-80 text-teal opacity-20 pointer-events-none" />
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-14 pb-20 sm:pt-20 sm:pb-28">
         <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-10 items-center">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}>
@@ -191,11 +192,17 @@ function WhySection() {
   return (
     <section id="pourquoi" className="bg-cream py-20 sm:py-28">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <Reveal className="max-w-2xl mb-14">
-          <Eyebrow>Pourquoi cet outil</Eyebrow>
-          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Un doute qui bloque, retarde et fragilise vos projets</h2>
-          <p className="mt-4 text-lg text-slate leading-relaxed">La question « dois-je faire un marché public ? » revient sans cesse — et reste sans réponse claire. Résultat : des projets ralentis, ou des décisions prises à l'aveugle. marchepublic.be vous donne un point de repère fiable, en quelques minutes.</p>
-        </Reveal>
+        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-14 items-center mb-16">
+          <Reveal className="max-w-2xl">
+            <Eyebrow>Pourquoi cet outil</Eyebrow>
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Un doute qui bloque, retarde et fragilise vos projets</h2>
+            <p className="mt-4 text-lg text-slate leading-relaxed">La question « dois-je faire un marché public ? » revient sans cesse — et reste sans réponse claire. Résultat : des projets ralentis, ou des décisions prises à l'aveugle. marchepublic.be vous donne un point de repère fiable, en quelques minutes.</p>
+          </Reveal>
+          <Reveal delay={0.12} className="text-navy">
+            <TangleToArrow className="w-full max-w-md mx-auto" />
+            <p className="mt-3 text-center text-xs font-semibold uppercase tracking-widest text-slate">Du labyrinthe juridique au parcours clair</p>
+          </Reveal>
+        </div>
         <div className="grid md:grid-cols-3 gap-5">
           {items.map((c, i) => (
             <Reveal key={c.title} delay={i * 0.1}>
@@ -242,6 +249,14 @@ function HowSection({ onStart }: { onStart: () => void }) {
             </Reveal>
           ))}
         </div>
+        <Reveal className="mt-16 grid sm:grid-cols-[1.2fr_0.8fr] gap-8 items-center max-w-3xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8">
+          <ChecklistCard className="w-full max-w-sm mx-auto drop-shadow-xl" />
+          <div className="text-center sm:text-left">
+            <RisingPath className="w-36 mx-auto sm:mx-0 mb-4" stroke="#45C7C7" hollow="#183E6F" />
+            <h3 className="font-display font-bold text-lg mb-1">Un résultat clair, pas un verdict</h3>
+            <p className="text-aqua/75 text-sm leading-relaxed">À la fin, vous obtenez votre niveau de risque, les points à vérifier et les prochaines étapes — de l'incertitude à la décision.</p>
+          </div>
+        </Reveal>
         <Reveal className="mt-14 text-center">
           <button onClick={onStart} className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
             Commencer maintenant <ArrowRight className="w-4 h-4" />
