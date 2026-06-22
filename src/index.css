@@ -1,14 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  * {
-    box-sizing: border-box;
-  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body {
     margin: 0;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #FAFAF8;
+    color: #1A1F2E;
     -webkit-font-smoothing: antialiased;
   }
+  h1, h2, h3, h4 { letter-spacing: -0.02em; }
+}
+
+@media print {
+  header, nav, button, .no-print { display: none !important; }
+  body { background: white; }
 }
