@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ChevronLeft, ChevronRight, RotateCcw, Copy, Printer, Check,
   HelpCircle, ChevronDown, ChevronUp, ShieldCheck, Compass,
-  ArrowRight, ListChecks, FileDown, FileText, Target, Sparkles, Info,
+  ListChecks, FileDown, FileText, Target, Sparkles, Info,
+  Landmark, ExternalLink, BadgeCheck,
 } from 'lucide-react'
 
 interface DiagState {
@@ -194,6 +195,36 @@ function recommendDocs(s: DiagState, bandKey: string): Doc[] {
   return order.filter(id => ids.has(id)).map(id => DOCS[id])
 }
 
+interface Source { id: string; title: string; desc: string; url: string }
+
+const SOURCES: Record<string, Source> = {
+  bosa_regles: { id: 'bosa_regles', title: 'BOSA — Règles et procédures des marchés publics', desc: "Vue d'ensemble officielle des procédures, seuils et règles applicables aux marchés publics en Belgique.", url: 'https://bosa.belgium.be/fr/marche-publics-regles-et-procedures' },
+  bosa_faible: { id: 'bosa_faible', title: 'BOSA — Marchés publics de faible montant', desc: 'Fiche officielle sur les marchés estimés à moins de 30.000 € HTVA dans les secteurs classiques.', url: 'https://bosa.belgium.be/fr/themes/marches-publics/centre-de-connaissances-des-marches/marches-publics-de-faible-montant' },
+  spf_choisir: { id: 'spf_choisir', title: 'SPF Économie — Quelle procédure choisir ?', desc: "Les critères qui orientent le choix d'une procédure, notamment le montant estimé du marché.", url: 'https://economie.fgov.be/fr/themes/marches-publics/procedures/quelle-procedure-de-marche' },
+  spf_procedures: { id: 'spf_procedures', title: 'SPF Économie — Procédures de marchés publics', desc: 'Présentation des principales procédures et du régime des marchés de faible montant.', url: 'https://economie.fgov.be/fr/themes/marches-publics/procedures-de-marches-publics' },
+  eproc: { id: 'eproc', title: 'e-Procurement — Plateforme fédérale', desc: 'Plateforme belge officielle pour la publication, la gestion et la consultation des marchés publics.', url: 'https://www.publicprocurement.be/' },
+  wal_choisir: { id: 'wal_choisir', title: 'Portail Wallonie — Choisir la procédure', desc: 'Portail wallon officiel pour comprendre les procédures et consulter des fiches pratiques.', url: 'https://marchespublics.wallonie.be/pouvoirs-adjudicateurs/passer-un-marche/concevoir-un-marche/choisir-la-procedure.html' },
+  wal_modeles: { id: 'wal_modeles', title: 'Portail Wallonie — Modèles de documents', desc: 'Modèles officiels de documents, dont des canevas pour les marchés de faible montant.', url: 'https://marchespublics.wallonie.be/pouvoirs-adjudicateurs/outils/modeles-de-documents.html' },
+  wal_faq: { id: 'wal_faq', title: 'Portail Wallonie — FAQ marchés publics', desc: 'Réponses pratiques sur la passation et la gestion des marchés publics.', url: 'https://marchespublics.wallonie.be/pouvoirs-adjudicateurs/outils/faq-1.html' },
+}
+
+function selectSources(pct: number, montant: string | null): Source[] {
+  const under30k = ['moins_3k', '3k_30k'].includes(montant ?? '')
+  const ids: string[] = []
+  const add = (id: string) => { if (!ids.includes(id)) ids.push(id) }
+
+  // Les marchés de faible montant priment dans l'affichage
+  if (under30k) add('bosa_faible')
+
+  if (pct < 40) { add('spf_procedures'); add('bosa_regles'); add('wal_faq') }
+  else if (pct <= 60) { add('bosa_regles'); add('spf_choisir'); add('wal_faq'); add('wal_modeles') }
+  else { add('bosa_regles'); add('spf_choisir'); add('eproc'); add('wal_modeles') }
+
+  if (under30k) { add('spf_procedures'); add('wal_modeles') }
+
+  return ids.slice(0, 4).map(id => SOURCES[id])
+}
+
 function OptionCard({ value, label, description, selected, onSelect }: {
   value: string; label: string; description?: string; selected: boolean; onSelect: (v: string) => void
 }) {
@@ -286,6 +317,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
   const band = bandFor(pct)
   const { positives, protective } = explain(state)
   const docs = recommendDocs(state, band.key)
+  const sources = selectSources(pct, state.montant)
   const [copied, setCopied] = useState(false)
 
   const summaryLines = [
@@ -308,6 +340,9 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
     '',
     'Documents recommandés :',
     ...docs.map(d => '• ' + d.title),
+    '',
+    'Sources officielles utiles :',
+    ...sources.map(s => '• ' + s.title + ' — ' + s.url),
     '',
     'Estimation indicative et non contractuelle. Ce diagnostic ne constitue pas un avis juridique.',
   ]
@@ -400,7 +435,30 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
         <p className="text-[11px] text-slate/70 mt-3">Fiches pratiques au format PDF. Contenu en cours de finalisation.</p>
       </div>
 
-      {/* 6. Télécharger mon résumé */}
+      {/* 6. Sources officielles utiles */}
+      <div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
+        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-1"><Landmark className="w-4 h-4" /> Sources officielles utiles</h3>
+        <p className="text-xs text-slate mb-4">Pour vérifier par vous-même auprès des sources de référence.</p>
+        <div className="space-y-2.5">
+          {sources.map(s => (
+            <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block rounded-2xl border border-navy/10 p-4 hover:border-teal/50 hover:bg-aqua/20 transition-colors">
+              <div className="flex items-start gap-3">
+                <span className="w-9 h-9 rounded-xl bg-aqua flex items-center justify-center shrink-0"><Landmark className="w-4 h-4 text-ink" /></span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-display font-semibold text-navy text-sm leading-snug">{s.title}</p>
+                    <ExternalLink className="w-3.5 h-3.5 text-slate shrink-0" />
+                  </div>
+                  <p className="text-xs text-slate mt-1 leading-relaxed">{s.desc}</p>
+                  <span className="inline-flex items-center gap-1 mt-2 text-[10px] font-semibold uppercase tracking-wide text-teal"><BadgeCheck className="w-3.5 h-3.5" /> Source officielle</span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* 7. Télécharger mon résumé */}
       <div className="rounded-2xl bg-navy text-white px-6 py-6 relative overflow-hidden">
         <div className="absolute inset-0 dotgrid-light opacity-30" />
         <div className="relative">
@@ -420,7 +478,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
         </div>
       </div>
 
-      {/* 7. Recommencer */}
+      {/* 8. Recommencer */}
       <div className="text-center print:hidden">
         <button onClick={onRestart} className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-navy/15 bg-white text-sm font-semibold text-navy hover:border-navy/30 transition-colors">
           <RotateCcw className="w-4 h-4" /> Recommencer le diagnostic
