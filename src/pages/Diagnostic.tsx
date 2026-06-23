@@ -8,7 +8,7 @@ import {
   Code2, Lightbulb, PenTool, GraduationCap, HardHat, Package, Wrench,
   ClipboardList, PenLine,
 } from 'lucide-react'
-import { ParcoursProgress, StepGlyph, Constellation } from '../components/Graphics'
+import { Constellation } from '../components/Graphics'
 
 type LucideIcon = ComponentType<{ className?: string; strokeWidth?: number }>
 
@@ -119,7 +119,7 @@ function explain(s: DiagState): { positives: string[]; protective: string[] } {
   if (s.montant === 'sup_seuil') pos.push("Le montant atteint le seuil européen, déclenchant les procédures les plus encadrées.")
   if (s.montant === 'moins_3k') pro.push("Le montant envisagé est faible.")
   const nspCount = [s.financementPct, s.controlCA, s.controlGestion, s.subsidieSpecifique, s.reglesSubsidiant, s.montant].filter(v => v === 'nsp').length
-  if (nspCount >= 2) pos.push("Plusieurs éléments restent incertains (réponses « je ne sais pas ») : par prudence, le risque est rehaussé.")
+  if (nspCount >= 2) pos.push("Plusieurs éléments restent incertains (réponses « je ne sais pas ») : par prudence, le risque est rehaussé.")
   if (pos.length === 0) pos.push("Aucun indice fort d'assujettissement n'a été détecté dans vos réponses.")
   return { positives: pos, protective: pro }
 }
@@ -170,7 +170,6 @@ function selectSources(pct: number, montant: string | null): Source[] {
   return ids.slice(0, 4).map(id => SOURCES[id])
 }
 
-// ---- Tunnel Nomad Impact ----
 const NOMAD_URL = 'https://nomadimpact.org'
 interface NomadTier { title: string; text: string; cta: string }
 function nomadTier(pct: number): NomadTier {
@@ -187,6 +186,39 @@ const NOMAD_OFFERS: { icon: LucideIcon; title: string; desc: string }[] = [
 const STRUCT_ICON: Record<string, LucideIcon> = { asbl: Users, fondation: Landmark, ong: Globe, federation: Network, cooperative: Boxes, pme: Briefcase, organisme_public: Building2, autre: Shapes }
 const PRESTA_ICON: Record<string, LucideIcon> = { digital: Code2, consultance: Lightbulb, communication: PenTool, formation: GraduationCap, travaux: HardHat, fournitures: Package, services: Wrench, autre: Shapes }
 
+// Linear numbered stepper — replaces the SVG M-path progress
+function StepperBar({ current, total, labels }: { current: number; total: number; labels: string[] }) {
+  return (
+    <div className="flex items-center gap-0">
+      {Array.from({ length: total }, (_, i) => {
+        const n = i + 1
+        const done = n < current
+        const active = n === current
+        return (
+          <div key={n} className="flex items-center flex-1 last:flex-none">
+            <div className="flex flex-col items-center gap-1">
+              <div className={[
+                'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all',
+                done    ? 'bg-teal border-teal text-navy' :
+                active  ? 'bg-white border-teal text-teal' :
+                          'bg-white/10 border-white/20 text-white/40',
+              ].join(' ')}>
+                {done ? <Check className="w-3.5 h-3.5" strokeWidth={3} /> : n}
+              </div>
+              <span className={['text-[9px] font-semibold uppercase tracking-wide hidden sm:block', active ? 'text-white' : done ? 'text-teal/80' : 'text-white/30'].join(' ')}>
+                {labels[i]}
+              </span>
+            </div>
+            {n < total && (
+              <div className="flex-1 h-[2px] mx-1 mb-4 rounded-full transition-all" style={{ background: done ? '#27C7C9' : 'rgba(255,255,255,0.12)' }} />
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 function OptionCard({ value, label, description, selected, onSelect, Icon }: {
   value: string; label: string; description?: string; selected: boolean; onSelect: (v: string) => void; Icon?: LucideIcon
 }) {
@@ -194,21 +226,23 @@ function OptionCard({ value, label, description, selected, onSelect, Icon }: {
     <motion.button
       whileTap={{ scale: 0.985 }} onClick={() => onSelect(value)}
       className={[
-        'group relative w-full text-left px-4 py-3.5 rounded-2xl border-2 transition-all duration-150',
-        selected ? 'bg-aqua border-teal shadow-teal' : 'bg-white border-navy/10 hover:border-teal/50 hover:bg-aqua/30 hover:-translate-y-0.5',
+        'group relative w-full text-left px-4 py-3.5 rounded-xl border-2 transition-all duration-150',
+        selected
+          ? 'bg-teal/[0.06] border-teal'
+          : 'bg-white border-line hover:border-teal/40 hover:-translate-y-0.5',
       ].join(' ')}
     >
       <div className="flex items-start gap-3">
         {Icon ? (
-          <span className={['w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors', selected ? 'bg-teal text-navy' : 'bg-aqua text-ink group-hover:bg-teal/20'].join(' ')}><Icon className="w-5 h-5" /></span>
+          <span className={['w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors', selected ? 'bg-teal text-white' : 'bg-cream text-slate group-hover:bg-teal/10'].join(' ')}><Icon className="w-5 h-5" /></span>
         ) : (
-          <span className={['mt-0.5 w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors', selected ? 'border-teal bg-teal' : 'border-navy/25'].join(' ')}>{selected && <Check className="w-3 h-3 text-navy" strokeWidth={3.5} />}</span>
+          <span className={['mt-0.5 w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors', selected ? 'border-teal bg-teal' : 'border-line'].join(' ')}>{selected && <Check className="w-3 h-3 text-white" strokeWidth={3.5} />}</span>
         )}
         <span className="min-w-0">
           <span className={['block text-sm font-semibold', selected ? 'text-navy' : 'text-navy/90'].join(' ')}>{label}</span>
           {description && <span className="block text-xs text-slate mt-0.5">{description}</span>}
         </span>
-        {Icon && selected && <span className="ml-auto w-5 h-5 rounded-full bg-teal flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-navy" strokeWidth={3.5} /></span>}
+        {Icon && selected && <span className="ml-auto w-5 h-5 rounded-full bg-teal flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-white" strokeWidth={3.5} /></span>}
       </div>
     </motion.button>
   )
@@ -218,14 +252,18 @@ function WhyThis({ text }: { text: string }) {
   const [open, setOpen] = useState(false)
   return (
     <div className="mt-5">
-      <button onClick={() => setOpen(!open)} className={['flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl transition-colors', open ? 'bg-aqua text-ink' : 'text-ink hover:bg-aqua/50'].join(' ')}>
-        <HelpCircle size={14} /> Pourquoi cette question ?
-        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}><ChevronDown size={14} /></motion.span>
+      <button
+        onClick={() => setOpen(!open)}
+        className={['flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg border transition-colors', open ? 'bg-teal/10 border-teal/30 text-navy' : 'border-line text-slate hover:border-teal/30 hover:text-navy'].join(' ')}
+      >
+        <ShieldCheck size={13} className="text-teal" />
+        Base juridique de cette question
+        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}><ChevronDown size={13} /></motion.span>
       </button>
       <AnimatePresence initial={false}>
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }} className="overflow-hidden">
-            <p className="mt-2 px-4 py-3 bg-aqua/70 border border-teal/20 rounded-xl text-xs text-ink/90 leading-relaxed">{text}</p>
+            <p className="mt-2 px-4 py-3 border-l-2 border-teal/40 bg-teal/[0.04] rounded-r-lg text-xs text-navy/80 leading-relaxed">{text}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -233,13 +271,10 @@ function WhyThis({ text }: { text: string }) {
   )
 }
 
-function StepShell({ glyph, eyebrow, title, subtitle, children }: { glyph: string; eyebrow: string; title: string; subtitle: string; children: ReactNode }) {
+function StepShell({ eyebrow, title, subtitle, children }: { eyebrow: string; title: string; subtitle: string; children: ReactNode }) {
   return (
     <div>
-      <div className="flex items-center gap-3 mb-4">
-        <span className="w-12 h-12 rounded-2xl bg-navy text-teal flex items-center justify-center shrink-0"><StepGlyph name={glyph} className="w-7 h-7" /></span>
-        <span className="text-[11px] font-semibold uppercase tracking-widest text-ink">{eyebrow}</span>
-      </div>
+      <p className="text-[11px] font-bold uppercase tracking-widest text-teal mb-2">{eyebrow}</p>
       <h2 className="font-display text-xl sm:text-2xl font-bold text-navy mb-1.5 tracking-tight">{title}</h2>
       <p className="text-sm text-slate mb-6">{subtitle}</p>
       {children}
@@ -261,11 +296,11 @@ function ScoreDial({ pct, color }: { pct: number; color: string }) {
   const display = useCountUp(pct)
   const r = 52; const c = 2 * Math.PI * r; const off = c * (1 - pct / 100)
   return (
-    <svg viewBox="0 0 140 140" className="w-40 h-40 shrink-0">
+    <svg viewBox="0 0 140 140" className="w-36 h-36 shrink-0">
       <circle cx={70} cy={70} r={r} stroke="#E4E7EC" strokeWidth={12} fill="none" />
       <motion.circle cx={70} cy={70} r={r} stroke={color} strokeWidth={12} fill="none" strokeLinecap="round" strokeDasharray={c} transform="rotate(-90 70 70)" initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: off }} transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }} />
-      <text x={70} y={66} textAnchor="middle" className="font-display" fontSize={32} fontWeight={700} fill={color}>{display}%</text>
-      <text x={70} y={88} textAnchor="middle" fontSize={8.5} fill="#98A2B3" letterSpacing={1}>PROBABILITÉ</text>
+      <text x={70} y={66} textAnchor="middle" className="font-display" fontSize={30} fontWeight={700} fill={color}>{display}%</text>
+      <text x={70} y={86} textAnchor="middle" fontSize={8} fill="#98A2B3" letterSpacing={1}>PROBABILITÉ</text>
     </svg>
   )
 }
@@ -277,7 +312,7 @@ function BandStrip({ activeKey }: { activeKey: string }) {
         const on = b.key === activeKey
         return (
           <div key={b.key} className="flex-1">
-            <div className="h-2 rounded-full transition-all" style={{ background: on ? b.color : '#E4E7EC' }} />
+            <div className="h-1.5 rounded-full transition-all" style={{ background: on ? b.color : '#E4E7EC' }} />
             <p className="mt-1.5 text-[9px] sm:text-[10px] font-semibold text-center leading-tight" style={{ color: on ? b.color : '#B4BCC8' }}>{b.min}–{b.max}%</p>
           </div>
         )
@@ -306,7 +341,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
   const [copied, setCopied] = useState(false)
 
   const summaryText = [
-    'Résultat du parcours — marchepublic.be', '',
+    'Résultat du parcours — marchépublic.be', '',
     "Probabilité estimée que les règles de marchés publics s'appliquent : " + pct + '%',
     band.verdict, '', band.phrase, '', 'Ce que cela signifie :', band.meaning, '',
     'Ce qui a influencé votre score :', ...positives.map(p => '• ' + p), ...protective.map(p => '– ' + p), '',
@@ -324,33 +359,34 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
   }
 
   return (
-    <Stagger className="max-w-2xl mx-auto px-4 py-8 space-y-5">
+    <Stagger className="max-w-2xl mx-auto px-4 py-8 space-y-4">
       {/* 1. Score */}
       <Item>
-        <div className="rounded-3xl overflow-hidden shadow-card border" style={{ borderColor: band.ring }}>
-          <div className="px-6 py-7" style={{ background: band.tint }}>
+        <div className="rounded-2xl overflow-hidden shadow-card border" style={{ borderColor: band.ring }}>
+          <div className="h-1" style={{ background: band.color }} />
+          <div className="px-6 py-6 bg-white">
             <p className="text-[11px] font-semibold uppercase tracking-widest mb-4" style={{ color: band.color }}>Probabilité estimée que les règles de marchés publics s'appliquent</p>
             <div className="flex flex-col sm:flex-row items-center gap-5">
               <ScoreDial pct={pct} color={band.color} />
               <div className="text-center sm:text-left">
                 <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: band.color }}>Niveau d'obligation estimé</p>
-                <h2 className="font-display text-2xl font-bold mt-0.5 leading-tight" style={{ color: band.color }}>{band.verdict}</h2>
-                <p className="mt-2 text-sm text-navy/80 leading-relaxed">{band.phrase}</p>
+                <h2 className="font-display text-xl font-bold mt-0.5 leading-tight text-navy">{band.verdict}</h2>
+                <p className="mt-2 text-sm text-slate leading-relaxed">{band.phrase}</p>
               </div>
             </div>
-            <div className="mt-6"><BandStrip activeKey={band.key} /></div>
+            <div className="mt-5"><BandStrip activeKey={band.key} /></div>
           </div>
         </div>
       </Item>
 
       {/* 2. Signification */}
-      <Item><div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
+      <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
         <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-3"><Info className="w-4 h-4" /> Ce que cela signifie</h3>
         <p className="text-sm text-navy/90 leading-relaxed">{band.meaning}</p>
       </div></Item>
 
       {/* 3. Ce qui a influencé le score */}
-      <Item><div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
+      <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
         <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><Target className="w-4 h-4" /> Ce qui a influencé votre score</h3>
         <ul className="space-y-2.5">
           {positives.map((p, i) => (<li key={'p' + i} className="flex items-start gap-2.5 text-sm text-navy/90"><span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: band.color }} />{p}</li>))}
@@ -359,7 +395,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
       </div></Item>
 
       {/* 4. Chemin recommandé */}
-      <Item><div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
+      <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
         <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><ListChecks className="w-4 h-4" /> Chemin recommandé</h3>
         <ol className="space-y-3">
           {band.steps.map((step, i) => (<li key={i} className="flex items-start gap-3 text-sm text-navy/90"><span className="shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold text-white" style={{ background: band.color }}>{i + 1}</span>{step}</li>))}
@@ -367,20 +403,20 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
       </div></Item>
 
       {/* 5. Documents utiles */}
-      <Item><div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
+      <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
         <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><FileText className="w-4 h-4" /> Documents utiles pour avancer</h3>
         <div className="space-y-3">
           {docs.map(d => (
-            <div key={d.id} className="rounded-2xl border border-navy/10 p-4 hover:border-teal/50 hover:shadow-card transition-all">
+            <div key={d.id} className="rounded-xl border border-line p-4 hover:border-teal/40 hover:shadow-card transition-all">
               <div className="flex items-start gap-3">
-                <span className="w-10 h-10 rounded-xl bg-aqua flex items-center justify-center shrink-0"><FileText className="w-5 h-5 text-ink" /></span>
+                <span className="w-10 h-10 rounded-xl bg-cream flex items-center justify-center shrink-0"><FileText className="w-5 h-5 text-slate" /></span>
                 <div className="min-w-0 flex-1">
                   <p className="font-display font-semibold text-navy text-sm leading-snug">{d.title}</p>
                   <p className="text-xs text-slate mt-1 leading-relaxed">{d.summary}</p>
-                  <span className="inline-block mt-2 text-[10px] font-semibold uppercase tracking-wide text-ink bg-aqua px-2 py-0.5 rounded-full">{d.level}</span>
+                  <span className="inline-block mt-2 text-[10px] font-semibold uppercase tracking-wide text-slate bg-cream px-2 py-0.5 rounded">{d.level}</span>
                 </div>
               </div>
-              <a href={d.file} download className="mt-3 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-navy text-white text-sm font-semibold hover:brightness-110 transition-all"><FileDown className="w-4 h-4" /> Télécharger la fiche</a>
+              <a href={d.file} download className="mt-3 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-110 transition-all"><FileDown className="w-4 h-4" /> Télécharger la fiche</a>
             </div>
           ))}
         </div>
@@ -388,20 +424,20 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
       </div></Item>
 
       {/* 6. Sources officielles */}
-      <Item><div className="bg-white rounded-2xl shadow-card border border-navy/[0.07] px-6 py-5">
+      <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
         <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-1"><Landmark className="w-4 h-4" /> Sources officielles à vérifier</h3>
         <p className="text-xs text-slate mb-4">Pour confirmer la procédure applicable auprès des sources de référence.</p>
         <div className="space-y-2.5">
           {sources.map(s => (
-            <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block rounded-2xl border border-navy/10 p-4 hover:border-teal/50 hover:bg-aqua/20 transition-colors">
+            <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-line p-4 hover:border-teal/40 hover:bg-teal/[0.02] transition-colors">
               <div className="flex items-start gap-3">
-                <span className="w-9 h-9 rounded-xl bg-aqua flex items-center justify-center shrink-0"><Landmark className="w-4 h-4 text-ink" /></span>
+                <span className="w-9 h-9 rounded-lg bg-cream flex items-center justify-center shrink-0"><Landmark className="w-4 h-4 text-slate" /></span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5"><p className="font-display font-semibold text-navy text-sm leading-snug">{s.title}</p><ExternalLink className="w-3.5 h-3.5 text-slate shrink-0" /></div>
                   <p className="text-xs text-slate mt-1 leading-relaxed">{s.desc}</p>
                   <span className="inline-flex items-center gap-1 mt-2 text-[10px] font-semibold uppercase tracking-wide text-teal"><BadgeCheck className="w-3.5 h-3.5" /> Source officielle</span>
                 </div>
-                <span className="ml-auto self-center text-xs font-semibold text-ink hidden sm:inline">Consulter →</span>
+                <span className="ml-auto self-center text-xs font-semibold text-slate hidden sm:inline">Consulter →</span>
               </div>
             </a>
           ))}
@@ -410,43 +446,44 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
 
       {/* 7. Tunnel Nomad Impact */}
       <Item>
-        <div className="rounded-3xl bg-navy text-white relative overflow-hidden shadow-float">
+        <div className="rounded-2xl bg-navy text-white relative overflow-hidden shadow-float">
           <div className="absolute inset-0 dotgrid-light opacity-30" />
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-teal" />
           <Constellation className="absolute -right-10 -top-8 w-64 text-teal opacity-20 pointer-events-none" />
           <div className="relative px-6 py-7">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wide bg-white/10 text-aqua">Préparer la suite</span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded text-[11px] font-semibold uppercase tracking-wide bg-white/10 text-aqua">Préparer la suite</span>
             <h3 className="mt-3 font-display text-xl sm:text-2xl font-bold tracking-tight">{tier.title}</h3>
             <p className="mt-2 text-sm text-aqua/85 leading-relaxed max-w-xl">{tier.text}</p>
             <div className="mt-5 grid sm:grid-cols-3 gap-3">
               {NOMAD_OFFERS.map(o => (
-                <div key={o.title} className="rounded-2xl bg-white/[0.06] border border-white/10 p-4">
-                  <span className="w-9 h-9 rounded-xl bg-teal/15 flex items-center justify-center mb-3"><o.icon className="w-4 h-4 text-teal" /></span>
+                <div key={o.title} className="rounded-xl bg-white/[0.06] border border-white/10 p-4">
+                  <span className="w-9 h-9 rounded-lg bg-teal/15 flex items-center justify-center mb-3"><o.icon className="w-4 h-4 text-teal" /></span>
                   <p className="font-display font-semibold text-sm leading-snug">{o.title}</p>
                   <p className="text-xs text-aqua/70 mt-1 leading-relaxed">{o.desc}</p>
                 </div>
               ))}
             </div>
-            <a href={NOMAD_URL} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all shadow-coral">{tier.cta} <ArrowUpRight className="w-4 h-4" /></a>
+            <a href={NOMAD_URL} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all shadow-coral">{tier.cta} <ArrowUpRight className="w-4 h-4" /></a>
             <p className="mt-3 text-[11px] text-aqua/50">Nomad Impact accompagne les ASBL pour reprendre le contrôle de leurs outils digitaux. Cet outil est indépendant et gratuit.</p>
           </div>
         </div>
       </Item>
 
       {/* 8. Télécharger / actions */}
-      <Item><div className="rounded-2xl bg-white shadow-card border border-navy/[0.07] px-6 py-5">
+      <Item><div className="rounded-2xl bg-white shadow-card border border-line px-6 py-5">
         <h3 className="flex items-center gap-2 font-display font-bold text-navy text-base mb-1"><Sparkles className="w-4 h-4 text-teal" /> Gardez une trace de votre parcours</h3>
         <p className="text-sm text-slate mb-4">Pour votre dossier de décision ou pour en discuter avec une personne compétente.</p>
         <div className="flex flex-wrap gap-2.5 print:hidden">
-          <button onClick={handleDownload} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-navy text-white text-sm font-semibold hover:brightness-110 transition-all"><FileDown className="w-4 h-4" /> Télécharger (.txt)</button>
-          <button onClick={() => window.print()} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-navy/15 text-navy text-sm font-semibold hover:border-navy/30 transition-colors"><Printer className="w-4 h-4" /> Imprimer / PDF</button>
-          <button onClick={handleCopy} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-navy/15 text-navy text-sm font-semibold hover:border-navy/30 transition-colors">{copied ? <><Check className="w-4 h-4 text-teal" /> Copié</> : <><Copy className="w-4 h-4" /> Copier</>}</button>
-          <button onClick={onRestart} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-navy/15 text-navy text-sm font-semibold hover:border-navy/30 transition-colors"><RotateCcw className="w-4 h-4" /> Recommencer</button>
+          <button onClick={handleDownload} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-110 transition-all"><FileDown className="w-4 h-4" /> Télécharger (.txt)</button>
+          <button onClick={() => window.print()} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-line text-navy text-sm font-semibold hover:border-navy/30 transition-colors"><Printer className="w-4 h-4" /> Imprimer / PDF</button>
+          <button onClick={handleCopy} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-line text-navy text-sm font-semibold hover:border-navy/30 transition-colors">{copied ? <><Check className="w-4 h-4 text-teal" /> Copié</> : <><Copy className="w-4 h-4" /> Copier</>}</button>
+          <button onClick={onRestart} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-line text-navy text-sm font-semibold hover:border-navy/30 transition-colors"><RotateCcw className="w-4 h-4" /> Recommencer</button>
         </div>
       </div></Item>
 
       {/* Disclaimer */}
-      <Item><div className="rounded-2xl bg-white/60 border border-navy/[0.07] px-5 py-4 flex items-start gap-2.5">
-        <ShieldCheck className="w-4 h-4 text-slate shrink-0 mt-0.5" />
+      <Item><div className="rounded-xl bg-cream border border-line px-5 py-4 flex items-start gap-2.5">
+        <ShieldCheck className="w-4 h-4 text-teal shrink-0 mt-0.5" />
         <p className="text-xs text-slate leading-relaxed">Ce score est une estimation indicative basée sur vos réponses. Il vous aide à identifier le niveau de vigilance à adopter, mais ne constitue pas un avis juridique. Les liens officiels ci-dessus permettent de vérifier la procédure applicable.</p>
       </div></Item>
     </Stagger>
@@ -455,7 +492,6 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
 
 const TOTAL_STEPS = 5
 const STEP_LABELS = ['Structure', 'Financement', 'Gouvernance', 'Projet', 'Montant']
-const STEP_GLYPH = ['structure', 'financement', 'gouvernance', 'projet', 'montant']
 
 export function Diagnostic({ onBack }: { onBack: () => void }) {
   const [state, setState] = useState<DiagState>(INITIAL_STATE)
@@ -479,7 +515,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
   if (showResult) {
     return (
       <div className="min-h-screen bg-cream">
-        <div className="bg-white border-b border-navy/10 px-4 py-3 flex items-center gap-3 print:hidden sticky top-0 z-10">
+        <div className="bg-white border-b border-line px-4 py-3 flex items-center gap-3 print:hidden sticky top-0 z-10">
           <button onClick={() => setShowResult(false)} className="text-slate hover:text-navy transition-colors"><ChevronLeft size={20} /></button>
           <span className="text-sm font-semibold text-navy">Votre résultat</span>
         </div>
@@ -513,38 +549,36 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="min-h-screen bg-navy text-white relative overflow-hidden">
-      <div className="absolute inset-0 dotgrid-light opacity-30 pointer-events-none" />
-      <div className="absolute -top-32 -right-24 w-[26rem] h-[26rem] rounded-full bg-teal/15 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-40 -left-24 w-96 h-96 rounded-full bg-coral/10 blur-3xl pointer-events-none" />
-      <Constellation className="hidden lg:block absolute top-40 -left-16 w-72 text-teal opacity-[0.12] pointer-events-none" />
+      <div className="absolute inset-0 dotgrid-light opacity-25 pointer-events-none" />
+      <Constellation className="hidden lg:block absolute top-40 -left-16 w-72 text-teal opacity-[0.10] pointer-events-none" />
 
-      {/* Header + progression tracée */}
+      {/* Header + stepper */}
       <div className="relative print:hidden">
         <div className="max-w-2xl mx-auto px-4 pt-5">
-          <div className="flex items-center gap-3 mb-4">
-            <button onClick={goBack} className="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/15 flex items-center justify-center transition-colors"><ChevronLeft size={18} /></button>
-            <div className="flex items-center gap-2"><span className="font-display font-semibold text-sm">Votre parcours</span></div>
-            <span className="ml-auto text-xs text-aqua/70 font-medium">Étape {state.step} sur {TOTAL_STEPS} · {STEP_LABELS[state.step - 1]}</span>
+          <div className="flex items-center gap-3 mb-5">
+            <button onClick={goBack} className="w-9 h-9 rounded-lg bg-white/10 hover:bg-white/15 flex items-center justify-center transition-colors"><ChevronLeft size={18} /></button>
+            <span className="font-display font-semibold text-sm">Votre parcours</span>
+            <span className="ml-auto text-xs text-aqua/60 font-medium">{state.step} / {TOTAL_STEPS}</span>
           </div>
-          <div className="px-1"><ParcoursProgress current={state.step} total={TOTAL_STEPS} /></div>
+          <StepperBar current={state.step} total={TOTAL_STEPS} labels={STEP_LABELS} />
         </div>
       </div>
 
       {/* Contenu */}
       <div className="relative max-w-2xl mx-auto px-4 py-7">
-        <div className="bg-white text-navy rounded-3xl shadow-float border border-white/40 p-6 sm:p-8 overflow-hidden">
+        <div className="bg-white text-navy rounded-2xl shadow-float border border-white/20 p-6 sm:p-8 overflow-hidden">
           <AnimatePresence mode="wait" custom={dir}>
             <motion.div key={state.step} custom={dir} variants={variants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}>
 
               {state.step === 1 && (
-                <StepShell glyph={STEP_GLYPH[0]} eyebrow={`Étape 1 / 5 · ${STEP_LABELS[0]}`} title="Quel type de structure êtes-vous ?" subtitle="Sélectionnez la forme juridique la plus proche de votre organisation.">
+                <StepShell eyebrow={`Étape 1 / 5 · ${STEP_LABELS[0]}`} title="Quel type de structure êtes-vous ?" subtitle="Sélectionnez la forme juridique la plus proche de votre organisation.">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {[
                       { value: 'asbl', label: 'ASBL', description: 'Association sans but lucratif' },
                       { value: 'fondation', label: 'Fondation', description: "Privée ou d'utilité publique" },
                       { value: 'ong', label: 'ONG', description: 'Organisation non gouvernementale' },
                       { value: 'federation', label: 'Fédération', description: "Fédération d'associations" },
-                      { value: 'cooperative', label: 'Coopérative', description: 'SC, SCRL...' },
+                      { value: 'cooperative', label: 'Coöpérative', description: 'SC, SCRL...' },
                       { value: 'pme', label: 'PME / Entreprise', description: 'SRL, SA, SNC...' },
                       { value: 'organisme_public', label: 'Organisme public', description: 'Commune, CPAS, intercommunale...' },
                       { value: 'autre', label: 'Autre', description: 'Autre forme juridique' },
@@ -555,7 +589,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
               )}
 
               {state.step === 2 && (
-                <StepShell glyph={STEP_GLYPH[1]} eyebrow={`Étape 2 / 5 · ${STEP_LABELS[1]}`} title="Quelle part de votre budget vient de fonds publics ?" subtitle="Incluez toutes les sources publiques : subsides, conventions, fonds européens...">
+                <StepShell eyebrow={`Étape 2 / 5 · ${STEP_LABELS[1]}`} title="Quelle part de votre budget vient de fonds publics ?" subtitle="Incluez toutes les sources publiques : subsides, conventions, fonds européens...">
                   <div className="space-y-2.5">
                     {[
                       { value: 'plus_50', label: 'Plus de 50 %', description: 'La majorité de votre budget est publique' },
@@ -569,7 +603,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
               )}
 
               {state.step === 3 && (
-                <StepShell glyph={STEP_GLYPH[2]} eyebrow={`Étape 3 / 5 · ${STEP_LABELS[2]}`} title="Gouvernance et contrôle public" subtitle="Ces deux questions portent sur l'influence d'autorités publiques dans votre organisation.">
+                <StepShell eyebrow={`Étape 3 / 5 · ${STEP_LABELS[2]}`} title="Gouvernance et contrôle public" subtitle="Ces deux questions portent sur l'influence d'autorités publiques dans votre organisation.">
                   <h3 className="text-sm font-semibold text-navy mb-2.5">Un organe public contrôle-t-il plus de la moitié de votre conseil d'administration ?</h3>
                   <div className="space-y-2.5">
                     {[
@@ -591,7 +625,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
               )}
 
               {state.step === 4 && (
-                <StepShell glyph={STEP_GLYPH[3]} eyebrow={`Étape 4 / 5 · ${STEP_LABELS[3]}`} title="Quel type de prestation souhaitez-vous commander ?" subtitle="Choisissez la catégorie la plus proche de votre projet.">
+                <StepShell eyebrow={`Étape 4 / 5 · ${STEP_LABELS[3]}`} title="Quel type de prestation souhaitez-vous commander ?" subtitle="Choisissez la catégorie la plus proche de votre projet.">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {[
                       { value: 'digital', label: 'Digital & Tech', description: 'Web, logiciel, application...' },
@@ -609,7 +643,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
               )}
 
               {state.step === 5 && (
-                <StepShell glyph={STEP_GLYPH[4]} eyebrow={`Étape 5 / 5 · ${STEP_LABELS[4]}`} title="Montant et conditions de la subvention" subtitle="Dernières questions : le montant prévu et les conditions imposées par votre subvention.">
+                <StepShell eyebrow={`Étape 5 / 5 · ${STEP_LABELS[4]}`} title="Montant et conditions de la subvention" subtitle="Dernières questions : le montant prévu et les conditions imposées par votre subvention.">
                   <h3 className="text-sm font-semibold text-navy mb-2.5">Quel est le montant estimé de la dépense ?</h3>
                   <div className="space-y-2.5">
                     {montantOptions.map(opt => <OptionCard key={opt.value} {...opt} selected={state.montant === opt.value} onSelect={v => set('montant', v)} />)}
@@ -639,11 +673,11 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
 
         {/* Navigation */}
         <div className="mt-6 flex items-center justify-between print:hidden">
-          <button onClick={goBack} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/20 bg-white/5 text-sm font-medium text-aqua hover:bg-white/10 transition-colors">
+          <button onClick={goBack} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/20 bg-white/5 text-sm font-medium text-aqua hover:bg-white/10 transition-colors">
             <ChevronLeft size={16} /> {state.step === 1 ? 'Accueil' : 'Retour'}
           </button>
           <button onClick={advance} disabled={!canProceed()}
-            className={['inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all', canProceed() ? 'bg-coral text-white hover:brightness-105 shadow-coral active:scale-[0.98]' : 'bg-white/10 text-white/30 cursor-not-allowed'].join(' ')}>
+            className={['inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold transition-all', canProceed() ? 'bg-coral text-white hover:brightness-105 shadow-coral active:scale-[0.98]' : 'bg-white/10 text-white/30 cursor-not-allowed'].join(' ')}>
             {state.step === TOTAL_STEPS ? 'Voir mon résultat' : 'Continuer'}
             {state.step < TOTAL_STEPS ? <ChevronRight size={16} /> : <ArrowRight size={16} />}
           </button>
