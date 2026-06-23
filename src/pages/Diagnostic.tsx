@@ -1,9 +1,9 @@
 import { useState, useEffect, type ReactNode, type ComponentType } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  ChevronLeft, ChevronRight, RotateCcw, Copy, Printer, Check,
+  ChevronLeft, RotateCcw, Copy, Printer, Check,
   ChevronDown, ShieldCheck, ListChecks, FileDown, FileText,
-  Target, Sparkles, Info, Landmark, ExternalLink, BadgeCheck, ArrowRight, ArrowUpRight,
+  Target, Sparkles, Info, Landmark, ExternalLink, BadgeCheck, ArrowUpRight,
   Users, Globe, Network, Boxes, Building2, Briefcase, Shapes,
   Code2, Lightbulb, PenTool, GraduationCap, HardHat, Package, Wrench,
   ClipboardList, PenLine,
@@ -187,31 +187,31 @@ const NOMAD_OFFERS: { icon: LucideIcon; title: string; desc: string }[] = [
 const STRUCT_ICON: Record<string, LucideIcon> = { asbl: Users, fondation: Landmark, ong: Globe, federation: Network, cooperative: Boxes, pme: Briefcase, organisme_public: Building2, autre: Shapes }
 const PRESTA_ICON: Record<string, LucideIcon> = { digital: Code2, consultance: Lightbulb, communication: PenTool, formation: GraduationCap, travaux: HardHat, fournitures: Package, services: Wrench, autre: Shapes }
 
-// Linear numbered stepper — replaces the SVG M-path progress
 function StepperBar({ current, total, labels }: { current: number; total: number; labels: string[] }) {
   return (
-    <div className="flex items-center gap-0">
+    <div className="flex items-start">
       {Array.from({ length: total }, (_, i) => {
         const n = i + 1
         const done = n < current
         const active = n === current
         return (
-          <div key={n} className="flex items-center flex-1 last:flex-none">
-            <div className="flex flex-col items-center gap-1">
+          <div key={n} className="flex items-start flex-1 last:flex-none">
+            <div className="flex flex-col items-center gap-1.5 flex-1">
               <div className={[
-                'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all',
-                done    ? 'bg-teal border-teal text-white' :
-                active  ? 'bg-coral border-coral text-white' :
-                          'bg-white/10 border-white/20 text-white/40',
+                'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all',
+                done   ? 'bg-teal border-teal text-white' :
+                active ? 'bg-coral border-coral text-white' :
+                         'bg-white border-line text-gris',
               ].join(' ')}>
-                {done ? <Check className="w-3.5 h-3.5" strokeWidth={3} /> : n}
+                {done ? <Check className="w-4 h-4" strokeWidth={3} /> : n}
               </div>
-              <span className={['text-[9px] font-semibold uppercase tracking-wide hidden sm:block', active ? 'text-coral' : done ? 'text-teal/80' : 'text-white/30'].join(' ')}>
+              <span className={['text-[10px] font-semibold text-center hidden sm:block',
+                active ? 'text-coral' : done ? 'text-teal' : 'text-gris'].join(' ')}>
                 {labels[i]}
               </span>
             </div>
             {n < total && (
-              <div className="flex-1 h-[2px] mx-1 mb-4 rounded-full transition-all" style={{ background: done ? '#415338' : 'rgba(255,255,255,0.12)' }} />
+              <div className="flex-1 mt-4 mx-1" style={{ borderTop: `2px dashed ${done ? '#415338' : '#E4D9CC'}` }} />
             )}
           </div>
         )
@@ -272,12 +272,19 @@ function WhyThis({ text }: { text: string }) {
   )
 }
 
-function StepShell({ eyebrow, title, subtitle, children }: { eyebrow: string; title: string; subtitle: string; children: ReactNode }) {
+function StepShell({ eyebrow, title, subtitle, children, stepN }: { eyebrow: string; title: string; subtitle: string; children: ReactNode; stepN?: number }) {
   return (
     <div>
-      <p className="text-[11px] font-bold uppercase tracking-widest text-teal mb-2">{eyebrow}</p>
-      <h2 className="font-display text-xl sm:text-2xl font-bold text-navy mb-1.5 tracking-tight">{title}</h2>
-      <p className="text-sm text-slate mb-6">{subtitle}</p>
+      {stepN != null ? (
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sun/30 text-navy text-[11px] font-bold mb-3">
+          <span className="w-3.5 h-3.5 rounded-full bg-sun flex items-center justify-center text-navy text-[9px] font-black">{stepN}</span>
+          Question {stepN}
+        </span>
+      ) : (
+        <p className="text-[11px] font-bold uppercase tracking-widest text-coral mb-2">{eyebrow}</p>
+      )}
+      <h2 className="font-display text-xl sm:text-2xl font-bold text-navy mb-1.5">{title}</h2>
+      <p className="text-sm text-slate mb-6 leading-relaxed">{subtitle}</p>
       {children}
     </div>
   )
@@ -293,16 +300,41 @@ function useCountUp(target: number, duration = 1100) {
   return v
 }
 
-function ScoreDial({ pct, color }: { pct: number; color: string }) {
+function BigScore({ pct, color, band }: { pct: number; color: string; band: Band }) {
   const display = useCountUp(pct)
-  const r = 52; const c = 2 * Math.PI * r; const off = c * (1 - pct / 100)
   return (
-    <svg viewBox="0 0 140 140" className="w-36 h-36 shrink-0">
-      <circle cx={70} cy={70} r={r} stroke="#E4E7EC" strokeWidth={12} fill="none" />
-      <motion.circle cx={70} cy={70} r={r} stroke={color} strokeWidth={12} fill="none" strokeLinecap="round" strokeDasharray={c} transform="rotate(-90 70 70)" initial={{ strokeDashoffset: c }} animate={{ strokeDashoffset: off }} transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }} />
-      <text x={70} y={66} textAnchor="middle" className="font-display" fontSize={30} fontWeight={700} fill={color}>{display}%</text>
-      <text x={70} y={86} textAnchor="middle" fontSize={8} fill="#98A2B3" letterSpacing={1}>PROBABILITÉ</text>
-    </svg>
+    <div>
+      <p className="text-[11px] font-bold uppercase tracking-widest text-slate mb-3">Niveau d'obligation estimé</p>
+      <div className="flex flex-col sm:flex-row sm:items-end gap-3 mb-5">
+        <motion.p
+          className="font-display leading-none shrink-0"
+          style={{ fontSize: 80, fontWeight: 700, color }}
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {display}%
+        </motion.p>
+        <div className="pb-1">
+          <h2 className="font-display text-lg font-bold text-navy leading-snug">{band.verdict.replace('Votre parcours indique ', '')}</h2>
+          <p className="text-sm text-slate mt-1 leading-relaxed">{band.phrase}</p>
+        </div>
+      </div>
+      <div className="space-y-1.5">
+        <div className="w-full h-3 rounded-full bg-line overflow-hidden">
+          <motion.div
+            className="h-full rounded-full"
+            style={{ background: color }}
+            initial={{ width: 0 }}
+            animate={{ width: pct + '%' }}
+            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </div>
+        <div className="flex justify-between text-[10px] text-gris font-medium">
+          <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -366,15 +398,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
         <div className="rounded-2xl overflow-hidden shadow-card border" style={{ borderColor: band.ring }}>
           <div className="h-1" style={{ background: band.color }} />
           <div className="px-6 py-6 bg-white">
-            <p className="text-[11px] font-semibold uppercase tracking-widest mb-4" style={{ color: band.color }}>Probabilité estimée que les règles de marchés publics s'appliquent</p>
-            <div className="flex flex-col sm:flex-row items-center gap-5">
-              <ScoreDial pct={pct} color={band.color} />
-              <div className="text-center sm:text-left">
-                <p className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: band.color }}>Niveau d'obligation estimé</p>
-                <h2 className="font-display text-xl font-bold mt-0.5 leading-tight text-navy">{band.verdict}</h2>
-                <p className="mt-2 text-sm text-slate leading-relaxed">{band.phrase}</p>
-              </div>
-            </div>
+            <BigScore pct={pct} color={band.color} band={band} />
             <div className="mt-5"><BandStrip activeKey={band.key} /></div>
           </div>
         </div>
@@ -382,13 +406,13 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
 
       {/* 2. Signification */}
       <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-3"><Info className="w-4 h-4" /> Ce que cela signifie</h3>
+        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-3"><span className="w-5 h-5 rounded-full bg-sun flex items-center justify-center shrink-0"><Info className="w-3 h-3 text-navy" /></span> Ce que cela veut dire, simplement</h3>
         <p className="text-sm text-navy/90 leading-relaxed">{band.meaning}</p>
       </div></Item>
 
       {/* 3. Ce qui a influencé le score */}
       <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><Target className="w-4 h-4" /> Ce qui a influencé votre score</h3>
+        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-4"><span className="w-5 h-5 rounded-full bg-sun flex items-center justify-center shrink-0"><Target className="w-3 h-3 text-navy" /></span> Pourquoi ce résultat ?</h3>
         <ul className="space-y-2.5">
           {positives.map((p, i) => (<li key={'p' + i} className="flex items-start gap-2.5 text-sm text-navy/90"><span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: band.color }} />{p}</li>))}
           {protective.map((p, i) => (<li key={'q' + i} className="flex items-start gap-2.5 text-sm text-slate"><Check className="w-4 h-4 shrink-0 mt-0.5 text-[#2F9E6F]" strokeWidth={2.5} />{p}</li>))}
@@ -397,7 +421,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
 
       {/* 4. Chemin recommandé */}
       <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><ListChecks className="w-4 h-4" /> Chemin recommandé</h3>
+        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-4"><span className="w-5 h-5 rounded-full bg-sun flex items-center justify-center shrink-0"><ListChecks className="w-3 h-3 text-navy" /></span> Les étapes recommandées</h3>
         <ol className="space-y-3">
           {band.steps.map((step, i) => (<li key={i} className="flex items-start gap-3 text-sm text-navy/90"><span className="shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold text-white" style={{ background: band.color }}>{i + 1}</span>{step}</li>))}
         </ol>
@@ -549,30 +573,33 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
   }
 
   return (
-    <div className="min-h-screen bg-navy text-white relative overflow-hidden">
-      <div className="absolute inset-0 dotgrid-light opacity-25 pointer-events-none" />
-      <Constellation className="hidden lg:block absolute top-40 -left-16 w-72 text-teal opacity-[0.10] pointer-events-none" />
+    <div className="min-h-screen bg-cream relative">
+      <div className="absolute inset-0 dotgrid opacity-30 pointer-events-none" />
 
-      {/* Header + stepper */}
-      <div className="relative print:hidden">
-        <div className="max-w-2xl mx-auto px-4 pt-5">
-          <div className="flex items-center gap-3 mb-5">
-            <button onClick={goBack} className="w-9 h-9 rounded-lg bg-white/10 hover:bg-white/15 flex items-center justify-center transition-colors"><ChevronLeft size={18} /></button>
-            <span className="font-display font-semibold text-sm">Votre parcours</span>
-            <span className="ml-auto text-xs text-aqua/60 font-medium">{state.step} / {TOTAL_STEPS}</span>
-          </div>
+      {/* Header */}
+      <div className="relative print:hidden bg-white border-b border-line sticky top-0 z-20">
+        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+          <button onClick={goBack} className="flex items-center gap-2 text-slate hover:text-navy transition-colors text-sm font-medium"><ChevronLeft size={16} /> Retour</button>
+          <span className="font-display font-semibold text-navy text-sm">Mon diagnostic</span>
+          <span className="text-xs text-gris font-medium">Étape {state.step} sur {TOTAL_STEPS}</span>
+        </div>
+      </div>
+
+      {/* Stepper */}
+      <div className="relative print:hidden bg-sable border-b border-line">
+        <div className="max-w-2xl mx-auto px-4 py-4">
           <StepperBar current={state.step} total={TOTAL_STEPS} labels={STEP_LABELS} />
         </div>
       </div>
 
       {/* Contenu */}
-      <div className="relative max-w-2xl mx-auto px-4 py-7">
-        <div className="bg-white text-navy rounded-2xl shadow-float border border-white/20 p-6 sm:p-8 overflow-hidden">
+      <div className="relative max-w-2xl mx-auto px-4 py-6">
+        <div className="bg-white text-navy rounded-2xl shadow-card border border-line p-6 sm:p-8 overflow-hidden">
           <AnimatePresence mode="wait" custom={dir}>
             <motion.div key={state.step} custom={dir} variants={variants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}>
 
               {state.step === 1 && (
-                <StepShell eyebrow={`Étape 1 / 5 · ${STEP_LABELS[0]}`} title="Quel type de structure êtes-vous ?" subtitle="Sélectionnez la forme juridique la plus proche de votre organisation.">
+                <StepShell stepN={1} eyebrow={`Étape 1 / 5 · ${STEP_LABELS[0]}`} title="Quel type de structure représentez-vous ?" subtitle="Choisissez la forme juridique la plus proche de la vôtre. Vous pourrez revenir en arrière.">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {[
                       { value: 'asbl', label: 'ASBL', description: 'Association sans but lucratif' },
@@ -590,7 +617,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
               )}
 
               {state.step === 2 && (
-                <StepShell eyebrow={`Étape 2 / 5 · ${STEP_LABELS[1]}`} title="Quelle part de votre budget vient de fonds publics ?" subtitle="Incluez toutes les sources publiques : subsides, conventions, fonds européens...">
+                <StepShell stepN={2} eyebrow={`Étape 2 / 5 · ${STEP_LABELS[1]}`} title="Quelle part de votre budget vient de fonds publics ?" subtitle="Incluez toutes les sources publiques : subsides, conventions, fonds européens...">
                   <div className="space-y-2.5">
                     {[
                       { value: 'plus_50', label: 'Plus de 50 %', description: 'La majorité de votre budget est publique' },
@@ -604,7 +631,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
               )}
 
               {state.step === 3 && (
-                <StepShell eyebrow={`Étape 3 / 5 · ${STEP_LABELS[2]}`} title="Gouvernance et contrôle public" subtitle="Ces deux questions portent sur l'influence d'autorités publiques dans votre organisation.">
+                <StepShell stepN={3} eyebrow={`Étape 3 / 5 · ${STEP_LABELS[2]}`} title="Gouvernance et contrôle public" subtitle="Ces deux questions portent sur l'influence d'autorités publiques dans votre organisation.">
                   <h3 className="text-sm font-semibold text-navy mb-2.5">Un organe public contrôle-t-il plus de la moitié de votre conseil d'administration ?</h3>
                   <div className="space-y-2.5">
                     {[
@@ -626,7 +653,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
               )}
 
               {state.step === 4 && (
-                <StepShell eyebrow={`Étape 4 / 5 · ${STEP_LABELS[3]}`} title="Quel type de prestation souhaitez-vous commander ?" subtitle="Choisissez la catégorie la plus proche de votre projet.">
+                <StepShell stepN={4} eyebrow={`Étape 4 / 5 · ${STEP_LABELS[3]}`} title="Quel type de prestation souhaitez-vous commander ?" subtitle="Choisissez la catégorie la plus proche de votre projet.">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {[
                       { value: 'digital', label: 'Digital & Tech', description: 'Web, logiciel, application...' },
@@ -644,7 +671,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
               )}
 
               {state.step === 5 && (
-                <StepShell eyebrow={`Étape 5 / 5 · ${STEP_LABELS[4]}`} title="Montant et conditions de la subvention" subtitle="Dernières questions : le montant prévu et les conditions imposées par votre subvention.">
+                <StepShell stepN={5} eyebrow={`Étape 5 / 5 · ${STEP_LABELS[4]}`} title="Montant et conditions de la subvention" subtitle="Dernières questions : le montant prévu et les conditions imposées par votre subvention.">
                   <h3 className="text-sm font-semibold text-navy mb-2.5">Quel est le montant estimé de la dépense ?</h3>
                   <div className="space-y-2.5">
                     {montantOptions.map(opt => <OptionCard key={opt.value} {...opt} selected={state.montant === opt.value} onSelect={v => set('montant', v)} />)}
@@ -674,13 +701,13 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
 
         {/* Navigation */}
         <div className="mt-6 flex items-center justify-between print:hidden">
-          <button onClick={goBack} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/20 bg-white/5 text-sm font-medium text-aqua hover:bg-white/10 transition-colors">
+          <button onClick={goBack} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-line text-navy text-sm font-medium hover:bg-cream transition-colors">
             <ChevronLeft size={16} /> {state.step === 1 ? 'Accueil' : 'Retour'}
           </button>
+          <span className="text-xs text-gris hidden sm:block">Aucune donnée n'est conservée.</span>
           <button onClick={advance} disabled={!canProceed()}
-            className={['inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold transition-all', canProceed() ? 'bg-coral text-white hover:brightness-105 shadow-coral active:scale-[0.98]' : 'bg-white/10 text-white/30 cursor-not-allowed'].join(' ')}>
-            {state.step === TOTAL_STEPS ? 'Voir mon résultat' : 'Continuer'}
-            {state.step < TOTAL_STEPS ? <ChevronRight size={16} /> : <ArrowRight size={16} />}
+            className={['inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold transition-all', canProceed() ? 'bg-coral text-white hover:brightness-105 shadow-coral active:scale-[0.98]' : 'bg-line text-gris cursor-not-allowed'].join(' ')}>
+            {state.step === TOTAL_STEPS ? 'Voir mon résultat' : 'Continuer →'}
           </button>
         </div>
       </div>

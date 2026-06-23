@@ -8,17 +8,19 @@ const config: Config = {
         navy:  '#2E2348', // aubergine profond — fond sombre, titres
         ink:   '#1C1534', // très sombre — footer
         teal:  '#415338', // vert forêt — checks, accents verts
+        bleu:  '#2E5C8A', // bleu confiance — liens, variante
         aqua:  '#C8BEF5', // lavande claire — texte sur fond sombre
         coral: '#E63948', // rouge vif — CTA principal, sélection active
         sun:   '#F4C28F', // pêche douce — badges, highlights
         cream: '#FBF7F1', // crème — fond page
         sable: '#F4E9D8', // sable — fond cartes
         slate: '#5E6B7D', // gris-ardoise — texte secondaire
+        gris:  '#A8A096', // gris doux — détails secondaires
         line:  '#E4D9CC', // bordure chaude
       },
       fontFamily: {
         sans:    ['DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['Fraunces', 'Georgia', 'serif'],
+        display: ['DM Serif Display', 'Georgia', 'serif'],
       },
       boxShadow: {
         card:     '0 1px 4px rgba(46,35,72,0.06), 0 4px 16px rgba(46,35,72,0.08)',
