@@ -3,9 +3,11 @@ import { motion } from 'framer-motion'
 import {
   ArrowRight, ArrowUpRight, Compass, Route, Gauge, Menu, X,
   Globe, Cloud, Users, PenTool, Code2, Boxes, GraduationCap, Server,
-  ChevronDown, Check, MapPin,
+  ChevronDown, Check, MapPin, Target, ClipboardList, PenLine,
 } from 'lucide-react'
 import { HeroPathScene, LogoMark, TangleToArrow, ChecklistCard, RisingPath, Constellation } from '../components/Graphics'
+
+const NOMAD_URL = 'https://nomadimpact.org'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 26 },
@@ -390,6 +392,83 @@ function FAQSection() {
   )
 }
 
+const NOMAD_OFFERS = [
+  { icon: Target, title: 'Cadrer votre projet', desc: "Avant de choisir un prestataire : ateliers de définition, cahier des charges, stratégie digitale." },
+  { icon: ClipboardList, title: 'Préparer le devis ou la procédure', desc: "Spécifications techniques, critères de sélection, comparaison d'offres." },
+  { icon: PenLine, title: 'Rédiger le cahier des charges', desc: "Document structuré pour lancer votre appel à prestataires dans les règles." },
+]
+
+function NomadImpactSection({ onStart }: { onStart: () => void }) {
+  return (
+    <section className="bg-white py-20 sm:py-28">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <Reveal>
+          <div className="relative overflow-hidden rounded-3xl bg-navy text-white px-6 py-12 sm:px-12 sm:py-14 shadow-float">
+            <div className="absolute inset-0 dotgrid-light opacity-25" />
+            <div className="absolute -top-24 -right-20 w-80 h-80 rounded-full bg-teal/15 blur-3xl" />
+            <div className="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-coral/10 blur-3xl" />
+            <Constellation className="absolute top-6 right-6 w-40 text-teal opacity-15 pointer-events-none" />
+
+            <div className="relative">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide bg-teal/20 text-teal mb-4">
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal" />
+                    Vous avez un projet digital à cadrer ?
+                  </span>
+                  <h2 className="font-display text-2xl sm:text-3xl font-bold leading-tight text-balance max-w-lg">
+                    marchepublic.be comprend vos obligations.<br />
+                    <span className="text-teal">Nomad Impact</span> vous aide à préparer la suite.
+                  </h2>
+                  <p className="mt-3 text-aqua/75 text-sm leading-relaxed max-w-md">
+                    Une fois votre situation clarifiée, passer à l'action demande méthode. Nomad Impact accompagne les ASBL et organisations belges dans la définition et la mise en œuvre de leurs projets digitaux.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-3 gap-4 mb-10">
+                {NOMAD_OFFERS.map((offer, i) => (
+                  <motion.div
+                    key={offer.title}
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1, duration: 0.5 }}
+                    className="bg-white/8 border border-white/12 rounded-2xl p-5"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-teal/20 flex items-center justify-center mb-3">
+                      <offer.icon className="w-5 h-5 text-teal" />
+                    </div>
+                    <h3 className="font-display font-semibold text-[15px] mb-1.5">{offer.title}</h3>
+                    <p className="text-aqua/70 text-xs leading-relaxed">{offer.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={onStart}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]"
+                >
+                  Faire le diagnostic <ArrowRight className="w-4 h-4" />
+                </button>
+                <a
+                  href={NOMAD_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/10 text-white font-semibold text-sm border border-white/20 hover:bg-white/15 transition-all"
+                >
+                  Découvrir Nomad Impact <ArrowUpRight className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  )
+}
+
 function FinalCTA({ onStart }: { onStart: () => void }) {
   return (
     <section className="bg-cream pb-24">
@@ -471,6 +550,7 @@ export function Home({ onStart }: { onStart: () => void }) {
         <UseCasesSection onStart={onStart} />
         <ForWhoSection onStart={onStart} />
         <FAQSection />
+        <NomadImpactSection onStart={onStart} />
         <FinalCTA onStart={onStart} />
       </main>
       <Footer onStart={onStart} />
