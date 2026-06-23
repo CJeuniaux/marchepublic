@@ -51,12 +51,20 @@ const USE_CASES = [
 const AUDIENCES = ['ASBL', 'Fondations', 'ONG', 'Fédérations', 'Associations culturelles', 'Acteurs sociaux', 'Clubs sportifs', 'Projets éducatifs', 'Porteurs de projets européens', 'Petites structures subsidiées']
 
 const FAQS = [
-  { q: 'Une ASBL peut-elle vraiment être soumise aux marchés publics ?', a: "Oui. Une ASBL peut être qualifiée de « pouvoir adjudicateur » si elle est majoritairement financée par des fonds publics, contrôlée par une autorité publique, ou si sa gouvernance est dominée par des représentants publics. Le statut associatif ne protège pas automatiquement." },
-  { q: "Recevoir un subside m'oblige-t-il à faire un marché public ?", a: "Pas mécaniquement. Recevoir un subside ne suffit pas. Mais si le financement public dépasse certains seuils, ou si votre convention impose une mise en concurrence, vos obligations changent." },
-  { q: 'Trois devis suffisent-ils ?', a: "Souvent c'est une bonne pratique — parfois c'est insuffisant. Selon votre statut et le montant, une procédure formalisée peut être exigée. Demander trois devis ne vous met pas automatiquement en règle." },
-  { q: 'Puis-je choisir un prestataire que je connais déjà ?', a: "Si vous êtes soumis aux règles, le principe est la mise en concurrence équitable. Si vous ne l'êtes pas, vous gardez la liberté de choix. C'est précisément ce que le parcours aide à clarifier." },
-  { q: 'Quelle différence entre un devis et un marché public ?', a: "Un devis est une simple demande de prix. Un marché public est une procédure encadrée par la loi : étapes obligatoires, délais, transparence, parfois publication." },
-  { q: 'Cet outil remplace-t-il un juriste ?', a: "Non, et il ne le prétend pas. C'est un pré-diagnostic pédagogique et indépendant : il trace un chemin clair et renvoie aux sources officielles. Pour une situation engageante ou complexe, faites valider votre procédure par une personne compétente." },
+  { q: 'Une ASBL peut-elle vraiment être soumise aux marchés publics ?', a: "Oui. Une ASBL peut être qualifiée de « pouvoir adjudicateur » si elle est majoritairement financée par des fonds publics, contrôlée par une autorité publique, ou si sa gouvernance est dominée par des représentants publics. Le statut associatif ne protège pas automatiquement." },
+  { q: "Recevoir un subside m'oblige-t-il à faire un marché public ?", a: "Pas mécaniquement. Recevoir un subside ne suffit pas. Mais si le financement public dépasse certains seuils, ou si votre convention impose une mise en concurrence, vos obligations changent." },
+  { q: 'Trois devis suffisent-ils ?', a: "Souvent c'est une bonne pratique — parfois c'est insuffisant. Selon votre statut et le montant, une procédure formalisée peut être exigée. Demander trois devis ne vous met pas automatiquement en règle." },
+  { q: 'Puis-je choisir un prestataire que je connais déjà ?', a: "Si vous êtes soumis aux règles, le principe est la mise en concurrence équitable. Si vous ne l'êtes pas, vous gardez la liberté de choix. C'est précisément ce que le parcours aide à clarifier." },
+  { q: 'Quelle différence entre un devis et un marché public ?', a: "Un devis est une simple demande de prix. Un marché public est une procédure encadrée par la loi : étapes obligatoires, délais, transparence, parfois publication." },
+  { q: 'Cet outil remplace-t-il un juriste ?', a: "Non, et il ne le prétend pas. C'est un pré-diagnostic pédagogique et indépendant : il trace un chemin clair et renvoie aux sources officielles. Pour une situation engageante ou complexe, faites valider votre procédure par une personne compétente." },
+]
+
+type TrustItem = { Icon: typeof Clock; label: string }
+const TRUST_ITEMS: TrustItem[] = [
+  { Icon: Clock, label: 'Environ 5 minutes' },
+  { Icon: ShieldCheck, label: 'Sources officielles belges' },
+  { Icon: Lock, label: 'Sans inscription' },
+  { Icon: Check, label: 'Estimation indicative' },
 ]
 
 function Header({ onStart }: { onStart: () => void }) {
@@ -105,22 +113,20 @@ function Hero({ onStart }: { onStart: () => void }) {
   return (
     <section id="top" className="relative overflow-hidden bg-navy text-white">
       <div className="absolute inset-0 dotgrid-light opacity-30" />
-      {/* Thin teal accent line at the top — institutional signal */}
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-teal via-teal/60 to-transparent" />
       <Constellation className="hidden lg:block absolute top-16 right-8 w-64 text-teal opacity-[0.12] pointer-events-none" />
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-20 sm:pt-24 sm:pb-28">
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}>
-            {/* Institutional badge */}
             <div className="inline-flex items-center gap-2 border border-teal/30 text-teal text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded mb-6">
               <ShieldCheck className="w-3.5 h-3.5" />
               Outil pédagogique indépendant · Belgique
             </div>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.2rem] font-bold leading-[1.06] tracking-tight text-balance">
-              Votre ASBL doit-elle passer par un <span className="text-teal">marché public ?</span>
+              Votre ASBL doit-elle passer par un <span className="text-teal">marché public ?</span>
             </h1>
             <p className="mt-5 text-lg text-aqua/80 leading-relaxed max-w-xl">
-              En 5 minutes, identifiez les indices qui déterminent vos obligations : structure, financement, gouvernance, projet et montant. Vous obtenez un score indicatif, un chemin recommandé et les sources officielles à vérifier.
+              En 5 minutes, identifiez les indices qui déterminent vos obligations : structure, financement, gouvernance, projet et montant. Vous obtenez un score indicatif, un chemin recommandé et les sources officielles à vérifier.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
               <button onClick={onStart} className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-coral text-white font-semibold hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
@@ -130,17 +136,11 @@ function Hero({ onStart }: { onStart: () => void }) {
                 Comprendre les critères
               </a>
             </div>
-            {/* Réassurance strip */}
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-white/10 pt-5">
-              {[
-                [Clock, 'Environ 5 minutes'],
-                [ShieldCheck, 'Sources officielles belges'],
-                [Lock, 'Sans inscription'],
-                [Check, 'Estimation indicative'],
-              ].map(([Icon, label]) => (
-                <span key={label as string} className="flex items-center gap-1.5 text-xs text-aqua/60 font-medium">
-                  {Icon && <(Icon as typeof Clock) className="w-3.5 h-3.5 text-teal/70" />}
-                  {label as string}
+              {TRUST_ITEMS.map(({ Icon, label }) => (
+                <span key={label} className="flex items-center gap-1.5 text-xs text-aqua/60 font-medium">
+                  <Icon className="w-3.5 h-3.5 text-teal/70" />
+                  {label}
                 </span>
               ))}
             </div>
@@ -149,7 +149,6 @@ function Hero({ onStart }: { onStart: () => void }) {
           <motion.div className="relative" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}>
             <HeroPathScene className="absolute -inset-6 w-[calc(100%+3rem)] opacity-60 hidden sm:block pointer-events-none" />
             <div className="relative animate-floaty">
-              {/* Mock diagnostic card — more premium/institutional */}
               <div className="bg-white text-navy rounded-2xl shadow-float p-6 sm:p-7 border border-line">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-slate">marchépublic.be</span>
@@ -159,20 +158,20 @@ function Hero({ onStart }: { onStart: () => void }) {
                   <div className="bg-teal h-1 rounded-full" style={{ width: '60%' }} />
                 </div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-teal mb-1">Votre projet</p>
-                <p className="font-display font-bold text-base mb-4 leading-snug">Quel type de prestation souhaitez-vous commander ?</p>
+                <p className="font-display font-bold text-base mb-4 leading-snug">Quel type de prestation souhaitez-vous commander ?</p>
                 <div className="space-y-2">
-                  {[['Site web ou application', true], ['Mission de consultance', false], ['Formation ou coaching', false]].map(([t, active]) => (
-                    <div key={t as string} className={`text-xs font-medium px-3.5 py-2.5 rounded-lg border-2 flex items-center gap-2.5 ${active ? 'border-teal bg-teal/[0.06] text-navy' : 'border-line text-slate'}`}>
+                  {([['Site web ou application', true], ['Mission de consultance', false], ['Formation ou coaching', false]] as [string, boolean][]).map(([t, active]) => (
+                    <div key={t} className={`text-xs font-medium px-3.5 py-2.5 rounded-lg border-2 flex items-center gap-2.5 ${active ? 'border-teal bg-teal/[0.06] text-navy' : 'border-line text-slate'}`}>
                       <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${active ? 'border-teal bg-teal' : 'border-line'}`}>
                         {active && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
                       </span>
-                      {t as string}
+                      {t}
                     </div>
                   ))}
                 </div>
               </div>
               <div className="absolute -bottom-5 -left-5 bg-navy text-white rounded-xl shadow-float px-4 py-3 flex items-center gap-2.5 animate-floaty-slow border border-white/10">
-                <span className="w-8 h-8 rounded-lg bg-sun flex items-center justify-center text-navy text-sm font-bold shrink-0">74%</span>
+                <span className="w-8 h-8 rounded-lg bg-teal/20 flex items-center justify-center text-teal text-sm font-bold shrink-0">74%</span>
                 <div>
                   <p className="text-[9px] uppercase tracking-widest text-aqua/60 font-semibold">Score indicatif</p>
                   <p className="text-xs font-bold">Forte probabilité</p>
@@ -182,9 +181,8 @@ function Hero({ onStart }: { onStart: () => void }) {
           </motion.div>
         </div>
 
-        {/* Stats strip */}
         <div className="mt-16 pt-8 border-t border-white/10 grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl">
-          {[['5 min', 'Pour tracer votre réponse'], ['8 questions', 'Guidées, sans jargon'], ['100 %', 'Indépendant & gratuit']].map(([n, l]) => (
+          {([['5 min', 'Pour tracer votre réponse'], ['8 questions', 'Guidées, sans jargon'], ['100 %', 'Indépendant & gratuit']] as [string, string][]).map(([n, l]) => (
             <div key={n}>
               <p className="font-display font-bold text-xl sm:text-2xl text-teal">{n}</p>
               <p className="text-xs text-aqua/55 mt-1 leading-snug">{l}</p>
@@ -200,7 +198,7 @@ function Hero({ onStart }: { onStart: () => void }) {
 function WhySection() {
   const items = [
     { icon: Compass, title: 'Votre structure compte', desc: "Financement public, gouvernance, contrôle ou mission d'intérêt général peuvent influencer vos obligations." },
-    { icon: Route,   title: 'Votre projet compte',   desc: "Site web, logiciel, consultance, formation ou prestation externe : chaque achat doit être qualifié correctement." },
+    { icon: Route,   title: 'Votre projet compte',   desc: "Site web, logiciel, consultance, formation ou prestation externe : chaque achat doit être qualifié correctement." },
     { icon: Gauge,   title: 'Le montant compte',      desc: "Le montant estimé HTVA oriente la procédure, les documents à préparer et le niveau de mise en concurrence." },
   ]
   return (
@@ -209,8 +207,8 @@ function WhySection() {
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center mb-16">
           <Reveal className="max-w-2xl">
             <Eyebrow>Pourquoi cet outil</Eyebrow>
-            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Quand le chemin n’est pas clair, les projets ralentissent.</h2>
-            <p className="mt-4 text-slate leading-relaxed">Une ASBL peut vite se retrouver face à une question simple en apparence : peut-on choisir librement un prestataire ou faut-il passer par une procédure de marché public ? marchépublic.be vous aide à identifier les points clés, estimer votre niveau d’obligation et avancer avec méthode.</p>
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Quand le chemin n'est pas clair, les projets ralentissent.</h2>
+            <p className="mt-4 text-slate leading-relaxed">Une ASBL peut vite se retrouver face à une question simple en apparence : peut-on choisir librement un prestataire ou faut-il passer par une procédure de marché public ? marchépublic.be vous aide à identifier les points clés, estimer votre niveau d'obligation et avancer avec méthode.</p>
           </Reveal>
           <Reveal delay={0.1} className="text-navy">
             <TangleToArrow className="w-full max-w-sm mx-auto" />
@@ -237,9 +235,9 @@ function WhySection() {
 
 function HowSection({ onStart }: { onStart: () => void }) {
   const steps = [
-    { n: '01', icon: Compass, title: 'Situer votre structure', desc: "ASBL, fondation, organisme subsidié ou structure hybride : on identifie les premiers indices." },
-    { n: '02', icon: Route,   title: 'Qualifier votre projet', desc: "Service, fourniture, développement digital, consultance ou formation : on précise ce que vous achetez." },
-    { n: '03', icon: Gauge,   title: "Obtenir votre estimation", desc: "Vous recevez un score 0–100 %, un chemin recommandé et les sources officielles à vérifier." },
+    { n: '01', icon: Compass, title: 'Situer votre structure', desc: "ASBL, fondation, organisme subsidié ou structure hybride : on identifie les premiers indices." },
+    { n: '02', icon: Route,   title: 'Qualifier votre projet', desc: "Service, fourniture, développement digital, consultance ou formation : on précise ce que vous achetez." },
+    { n: '03', icon: Gauge,   title: "Obtenir votre estimation", desc: "Vous recevez un score 0–100 %, un chemin recommandé et les sources officielles à vérifier." },
   ]
   return (
     <section id="comment" className="relative bg-ink text-white py-20 sm:py-28 overflow-hidden">
@@ -248,7 +246,7 @@ function HowSection({ onStart }: { onStart: () => void }) {
         <Reveal className="max-w-xl mb-14">
           <Eyebrow tone="cream">Comment ça marche</Eyebrow>
           <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold tracking-tight text-balance">Un diagnostic structuré en trois temps</h2>
-          <p className="mt-3 text-aqua/75">Le parcours suit une logique progressive : structure, projet, montant. À chaque réponse, le score se précise.</p>
+          <p className="mt-3 text-aqua/75">Le parcours suit une logique progressive : structure, projet, montant. À chaque réponse, le score se précise.</p>
         </Reveal>
         <div className="grid md:grid-cols-3 gap-6 relative">
           {steps.map((s, i) => (
@@ -285,7 +283,7 @@ function HowSection({ onStart }: { onStart: () => void }) {
 
 function ClarifySection() {
   const can = [
-    'Si votre structure peut être qualifiée de « pouvoir adjudicateur »',
+    'Si votre structure peut être qualifiée de « pouvoir adjudicateur »',
     'Si votre dépense entre dans le champ des marchés publics',
     'Quels seuils de montant peuvent déclencher une procédure',
     'Quels points vérifier dans votre convention de subvention',
@@ -301,7 +299,7 @@ function ClarifySection() {
     <section className="bg-cream py-20 sm:py-28">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <Reveal className="mb-10">
-          <Eyebrow>Périmètre de l’outil</Eyebrow>
+          <Eyebrow>Périmètre de l'outil</Eyebrow>
           <h2 className="mt-3 font-display text-3xl font-bold text-navy tracking-tight">Ce que le diagnostic peut faire pour vous</h2>
         </Reveal>
         <div className="grid lg:grid-cols-2 gap-5">
@@ -327,7 +325,7 @@ function ClarifySection() {
             <div className="h-full bg-navy text-white rounded-2xl p-7 shadow-card relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-[2px] bg-coral" />
               <Eyebrow tone="coral">Limites</Eyebrow>
-              <h3 className="mt-4 font-display font-bold text-lg mb-5">Ce qu’il ne remplace pas</h3>
+              <h3 className="mt-4 font-display font-bold text-lg mb-5">Ce qu'il ne remplace pas</h3>
               <ul className="space-y-3">
                 {cannot.map(t => (
                   <li key={t} className="flex items-start gap-3 text-sm text-aqua/80">
@@ -438,7 +436,7 @@ function FAQSection() {
 
 const NOMAD_OFFERS = [
   { icon: Target,        title: 'Cadrer votre projet',          desc: 'Ateliers de définition, cahier des charges, stratégie digitale.' },
-  { icon: ClipboardList, title: 'Préparer le devis',            desc: 'Spécifications techniques, critères, comparaison d’offres.' },
+  { icon: ClipboardList, title: 'Préparer le devis',            desc: 'Spécifications techniques, critères, comparaison d\'offres.' },
   { icon: PenLine,       title: 'Rédiger le cahier des charges', desc: 'Document structuré pour un appel à prestataires dans les règles.' },
 ]
 
@@ -449,21 +447,20 @@ function NomadImpactSection({ onStart }: { onStart: () => void }) {
         <Reveal>
           <div className="relative overflow-hidden rounded-2xl bg-navy text-white border border-white/5 shadow-float">
             <div className="absolute inset-0 dotgrid-light opacity-20" />
-            {/* Accent top bar */}
             <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-teal to-teal/30" />
             <Constellation className="absolute top-4 right-4 w-36 text-teal opacity-[0.12] pointer-events-none" />
             <div className="relative px-6 py-10 sm:px-10 sm:py-12">
               <div className="mb-8">
                 <div className="inline-flex items-center gap-1.5 border border-teal/30 text-teal text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded mb-5">
                   <span className="w-1.5 h-1.5 rounded-full bg-teal" />
-                  Vous avez un projet digital à cadrer ?
+                  Vous avez un projet digital à cadrer ?
                 </div>
                 <h2 className="font-display text-2xl sm:text-3xl font-bold leading-tight max-w-lg">
                   marchépublic.be identifie vos obligations.<br />
                   <span className="text-teal">Nomad Impact</span> vous aide à préparer la suite.
                 </h2>
                 <p className="mt-3 text-aqua/70 text-sm leading-relaxed max-w-md">
-                  Une fois votre situation clarifiée, passer à l’action demande méthode. Nomad Impact accompagne les ASBL et organisations belges dans la définition et la mise en œuvre de leurs projets digitaux.
+                  Une fois votre situation clarifiée, passer à l'action demande méthode. Nomad Impact accompagne les ASBL et organisations belges dans la définition et la mise en œuvre de leurs projets digitaux.
                 </p>
               </div>
               <div className="grid sm:grid-cols-3 gap-3 mb-8">
@@ -477,7 +474,7 @@ function NomadImpactSection({ onStart }: { onStart: () => void }) {
                     className="bg-white/[0.06] border border-white/10 rounded-xl p-5"
                   >
                     <div className="w-9 h-9 rounded-lg bg-teal/15 flex items-center justify-center mb-3">
-                      <offer.icon className="w-4.5 h-4.5 text-teal" />
+                      <offer.icon className="w-4 h-4 text-teal" />
                     </div>
                     <h3 className="font-display font-semibold text-sm mb-1.5 leading-snug">{offer.title}</h3>
                     <p className="text-aqua/60 text-xs leading-relaxed">{offer.desc}</p>
@@ -509,7 +506,7 @@ function FinalCTA({ onStart }: { onStart: () => void }) {
             <div className="absolute inset-0 dotgrid-light opacity-20" />
             <div className="absolute top-0 left-0 right-0 h-[3px] bg-teal" />
             <div className="relative">
-              <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-balance max-w-2xl mx-auto">Un projet en tête ? Clarifions d’abord vos obligations.</h2>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-balance max-w-2xl mx-auto">Un projet en tête ? Clarifions d'abord vos obligations.</h2>
               <p className="mt-4 text-aqua/70 max-w-xl mx-auto text-sm leading-relaxed">Cinq minutes pour obtenir un score, un chemin recommandé et les sources officielles belges à vérifier.</p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                 <button onClick={onStart} className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-coral text-white font-semibold hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
@@ -543,7 +540,7 @@ function Footer({ onStart }: { onStart: () => void }) {
           <div>
             <p className="text-white text-[10px] font-bold uppercase tracking-widest mb-4">Naviguer</p>
             <ul className="space-y-2.5 text-sm">
-              {[['#pourquoi', 'Pourquoi cet outil'], ['#comment', 'Comment ça marche'], ['#cas', 'Cas fréquents'], ['#faq', 'FAQ']].map(([h, l]) => (
+              {([['#pourquoi', 'Pourquoi cet outil'], ['#comment', 'Comment ça marche'], ['#cas', 'Cas fréquents'], ['#faq', 'FAQ']] as [string, string][]).map(([h, l]) => (
                 <li key={l}><a href={h} className="hover:text-white transition-colors text-xs">{l}</a></li>
               ))}
             </ul>
@@ -558,7 +555,7 @@ function Footer({ onStart }: { onStart: () => void }) {
           </div>
           <div>
             <p className="text-white text-[10px] font-bold uppercase tracking-widest mb-4">Avertissement</p>
-            <p className="text-xs leading-relaxed">Ce parcours est fourni à titre informatif. Il ne constitue pas un avis juridique et ne remplace pas l’analyse d’un·e juriste ou d’un service compétent.</p>
+            <p className="text-xs leading-relaxed">Ce parcours est fourni à titre informatif. Il ne constitue pas un avis juridique et ne remplace pas l'analyse d'un·e juriste ou d'un service compétent.</p>
           </div>
         </div>
         <div className="border-t border-white/8 pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
