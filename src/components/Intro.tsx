@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
-/**
- * Intro animée : des points se connectent pour dessiner un parcours de décision,
- * le chemin s'éclaire, puis le wordmark marchepublic.be apparaît et reste lisible.
- */
 export function Intro({ onDone }: { onDone: () => void }) {
   const [leaving, setLeaving] = useState(false)
 
@@ -76,7 +72,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
         transition={{ delay: 1.6, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         <p className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
-          marchepublic<span className="text-teal">.be</span>
+          marchépublic<span className="text-teal">.be</span>
         </p>
         <p className="mt-2 text-sm text-aqua/70">Le labyrinthe juridique, transformé en parcours clair.</p>
       </motion.div>
