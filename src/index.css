@@ -28,6 +28,10 @@
     background-image: radial-gradient(rgba(255,255,255,0.16) 1.2px, transparent 1.2px);
     background-size: 22px 22px;
   }
+  .dotgrid-dark {
+    background-image: radial-gradient(rgba(16,40,74,0.12) 1.2px, transparent 1.2px);
+    background-size: 22px 22px;
+  }
 }
 
 @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }

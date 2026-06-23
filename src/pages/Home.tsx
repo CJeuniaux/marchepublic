@@ -5,7 +5,7 @@ import {
   Globe, Cloud, Users, PenTool, Code2, Boxes, GraduationCap, Server,
   ChevronDown, Check, MapPin, Target, ClipboardList, PenLine,
 } from 'lucide-react'
-import { HeroPathScene, LogoMark, TangleToArrow, ChecklistCard, RisingPath, Constellation } from '../components/Graphics'
+import { HeroPathScene, LogoMark, TangleToArrow, ChecklistCard, RisingPath, Constellation, Signpost } from '../components/Graphics'
 
 const NOMAD_URL = 'https://nomadimpact.org'
 
@@ -278,8 +278,11 @@ function ClarifySection() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-6">
         <Reveal>
           <div className="h-full bg-white rounded-3xl border border-navy/[0.07] p-8 shadow-card">
-            <Eyebrow>Ce que le parcours clarifie</Eyebrow>
-            <h3 className="mt-4 font-display text-2xl font-bold text-navy mb-6">Ce que le tracé peut vous aider à voir</h3>
+            <div className="flex items-center gap-3 mb-4">
+              <Signpost className="w-10 h-10 shrink-0" />
+              <Eyebrow>Ce que le parcours clarifie</Eyebrow>
+            </div>
+            <h3 className="font-display text-2xl font-bold text-navy mb-6">Ce que le tracé peut vous aider à voir</h3>
             <ul className="space-y-3.5">
               {can.map(t => (
                 <li key={t} className="flex items-start gap-3 text-sm text-navy/90">
@@ -342,7 +345,7 @@ function UseCasesSection({ onStart }: { onStart: () => void }) {
 function ForWhoSection({ onStart }: { onStart: () => void }) {
   return (
     <section className="relative bg-teal text-navy py-20 sm:py-24 overflow-hidden">
-      <div className="absolute inset-0 dotgrid opacity-40" />
+      <div className="absolute inset-0 dotgrid-dark opacity-60" />
       <div className="relative max-w-5xl mx-auto px-4 sm:px-6 text-center">
         <Reveal>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide bg-navy text-teal">Pour qui</span>
