@@ -10,7 +10,8 @@ import {
 } from 'lucide-react'
 import { Constellation } from '../components/Graphics'
 
-type LucideIcon = ComponentType<{ className?: string; strokeWidth?: number }>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type LucideIcon = ComponentType<any>
 
 interface DiagState {
   step: number
