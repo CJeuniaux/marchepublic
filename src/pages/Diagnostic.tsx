@@ -200,18 +200,18 @@ function StepperBar({ current, total, labels }: { current: number; total: number
             <div className="flex flex-col items-center gap-1">
               <div className={[
                 'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all',
-                done    ? 'bg-teal border-teal text-navy' :
-                active  ? 'bg-white border-teal text-teal' :
+                done    ? 'bg-teal border-teal text-white' :
+                active  ? 'bg-coral border-coral text-white' :
                           'bg-white/10 border-white/20 text-white/40',
               ].join(' ')}>
                 {done ? <Check className="w-3.5 h-3.5" strokeWidth={3} /> : n}
               </div>
-              <span className={['text-[9px] font-semibold uppercase tracking-wide hidden sm:block', active ? 'text-white' : done ? 'text-teal/80' : 'text-white/30'].join(' ')}>
+              <span className={['text-[9px] font-semibold uppercase tracking-wide hidden sm:block', active ? 'text-coral' : done ? 'text-teal/80' : 'text-white/30'].join(' ')}>
                 {labels[i]}
               </span>
             </div>
             {n < total && (
-              <div className="flex-1 h-[2px] mx-1 mb-4 rounded-full transition-all" style={{ background: done ? '#27C7C9' : 'rgba(255,255,255,0.12)' }} />
+              <div className="flex-1 h-[2px] mx-1 mb-4 rounded-full transition-all" style={{ background: done ? '#415338' : 'rgba(255,255,255,0.12)' }} />
             )}
           </div>
         )
@@ -227,23 +227,23 @@ function OptionCard({ value, label, description, selected, onSelect, Icon }: {
     <motion.button
       whileTap={{ scale: 0.985 }} onClick={() => onSelect(value)}
       className={[
-        'group relative w-full text-left px-4 py-3.5 rounded-xl border-2 transition-all duration-150',
+        'group relative w-full text-left px-5 py-4 rounded-xl border-2 transition-all duration-150',
         selected
-          ? 'bg-teal/[0.06] border-teal'
-          : 'bg-white border-line hover:border-teal/40 hover:-translate-y-0.5',
+          ? 'bg-coral/[0.05] border-coral shadow-coral/20 shadow-sm'
+          : 'bg-white border-line hover:border-coral/40 hover:-translate-y-0.5',
       ].join(' ')}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-3.5">
         {Icon ? (
-          <span className={['w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors', selected ? 'bg-teal text-white' : 'bg-cream text-slate group-hover:bg-teal/10'].join(' ')}><Icon className="w-5 h-5" /></span>
+          <span className={['w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-colors', selected ? 'bg-coral text-white' : 'bg-cream text-slate group-hover:bg-coral/10'].join(' ')}><Icon className="w-6 h-6" /></span>
         ) : (
-          <span className={['mt-0.5 w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors', selected ? 'border-teal bg-teal' : 'border-line'].join(' ')}>{selected && <Check className="w-3 h-3 text-white" strokeWidth={3.5} />}</span>
+          <span className={['mt-0.5 w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors', selected ? 'border-coral bg-coral' : 'border-line'].join(' ')}>{selected && <Check className="w-3 h-3 text-white" strokeWidth={3.5} />}</span>
         )}
         <span className="min-w-0">
           <span className={['block text-sm font-semibold', selected ? 'text-navy' : 'text-navy/90'].join(' ')}>{label}</span>
-          {description && <span className="block text-xs text-slate mt-0.5">{description}</span>}
+          {description && <span className="block text-xs text-slate mt-0.5 leading-relaxed">{description}</span>}
         </span>
-        {Icon && selected && <span className="ml-auto w-5 h-5 rounded-full bg-teal flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-white" strokeWidth={3.5} /></span>}
+        {Icon && selected && <span className="ml-auto w-5 h-5 rounded-full bg-coral flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-white" strokeWidth={3.5} /></span>}
       </div>
     </motion.button>
   )
@@ -255,16 +255,16 @@ function WhyThis({ text }: { text: string }) {
     <div className="mt-5">
       <button
         onClick={() => setOpen(!open)}
-        className={['flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg border transition-colors', open ? 'bg-teal/10 border-teal/30 text-navy' : 'border-line text-slate hover:border-teal/30 hover:text-navy'].join(' ')}
+        className={['flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg border transition-colors', open ? 'bg-coral/10 border-coral/30 text-navy' : 'border-line text-slate hover:border-coral/30 hover:text-navy'].join(' ')}
       >
-        <ShieldCheck size={13} className="text-teal" />
+        <ShieldCheck size={13} className="text-coral" />
         Base juridique de cette question
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}><ChevronDown size={13} /></motion.span>
       </button>
       <AnimatePresence initial={false}>
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }} className="overflow-hidden">
-            <p className="mt-2 px-4 py-3 border-l-2 border-teal/40 bg-teal/[0.04] rounded-r-lg text-xs text-navy/80 leading-relaxed">{text}</p>
+            <p className="mt-2 px-4 py-3 border-l-2 border-coral/40 bg-coral/[0.04] rounded-r-lg text-xs text-navy/80 leading-relaxed">{text}</p>
           </motion.div>
         )}
       </AnimatePresence>

@@ -111,35 +111,35 @@ function Header({ onStart }: { onStart: () => void }) {
 
 function Hero({ onStart }: { onStart: () => void }) {
   return (
-    <section id="top" className="relative overflow-hidden bg-navy text-white">
-      <div className="absolute inset-0 dotgrid-light opacity-30" />
-      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-teal via-teal/60 to-transparent" />
-      <Constellation className="hidden lg:block absolute top-16 right-8 w-64 text-teal opacity-[0.12] pointer-events-none" />
+    <section id="top" className="relative overflow-hidden bg-cream">
+      <div className="absolute inset-0 dotgrid opacity-40" />
+      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-coral via-coral/60 to-transparent" />
+      <Constellation className="hidden lg:block absolute top-16 right-8 w-64 text-navy opacity-[0.06] pointer-events-none" />
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-20 sm:pt-24 sm:pb-28">
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}>
-            <div className="inline-flex items-center gap-2 border border-teal/30 text-teal text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded mb-6">
+            <div className="inline-flex items-center gap-2 border border-teal/40 text-teal text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded mb-6 bg-teal/5">
               <ShieldCheck className="w-3.5 h-3.5" />
               Outil pédagogique indépendant · Belgique
             </div>
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.2rem] font-bold leading-[1.06] tracking-tight text-balance">
-              Votre ASBL doit-elle passer par un <span className="text-teal">marché public ?</span>
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.2rem] font-bold leading-[1.06] tracking-tight text-balance text-navy">
+              Votre ASBL doit-elle passer par un <span className="text-coral">marché public ?</span>
             </h1>
-            <p className="mt-5 text-lg text-aqua/80 leading-relaxed max-w-xl">
+            <p className="mt-5 text-lg text-slate leading-relaxed max-w-xl">
               En 5 minutes, identifiez les indices qui déterminent vos obligations : structure, financement, gouvernance, projet et montant. Vous obtenez un score indicatif, un chemin recommandé et les sources officielles à vérifier.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
               <button onClick={onStart} className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-coral text-white font-semibold hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
                 Faire le diagnostic <ArrowRight className="w-4 h-4" />
               </button>
-              <a href="#comment" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg border border-white/20 text-white font-semibold text-sm hover:bg-white/8 transition-all">
+              <a href="#comment" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg border border-navy/20 text-navy font-semibold text-sm hover:bg-navy/5 transition-all">
                 Comprendre les critères
               </a>
             </div>
-            <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-white/10 pt-5">
+            <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-5">
               {TRUST_ITEMS.map(({ Icon, label }) => (
-                <span key={label} className="flex items-center gap-1.5 text-xs text-aqua/60 font-medium">
-                  <Icon className="w-3.5 h-3.5 text-teal/70" />
+                <span key={label} className="flex items-center gap-1.5 text-xs text-slate font-medium">
+                  <Icon className="w-3.5 h-3.5 text-teal/80" />
                   {label}
                 </span>
               ))}
@@ -147,7 +147,7 @@ function Hero({ onStart }: { onStart: () => void }) {
           </motion.div>
 
           <motion.div className="relative" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}>
-            <HeroPathScene className="absolute -inset-6 w-[calc(100%+3rem)] opacity-60 hidden sm:block pointer-events-none" />
+            <HeroPathScene className="absolute -inset-6 w-[calc(100%+3rem)] opacity-40 hidden sm:block pointer-events-none" />
             <div className="relative animate-floaty">
               <div className="bg-white text-navy rounded-2xl shadow-float p-6 sm:p-7 border border-line">
                 <div className="flex items-center justify-between mb-1">
@@ -155,14 +155,14 @@ function Hero({ onStart }: { onStart: () => void }) {
                   <span className="flex items-center gap-1.5 text-[10px] font-semibold text-slate"><Gauge className="w-3 h-3" /> Étape 3 ⁄ 5</span>
                 </div>
                 <div className="w-full bg-line rounded-full h-1 mb-5">
-                  <div className="bg-teal h-1 rounded-full" style={{ width: '60%' }} />
+                  <div className="bg-coral h-1 rounded-full" style={{ width: '60%' }} />
                 </div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-teal mb-1">Votre projet</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-coral mb-1">Votre projet</p>
                 <p className="font-display font-bold text-base mb-4 leading-snug">Quel type de prestation souhaitez-vous commander ?</p>
                 <div className="space-y-2">
                   {([['Site web ou application', true], ['Mission de consultance', false], ['Formation ou coaching', false]] as [string, boolean][]).map(([t, active]) => (
-                    <div key={t} className={`text-xs font-medium px-3.5 py-2.5 rounded-lg border-2 flex items-center gap-2.5 ${active ? 'border-teal bg-teal/[0.06] text-navy' : 'border-line text-slate'}`}>
-                      <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${active ? 'border-teal bg-teal' : 'border-line'}`}>
+                    <div key={t} className={`text-xs font-medium px-3.5 py-2.5 rounded-lg border-2 flex items-center gap-2.5 ${active ? 'border-coral bg-coral/[0.05] text-navy' : 'border-line text-slate'}`}>
+                      <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${active ? 'border-coral bg-coral' : 'border-line'}`}>
                         {active && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
                       </span>
                       {t}
@@ -171,7 +171,7 @@ function Hero({ onStart }: { onStart: () => void }) {
                 </div>
               </div>
               <div className="absolute -bottom-5 -left-5 bg-navy text-white rounded-xl shadow-float px-4 py-3 flex items-center gap-2.5 animate-floaty-slow border border-white/10">
-                <span className="w-8 h-8 rounded-lg bg-teal/20 flex items-center justify-center text-teal text-sm font-bold shrink-0">74%</span>
+                <span className="w-8 h-8 rounded-lg bg-coral/20 flex items-center justify-center text-coral text-sm font-bold shrink-0">74%</span>
                 <div>
                   <p className="text-[9px] uppercase tracking-widest text-aqua/60 font-semibold">Score indicatif</p>
                   <p className="text-xs font-bold">Forte probabilité</p>
@@ -181,16 +181,16 @@ function Hero({ onStart }: { onStart: () => void }) {
           </motion.div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-white/10 grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl">
+        <div className="mt-16 pt-8 border-t border-line grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl">
           {([['5 min', 'Pour tracer votre réponse'], ['8 questions', 'Guidées, sans jargon'], ['100 %', 'Indépendant & gratuit']] as [string, string][]).map(([n, l]) => (
             <div key={n}>
-              <p className="font-display font-bold text-xl sm:text-2xl text-teal">{n}</p>
-              <p className="text-xs text-aqua/55 mt-1 leading-snug">{l}</p>
+              <p className="font-display font-bold text-xl sm:text-2xl text-coral">{n}</p>
+              <p className="text-xs text-slate/70 mt-1 leading-snug">{l}</p>
             </div>
           ))}
         </div>
       </div>
-      <div className="h-8 bg-gradient-to-b from-transparent to-cream" />
+      <div className="h-8 bg-gradient-to-b from-transparent to-sable" />
     </section>
   )
 }

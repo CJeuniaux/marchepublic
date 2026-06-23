@@ -5,26 +5,26 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        navy:  '#2E2348', // aubergine — hero, titres, UI sombre
+        navy:  '#2E2348', // aubergine profond — fond sombre, titres
         ink:   '#1C1534', // très sombre — footer
-        teal:  '#58B77A', // vert confiance — checks, accents
+        teal:  '#415338', // vert forêt — checks, accents verts
         aqua:  '#C8BEF5', // lavande claire — texte sur fond sombre
-        coral: '#E85D5A', // corail — CTA principal
-        sun:   '#F6C65B', // jaune doux — badges
-        cream: '#FBF7EC', // crème — fond page
+        coral: '#E63948', // rouge vif — CTA principal, sélection active
+        sun:   '#F4C28F', // pêche douce — badges, highlights
+        cream: '#FBF7F1', // crème — fond page
         sable: '#F4E9D8', // sable — fond cartes
         slate: '#5E6B7D', // gris-ardoise — texte secondaire
         line:  '#E4D9CC', // bordure chaude
       },
       fontFamily: {
-        sans:    ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans:    ['DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
         display: ['Fraunces', 'Georgia', 'serif'],
       },
       boxShadow: {
         card:     '0 1px 4px rgba(46,35,72,0.06), 0 4px 16px rgba(46,35,72,0.08)',
         float:    '0 8px 32px rgba(46,35,72,0.18)',
-        coral:    '0 4px 16px rgba(232,93,90,0.32)',
-        teal:     '0 4px 16px rgba(88,183,122,0.28)',
+        coral:    '0 4px 16px rgba(230,57,72,0.32)',
+        teal:     '0 4px 16px rgba(65,83,56,0.28)',
         elevated: '0 4px 20px rgba(46,35,72,0.12)',
       },
       borderRadius: {
