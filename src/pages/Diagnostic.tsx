@@ -2,7 +2,7 @@ import { useState, useEffect, type ReactNode, type ComponentType } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ChevronLeft, ChevronRight, RotateCcw, Copy, Printer, Check,
-  HelpCircle, ChevronDown, ShieldCheck, ListChecks, FileDown, FileText,
+  ChevronDown, ShieldCheck, ListChecks, FileDown, FileText,
   Target, Sparkles, Info, Landmark, ExternalLink, BadgeCheck, ArrowRight, ArrowUpRight,
   Users, Globe, Network, Boxes, Building2, Briefcase, Shapes,
   Code2, Lightbulb, PenTool, GraduationCap, HardHat, Package, Wrench,
@@ -10,7 +10,8 @@ import {
 } from 'lucide-react'
 import { Constellation } from '../components/Graphics'
 
-type LucideIcon = ComponentType<{ className?: string; strokeWidth?: number }>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type LucideIcon = ComponentType<any>
 
 interface DiagState {
   step: number

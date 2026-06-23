@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import {
   ArrowRight, ArrowUpRight, Compass, Route, Gauge, Menu, X,
   Globe, Cloud, Users, PenTool, Code2, Boxes, GraduationCap, Server,
-  ChevronDown, Check, MapPin, Target, ClipboardList, PenLine,
+  ChevronDown, Check, Target, ClipboardList, PenLine,
   ShieldCheck, Clock, Lock,
 } from 'lucide-react'
 import { HeroPathScene, LogoMark, TangleToArrow, ChecklistCard, RisingPath, Constellation, Signpost } from '../components/Graphics'
