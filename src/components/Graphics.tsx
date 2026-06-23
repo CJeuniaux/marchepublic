@@ -6,17 +6,43 @@
 interface SVGProps { className?: string }
 
 // ─── LogoMark ──────────────────────────────────────────────────────────────
-// A compass-style mark: a circle with a directional arrow path — orientation
+// Cercle de points style chargement — 8 dots en anneau, opacité croissante
+// Adapté aux nouvelles couleurs : aubergine principal, vert accent
 export function LogoMark({ className, nodeColor = '#2E2348' }: SVGProps & { nodeColor?: string }) {
+  // 8 points sur un cercle de rayon 10, centre à 16,16
+  // Opacités progressives pour donner un sens de direction (comme un loader)
+  const dots = [
+    { angle: 0,    r: 2.6, opacity: 1.00 },   // droite       — plein
+    { angle: 45,   r: 2.3, opacity: 0.80 },   // bas-droite
+    { angle: 90,   r: 2.0, opacity: 0.60 },   // bas
+    { angle: 135,  r: 1.7, opacity: 0.42 },   // bas-gauche
+    { angle: 180,  r: 1.4, opacity: 0.28 },   // gauche
+    { angle: 225,  r: 1.2, opacity: 0.18 },   // haut-gauche
+    { angle: 270,  r: 1.0, opacity: 0.11 },   // haut
+    { angle: 315,  r: 1.2, opacity: 0.16 },   // haut-droite
+  ]
+  const rad = (deg: number) => (deg * Math.PI) / 180
+  const orbit = 10 // rayon de l'orbite
+  const cx = 16, cy = 16
+
   return (
     <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="16" cy="16" r="14" stroke={nodeColor} strokeWidth="2.5" fill="none" />
-      {/* North arrow — filled */}
-      <polygon points="16,4 13,18 16,15 19,18" fill={nodeColor} />
-      {/* South arrow — outline */}
-      <polygon points="16,28 13,14 16,17 19,14" fill={nodeColor} opacity="0.30" />
-      {/* Center dot */}
-      <circle cx="16" cy="16" r="2" fill={nodeColor} />
+      {dots.map(({ angle, r, opacity }) => {
+        const x = cx + orbit * Math.cos(rad(angle))
+        const y = cy + orbit * Math.sin(rad(angle))
+        return (
+          <circle
+            key={angle}
+            cx={+x.toFixed(2)}
+            cy={+y.toFixed(2)}
+            r={r}
+            fill={nodeColor}
+            opacity={opacity}
+          />
+        )
+      })}
+      {/* Point central discret */}
+      <circle cx={cx} cy={cy} r={1.2} fill={nodeColor} opacity={0.25} />
     </svg>
   )
 }
