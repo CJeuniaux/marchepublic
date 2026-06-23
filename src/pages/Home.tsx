@@ -80,7 +80,7 @@ function Header({ onStart }: { onStart: () => void }) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <a href="#top" className="flex items-center gap-2.5">
           <LogoMark className="h-6 w-auto" nodeColor="#10284A" />
-          <span className="font-display font-bold text-navy text-[15px]">marchepublic<span className="text-teal">.be</span></span>
+          <span className="font-display font-bold text-navy text-[15px]">marchépublic<span className="text-teal">.be</span></span>
         </a>
         <nav className="hidden md:flex items-center gap-8">
           {links.map(([href, label]) => (
@@ -172,7 +172,7 @@ function Hero({ onStart }: { onStart: () => void }) {
         </div>
 
         <div className="mt-16 grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl border-t border-white/10 pt-8">
-          {[['~ 5 min', 'Pour tracer votre réponse'], ['8 questions', 'Guidées, sans jargon'], ['100 %', 'Indépendant & gratuit']].map(([n, l]) => (
+          {[['~ 5 min', 'Pour tracer votre réponse'], ['8 questions', 'Guidées, sans jargon'], ['100 %', 'Indépendant & gratuit']].map(([n, l]) => (
             <div key={n}>
               <p className="font-display font-bold text-xl sm:text-2xl text-teal">{n}</p>
               <p className="text-xs text-aqua/60 mt-1">{l}</p>
@@ -197,8 +197,8 @@ function WhySection() {
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-14 items-center mb-16">
           <Reveal className="max-w-2xl">
             <Eyebrow>Pourquoi cet outil</Eyebrow>
-            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Quand le chemin n'est pas clair, les projets ralentissent.</h2>
-            <p className="mt-4 text-lg text-slate leading-relaxed">Une ASBL peut vite se retrouver face à une question simple en apparence : peut-on choisir librement un prestataire ou faut-il passer par une procédure de marché public ? marchepublic.be vous aide à identifier les points clés, à estimer votre niveau d'obligation et à avancer avec méthode.</p>
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Quand le chemin n’est pas clair, les projets ralentissent.</h2>
+            <p className="mt-4 text-lg text-slate leading-relaxed">Une ASBL peut vite se retrouver face à une question simple en apparence : peut-on choisir librement un prestataire ou faut-il passer par une procédure de marché public ? marchépublic.be vous aide à identifier les points clés, à estimer votre niveau d’obligation et à avancer avec méthode.</p>
           </Reveal>
           <Reveal delay={0.12} className="text-navy">
             <TangleToArrow className="w-full max-w-md mx-auto" />
@@ -223,9 +223,9 @@ function WhySection() {
 
 function HowSection({ onStart }: { onStart: () => void }) {
   const steps = [
-    { n: '01', icon: Compass, title: 'Situer votre structure', desc: "ASBL, fondation, organisme subsidié ou structure hybride : on identifie les premiers indices." },
-    { n: '02', icon: Route, title: 'Qualifier votre projet', desc: "Service, fourniture, développement digital, consultance ou formation : on précise ce que vous voulez acheter." },
-    { n: '03', icon: Gauge, title: "Estimer le niveau d'obligation", desc: "Vous recevez un score, une lecture claire et les sources officielles utiles pour vérifier." },
+    { n: '01', icon: Compass, title: 'Situer votre structure', desc: "ASBL, fondation, organisme subsidié ou structure hybride : on identifie les premiers indices." },
+    { n: '02', icon: Route, title: 'Qualifier votre projet', desc: "Service, fourniture, développement digital, consultance ou formation : on précise ce que vous voulez acheter." },
+    { n: '03', icon: Gauge, title: "Estimer le niveau d’obligation", desc: "Vous recevez un score, une lecture claire et les sources officielles utiles pour vérifier." },
   ]
   return (
     <section id="comment" className="relative bg-ink text-white py-20 sm:py-28 overflow-hidden">
@@ -234,7 +234,7 @@ function HowSection({ onStart }: { onStart: () => void }) {
         <Reveal className="text-center max-w-xl mx-auto mb-16">
           <Eyebrow tone="cream">Comment ça marche</Eyebrow>
           <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold tracking-tight text-balance">Un tracé simple à travers les points qui comptent</h2>
-          <p className="mt-4 text-aqua/80">Le diagnostic suit une logique progressive : votre structure, votre projet, votre montant, puis votre niveau d'obligation estimé.</p>
+          <p className="mt-4 text-aqua/80">Le diagnostic suit une logique progressive : votre structure, votre projet, votre montant, puis votre niveau d’obligation estimé.</p>
         </Reveal>
         <div className="grid md:grid-cols-3 gap-8 lg:gap-6 relative">
           <div className="hidden md:block absolute top-9 left-[16%] right-[16%] h-px bg-gradient-to-r from-teal/40 via-teal/40 to-coral/40" />
@@ -271,8 +271,8 @@ function HowSection({ onStart }: { onStart: () => void }) {
 }
 
 function ClarifySection() {
-  const can = ['Si votre structure peut être un « pouvoir adjudicateur »', 'Si votre dépense entre dans le champ des marchés publics', 'Quels seuils de montant peuvent déclencher une procédure', "Quels points vérifier dans votre convention de subvention", 'Quelle direction prendre avant de contacter un prestataire']
-  const cannot = ["Rendre un avis juridique définitif sur votre situation", 'Remplacer un·e juriste ou un service marchés publics', 'Lancer ou rédiger une procédure de marché public à votre place', 'Garantir une conformité légale']
+  const can = ['Si votre structure peut être un « pouvoir adjudicateur »', 'Si votre dépense entre dans le champ des marchés publics', 'Quels seuils de montant peuvent déclencher une procédure', 'Quels points vérifier dans votre convention de subvention', 'Quelle direction prendre avant de contacter un prestataire']
+  const cannot = ['Rendre un avis juridique définitif sur votre situation', 'Remplacer un·e juriste ou un service marchés publics', 'Lancer ou rédiger une procédure de marché public à votre place', 'Garantir une conformité légale']
   return (
     <section className="bg-cream py-20 sm:py-28">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-6">
@@ -296,7 +296,7 @@ function ClarifySection() {
           <div className="h-full bg-navy text-white rounded-3xl p-8 shadow-card relative overflow-hidden">
             <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-coral/15 blur-2xl" />
             <div className="relative">
-              <Eyebrow tone="coral">Ce qu'il ne remplace pas</Eyebrow>
+              <Eyebrow tone="coral">Ce qu’il ne remplace pas</Eyebrow>
               <h3 className="mt-4 font-display text-2xl font-bold mb-6">Les limites, en toute transparence</h3>
               <ul className="space-y-3.5">
                 {cannot.map(t => (
@@ -396,9 +396,9 @@ function FAQSection() {
 }
 
 const NOMAD_OFFERS = [
-  { icon: Target, title: 'Cadrer votre projet', desc: "Avant de choisir un prestataire : ateliers de définition, cahier des charges, stratégie digitale." },
-  { icon: ClipboardList, title: 'Préparer le devis ou la procédure', desc: "Spécifications techniques, critères de sélection, comparaison d'offres." },
-  { icon: PenLine, title: 'Rédiger le cahier des charges', desc: "Document structuré pour lancer votre appel à prestataires dans les règles." },
+  { icon: Target, title: 'Cadrer votre projet', desc: 'Avant de choisir un prestataire : ateliers de définition, cahier des charges, stratégie digitale.' },
+  { icon: ClipboardList, title: 'Préparer le devis ou la procédure', desc: 'Spécifications techniques, critères de sélection, comparaison d’offres.' },
+  { icon: PenLine, title: 'Rédiger le cahier des charges', desc: 'Document structuré pour lancer votre appel à prestataires dans les règles.' },
 ]
 
 function NomadImpactSection({ onStart }: { onStart: () => void }) {
@@ -411,24 +411,20 @@ function NomadImpactSection({ onStart }: { onStart: () => void }) {
             <div className="absolute -top-24 -right-20 w-80 h-80 rounded-full bg-teal/15 blur-3xl" />
             <div className="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-coral/10 blur-3xl" />
             <Constellation className="absolute top-6 right-6 w-40 text-teal opacity-15 pointer-events-none" />
-
             <div className="relative">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
-                <div>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide bg-teal/20 text-teal mb-4">
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal" />
-                    Vous avez un projet digital à cadrer ?
-                  </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-bold leading-tight text-balance max-w-lg">
-                    marchepublic.be comprend vos obligations.<br />
-                    <span className="text-teal">Nomad Impact</span> vous aide à préparer la suite.
-                  </h2>
-                  <p className="mt-3 text-aqua/75 text-sm leading-relaxed max-w-md">
-                    Une fois votre situation clarifiée, passer à l'action demande méthode. Nomad Impact accompagne les ASBL et organisations belges dans la définition et la mise en œuvre de leurs projets digitaux.
-                  </p>
-                </div>
+              <div className="mb-10">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide bg-teal/20 text-teal mb-4">
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal" />
+                  Vous avez un projet digital à cadrer ?
+                </span>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold leading-tight text-balance max-w-lg">
+                  marchépublic.be comprend vos obligations.<br />
+                  <span className="text-teal">Nomad Impact</span> vous aide à préparer la suite.
+                </h2>
+                <p className="mt-3 text-aqua/75 text-sm leading-relaxed max-w-md">
+                  Une fois votre situation clarifiée, passer à l’action demande méthode. Nomad Impact accompagne les ASBL et organisations belges dans la définition et la mise en œuvre de leurs projets digitaux.
+                </p>
               </div>
-
               <div className="grid sm:grid-cols-3 gap-4 mb-10">
                 {NOMAD_OFFERS.map((offer, i) => (
                   <motion.div
@@ -447,20 +443,11 @@ function NomadImpactSection({ onStart }: { onStart: () => void }) {
                   </motion.div>
                 ))}
               </div>
-
               <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  onClick={onStart}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]"
-                >
+                <button onClick={onStart} className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
                   Faire le diagnostic <ArrowRight className="w-4 h-4" />
                 </button>
-                <a
-                  href={NOMAD_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/10 text-white font-semibold text-sm border border-white/20 hover:bg-white/15 transition-all"
-                >
+                <a href={NOMAD_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/10 text-white font-semibold text-sm border border-white/20 hover:bg-white/15 transition-all">
                   Découvrir Nomad Impact <ArrowUpRight className="w-4 h-4" />
                 </a>
               </div>
@@ -482,7 +469,7 @@ function FinalCTA({ onStart }: { onStart: () => void }) {
             <div className="absolute -top-20 -left-16 w-72 h-72 rounded-full bg-teal/20 blur-3xl" />
             <div className="absolute -bottom-24 -right-16 w-80 h-80 rounded-full bg-coral/20 blur-3xl" />
             <div className="relative">
-              <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-balance max-w-2xl mx-auto">Un projet en tête ? Tracez votre réponse avant de vous lancer.</h2>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-balance max-w-2xl mx-auto">Un projet en tête ? Tracez votre réponse avant de vous lancer.</h2>
               <p className="mt-4 text-aqua/80 max-w-xl mx-auto">Cinq minutes pour obtenir un score, un chemin recommandé et les sources officielles à vérifier.</p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                 <button onClick={onStart} className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
@@ -506,9 +493,9 @@ function Footer({ onStart }: { onStart: () => void }) {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-3">
               <LogoMark className="h-6 w-auto" />
-              <span className="font-display font-bold text-white text-[15px]">marchepublic<span className="text-teal">.be</span></span>
+              <span className="font-display font-bold text-white text-[15px]">marchépublic<span className="text-teal">.be</span></span>
             </div>
-            <p className="text-xs leading-relaxed">marchepublic.be trace un parcours simple pour aider les ASBL à comprendre leurs obligations avant de choisir un prestataire.</p>
+            <p className="text-xs leading-relaxed">marchépublic.be trace un parcours simple pour aider les ASBL à comprendre leurs obligations avant de choisir un prestataire.</p>
             <button onClick={onStart} className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-teal hover:text-white transition-colors">Tracer mon parcours <ArrowRight className="w-3.5 h-3.5" /></button>
           </div>
           <div>
@@ -529,11 +516,11 @@ function Footer({ onStart }: { onStart: () => void }) {
           </div>
           <div>
             <p className="text-white text-xs font-bold uppercase tracking-widest mb-4">Avertissement</p>
-            <p className="text-xs leading-relaxed">Ce parcours est fourni à titre informatif. Il ne constitue pas un avis juridique et ne remplace pas l'analyse d'un·e juriste ou d'un service compétent.</p>
+            <p className="text-xs leading-relaxed">Ce parcours est fourni à titre informatif. Il ne constitue pas un avis juridique et ne remplace pas l’analyse d’un·e juriste ou d’un service compétent.</p>
           </div>
         </div>
         <div className="border-t border-white/10 pt-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p className="text-xs">© {new Date().getFullYear()} marchepublic.be — Tous droits réservés.</p>
+          <p className="text-xs">© {new Date().getFullYear()} marchépublic.be — Tous droits réservés.</p>
           <p className="text-xs">Un outil développé par <a href="https://nomadimpact.org" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-teal transition-colors">Nomad Impact</a></p>
         </div>
       </div>
