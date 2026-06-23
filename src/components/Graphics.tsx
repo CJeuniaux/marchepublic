@@ -6,43 +6,30 @@
 interface SVGProps { className?: string }
 
 // ─── LogoMark ──────────────────────────────────────────────────────────────
-// Cercle de points style chargement — 8 dots en anneau, opacité croissante
-// Adapté aux nouvelles couleurs : aubergine principal, vert accent
-export function LogoMark({ className, nodeColor = '#2E2348' }: SVGProps & { nodeColor?: string }) {
-  // 8 points sur un cercle de rayon 10, centre à 16,16
-  // Opacités progressives pour donner un sens de direction (comme un loader)
-  const dots = [
-    { angle: 0,    r: 2.6, opacity: 1.00 },   // droite       — plein
-    { angle: 45,   r: 2.3, opacity: 0.80 },   // bas-droite
-    { angle: 90,   r: 2.0, opacity: 0.60 },   // bas
-    { angle: 135,  r: 1.7, opacity: 0.42 },   // bas-gauche
-    { angle: 180,  r: 1.4, opacity: 0.28 },   // gauche
-    { angle: 225,  r: 1.2, opacity: 0.18 },   // haut-gauche
-    { angle: 270,  r: 1.0, opacity: 0.11 },   // haut
-    { angle: 315,  r: 1.2, opacity: 0.16 },   // haut-droite
+// Chemin en zigzag avec 5 points connectés — le dernier point est corail.
+// nodeColor = couleur des points intermédiaires (blanc sur fond sombre,
+// aubergine sur fond clair). La ligne est toujours vert (#58B77A).
+export function LogoMark({ className, nodeColor = 'white' }: SVGProps & { nodeColor?: string }) {
+  // 5 points : zigzag montant-descendant, de gauche à droite
+  const pts = [
+    { x: 6,  y: 18 }, // P1 — départ bas-gauche
+    { x: 18, y: 8  }, // P2 — montée
+    { x: 30, y: 14 }, // P3 — descente partielle
+    { x: 44, y: 5  }, // P4 — pic haut
+    { x: 54, y: 16 }, // P5 — point final corail
   ]
-  const rad = (deg: number) => (deg * Math.PI) / 180
-  const orbit = 10 // rayon de l'orbite
-  const cx = 16, cy = 16
+  const polyline = pts.map(p => `${p.x},${p.y}`).join(' ')
 
   return (
-    <svg className={className} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      {dots.map(({ angle, r, opacity }) => {
-        const x = cx + orbit * Math.cos(rad(angle))
-        const y = cy + orbit * Math.sin(rad(angle))
-        return (
-          <circle
-            key={angle}
-            cx={+x.toFixed(2)}
-            cy={+y.toFixed(2)}
-            r={r}
-            fill={nodeColor}
-            opacity={opacity}
-          />
-        )
-      })}
-      {/* Point central discret */}
-      <circle cx={cx} cy={cy} r={1.2} fill={nodeColor} opacity={0.25} />
+    <svg className={className} viewBox="0 0 60 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {/* Ligne de chemin */}
+      <polyline points={polyline} stroke="#58B77A" strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />
+      {/* Points intermédiaires — couleur variable selon le fond */}
+      {pts.slice(0, 4).map((p, i) => (
+        <circle key={i} cx={p.x} cy={p.y} r="3.2" fill={nodeColor} />
+      ))}
+      {/* Point final — toujours corail */}
+      <circle cx={pts[4].x} cy={pts[4].y} r="4.2" fill="#E85D5A" />
     </svg>
   )
 }

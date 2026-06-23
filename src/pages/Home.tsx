@@ -82,7 +82,7 @@ function Header({ onStart }: { onStart: () => void }) {
     <header aria-label="Navigation principale" className={`sticky top-0 z-50 transition-all duration-200 ${scrolled ? 'bg-white border-b border-line shadow-[0_1px_8px_rgba(8,43,76,0.06)]' : 'bg-transparent'}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <a href="#top" className="flex items-center gap-2.5">
-          <LogoMark className="h-6 w-auto" nodeColor="#082B4C" />
+          <LogoMark className="h-7 w-auto" nodeColor="#2E2348" />
           <span className="font-display font-bold text-navy text-[15px]">marchépublic<span className="text-teal">.be</span></span>
         </a>
         <nav className="hidden md:flex items-center gap-7">
@@ -580,7 +580,7 @@ function Footer({ onStart }: { onStart: () => void }) {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-3">
-              <LogoMark className="h-6 w-auto" />
+              <LogoMark className="h-7 w-auto" nodeColor="white" />
               <span className="font-display font-bold text-white text-[14px]">marchépublic<span className="text-teal">.be</span></span>
             </div>
             <p className="text-xs leading-relaxed">marchépublic.be est une initiative de Nomad Impact ASBL, développée pour renforcer l’autonomie des ASBL belges dans leurs décisions d’achat.</p>
