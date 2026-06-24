@@ -4,9 +4,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────
+   BASE
+   Global resets and typographic defaults
+───────────────────────────────────────────── */
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
-  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     margin: 0;
     font-family: 'DM Sans', system-ui, sans-serif;
@@ -15,13 +24,229 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
-  h1, h2, h3, h4 { font-family: 'DM Serif Display', Georgia, serif; letter-spacing: -0.01em; }
-  ::selection { background: #F6C65B; color: #2E2348; }
+
+  /* Display font applied globally to heading tags */
+  h1, h2, h3, h4 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    letter-spacing: -0.01em;
+  }
+
+  /* Selection uses corrected sun token */
+  ::selection {
+    background: #F4C48F;
+    color: #2E2348;
+  }
+
+  /* Consistent focus ring for all interactive elements */
+  :focus-visible {
+    outline: 2px solid #E63948;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
+/* ─────────────────────────────────────────────
+   COMPONENTS
+   Reusable class vocabulary for Phase 2+ JSX.
+   These classes are additive — no existing JSX
+   uses them yet. They do not change current UI.
+───────────────────────────────────────────── */
+@layer components {
+
+  /* ── Buttons ─────────────────────────────── */
+
+  /* Base: shared structure, no padding/color */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2
+           font-sans font-semibold text-sm rounded-lg
+           transition-colors duration-150
+           active:scale-[0.98]
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none;
+  }
+
+  /* Primary — rouge #E63948, white text */
+  .btn-primary {
+    @apply btn px-5 py-2.5
+           bg-coral text-white shadow-coral
+           hover:brightness-105
+           focus-visible:ring-coral;
+  }
+
+  /* Primary large — for hero and prominent CTAs */
+  .btn-primary-lg {
+    @apply btn px-7 py-3.5
+           bg-coral text-white shadow-coral
+           hover:brightness-105
+           focus-visible:ring-coral;
+  }
+
+  /* Secondary — white bg, navy border */
+  .btn-secondary {
+    @apply btn px-5 py-2.5
+           bg-white text-navy border border-line
+           hover:bg-cream hover:border-navy/30
+           focus-visible:ring-navy;
+  }
+
+  /* Ghost — transparent, navy border */
+  .btn-ghost {
+    @apply btn px-5 py-2.5
+           bg-transparent text-navy border border-line
+           hover:bg-cream
+           focus-visible:ring-navy;
+  }
+
+  /* ── Cards ───────────────────────────────── */
+
+  /* Standard content card */
+  .card {
+    @apply bg-white rounded-xl border border-line shadow-card;
+  }
+
+  /* Elevated float card (hero mock, modals) */
+  .card-float {
+    @apply bg-white rounded-2xl border border-line shadow-float;
+  }
+
+  /* Dark card (Nomad CTA, footer blocks) */
+  .card-dark {
+    @apply bg-navy text-white rounded-2xl border border-white/10;
+  }
+
+  /* ── Inputs ──────────────────────────────── */
+
+  .input-base {
+    @apply w-full px-3.5 py-2.5
+           rounded-lg border border-line bg-white
+           text-navy text-sm font-sans
+           placeholder:text-gris
+           transition-colors duration-150
+           focus:outline-none focus:ring-2 focus:ring-coral/40 focus:border-coral
+           disabled:bg-cream disabled:text-gris disabled:cursor-not-allowed;
+  }
+
+  /* ── Status badges (design-system-1890 UI Components) ── */
+
+  /* Base structure shared by all status badges */
+  .badge-status {
+    @apply inline-flex items-center gap-1.5
+           px-2.5 py-1 rounded
+           text-[11px] font-bold uppercase tracking-widest
+           leading-none shrink-0;
+  }
+
+  /* OBLIGATOIRE — rouge */
+  .badge-obligatoire {
+    @apply badge-status bg-coral text-white;
+  }
+
+  /* RECOMMANDÉ — jaune soleil */
+  .badge-recommande {
+    @apply badge-status bg-sun text-navy;
+  }
+
+  /* FACULTATIF — vert tendre */
+  .badge-facultatif {
+    @apply badge-status bg-teal text-white;
+  }
+
+  /* SOURCE OFFICIELLE — vert outline */
+  .badge-source {
+    @apply badge-status bg-teal/10 text-teal border border-teal/25;
+  }
+
+  /* ── Section header badges (result page) ─── */
+  /* Small filled circles used before section titles */
+
+  .section-dot {
+    @apply inline-flex items-center justify-center
+           w-5 h-5 rounded-full shrink-0
+           text-[10px] font-bold leading-none;
+  }
+
+  /* Yellow — Ce que cela veut dire / Pourquoi ce résultat */
+  .section-dot-sun {
+    @apply section-dot bg-sun text-navy;
+  }
+
+  /* Red — Les étapes recommandées (numbered) */
+  .section-dot-coral {
+    @apply section-dot bg-coral text-white;
+  }
+
+  /* Green — Documents utiles / Sources officielles */
+  .section-dot-teal {
+    @apply section-dot bg-teal text-white;
+  }
+
+  /* ── Eyebrow labels ──────────────────────── */
+  /* Small uppercase category labels above headings */
+
+  .eyebrow {
+    @apply inline-flex items-center gap-1.5
+           text-[11px] font-bold uppercase tracking-widest
+           leading-none;
+  }
+
+  .eyebrow-coral {
+    @apply eyebrow text-coral;
+  }
+
+  .eyebrow-teal {
+    @apply eyebrow text-teal;
+  }
+
+  .eyebrow-slate {
+    @apply eyebrow text-slate;
+  }
+
+  /* ── Segmented band bar (score result) ───── */
+  /* Used in ResultScreen Phase 4.
+     Five segments matching BANDS colors from Diagnostic.tsx */
+
+  .band-bar {
+    @apply w-full h-3 rounded-full overflow-hidden flex;
+  }
+
+  .band-bar__tres-faible { background-color: #138A6E; @apply flex-1; }
+  .band-bar__faible      { background-color: #2F9E6F; @apply flex-1; }
+  .band-bar__grise       { background-color: #C97A18; @apply flex-1; }
+  .band-bar__forte       { background-color: #E2603C; @apply flex-1; }
+  .band-bar__tres-forte  { background-color: #D6473C; @apply flex-1; }
+
+  /* ── Icon containers ────────────────────── */
+  /* Consistent icon wrapper for option cards, feature lists */
+
+  .icon-box {
+    @apply flex items-center justify-center rounded-lg shrink-0;
+  }
+
+  .icon-box-sm  { @apply icon-box w-8 h-8; }
+  .icon-box-md  { @apply icon-box w-10 h-10; }
+  .icon-box-lg  { @apply icon-box w-12 h-12; }
+
+  /* Neutral — for non-selected option cards */
+  .icon-box-neutral { @apply icon-box bg-sable text-slate; }
+
+  /* Active — for selected option cards */
+  .icon-box-active  { @apply icon-box bg-coral text-white; }
+
+  /* Navy — for feature / how-it-works sections */
+  .icon-box-navy    { @apply icon-box bg-navy text-white; }
+}
+
+/* ─────────────────────────────────────────────
+   UTILITIES
+   Single-purpose utility classes
+───────────────────────────────────────────── */
 @layer utilities {
-  .font-display { font-family: 'Fraunces', Georgia, serif; }
+  /* Override: use correct display font utility */
+  .font-display { font-family: 'DM Serif Display', Georgia, serif; }
+
   .text-balance { text-wrap: balance; }
+
+  /* Dot grid backgrounds */
   .dotgrid {
     background-image: radial-gradient(rgba(46,35,72,0.10) 1.2px, transparent 1.2px);
     background-size: 22px 22px;
@@ -36,16 +261,31 @@
   }
 }
 
-@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-.animate-floaty { animation: floaty 7s ease-in-out infinite; }
-@keyframes floaty-slow { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+/* ─────────────────────────────────────────────
+   ANIMATIONS
+───────────────────────────────────────────── */
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+@keyframes floaty-slow {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+.animate-floaty      { animation: floaty 7s ease-in-out infinite; }
 .animate-floaty-slow { animation: floaty-slow 9s ease-in-out infinite; }
 
+/* Accessibility: respect reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
-  .animate-floaty, .animate-floaty-slow { animation: none; }
+  .animate-floaty,
+  .animate-floaty-slow { animation: none; }
   html { scroll-behavior: auto; }
 }
 
+/* ─────────────────────────────────────────────
+   PRINT
+───────────────────────────────────────────── */
 @media print {
   header, nav, button, .no-print { display: none !important; }
   body { background: #fff; }

@@ -5,13 +5,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        navy:  '#2E2348', // aubergine profond — fond sombre, titres
-        ink:   '#1C1534', // très sombre — footer
+        navy:      '#2E2348', // aubergine profond — fond sombre, titres (contrast 14.7:1 sur cream — AAA)
+        aubergine: '#3B3171', // aubergine moyen — ref design-system-1890 (token disponible pour phases suivantes)
+        ink:       '#1C1534', // très sombre — footer
         teal:  '#415338', // vert forêt — checks, accents verts
         bleu:  '#2E5C8A', // bleu confiance — liens, variante
         aqua:  '#C8BEF5', // lavande claire — texte sur fond sombre
         coral: '#E63948', // rouge vif — CTA principal, sélection active
-        sun:   '#F4C28F', // pêche douce — badges, highlights
+        sun:   '#F4C48F', // jaune soleil — badges pédagogie, attention (ref: design-system-1890)
         cream: '#FBF7F1', // crème — fond page
         sable: '#F4E9D8', // sable — fond cartes
         slate: '#5E6B7D', // gris-ardoise — texte secondaire

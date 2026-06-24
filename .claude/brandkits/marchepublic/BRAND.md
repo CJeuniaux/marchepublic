@@ -171,10 +171,10 @@ Extracted from `design-system-1890.png`.
 
 | Role | Family | Weight | Status |
 |------|--------|--------|--------|
-| Display / Titles | **Recoleta** | 700 | ⚠️ Not on Google Fonts — see note |
+| Display / Titles | **DM Serif Display** | 400 (Regular), Italic | ✅ Approved substitute for Recoleta |
 | Body / UI | DM Sans | 400, 500, 600, 700 | ✅ Confirmed |
 
-> **⚠️ Recoleta note**: The design system v1.0 specifies Recoleta as the display font (visible in the large H1 "Aa" specimen with rounded, retro serifs). Recoleta is not available on Google Fonts. Current implementation uses DM Serif Display as a substitute. **Provide a `.woff2` Recoleta file to achieve exact spec, or confirm DM Serif Display is an approved substitute.**
+> **Typography decision (approved)**: The reference design system specifies Recoleta. Since Recoleta is not available on Google Fonts and no font file is provided, **DM Serif Display is the permanently approved substitute**. Do not request Recoleta files. Do not add paid font dependencies. DM Serif Display + DM Sans is the locked font stack.
 
 ### Type scale
 
@@ -198,24 +198,31 @@ Extracted from `design-system-1890.png`.
 
 ---
 
-## Symbol warning
+## Symbol warning — APPROVED DECISION
+
+**Decision confirmed**: The no-coq rule is permanent and overrides the rooster shown in the reference images.
+
+The reference images (`design-system-1890.png`, `landing-1890.png`) show a rooster in the logo. **This rooster must NOT be reproduced.** The references are approved for visual direction, colors, layout, components and illustration style — not for the rooster symbol.
 
 **Do not use:**
 - the Wallonia rooster (coq wallon);
-- official-looking regional symbols;
+- the rooster shown in the reference logo lockup;
+- any bird or animal symbol;
+- official-looking regional or governmental symbols;
 - anything that could imply this tool is an official public service;
-- Belgian federal or regional emblems.
+- Belgian federal, regional or municipal emblems.
 
-**Use neutral guidance symbols instead:**
+**Approved logo mark**: The current neutral LogoMark (zigzag/path SVG) + wordmark is the approved identity. If the mark is ever replaced, it must use only:
 - compass;
 - signpost;
 - document with checkmark;
 - checklist;
-- path / route;
-- marker;
-- guide icon;
+- path / route marker;
 - magnifier;
-- folder.
+- folder;
+- or equivalent neutral guidance symbol.
+
+MarchéPublic.be must remain clearly independent and non-official at all times.
 
 ---
 
