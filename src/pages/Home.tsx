@@ -92,7 +92,7 @@ function Header({ onStart }: { onStart: () => void }) {
           <button onClick={onStart} className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
             Faire le diagnostic <ArrowRight className="w-4 h-4" />
           </button>
-          <button onClick={() => setOpen(v => !v)} className="md:hidden p-2 rounded-lg text-navy hover:bg-navy/5">
+          <button onClick={() => setOpen(v => !v)} className="md:hidden p-2.5 rounded-lg text-navy hover:bg-navy/5">
             {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
@@ -411,7 +411,7 @@ function FAQSection() {
           {FAQS.map((f, i) => (
             <Reveal key={i} delay={(i % 3) * 0.04}>
               <div className={`rounded-xl border overflow-hidden transition-colors duration-150 ${open === i ? 'bg-white border-teal/40 shadow-card' : 'bg-white border-line'}`}>
-                <button onClick={() => setOpen(open === i ? null : i)} className="w-full text-left px-5 py-4 flex items-center justify-between gap-4">
+                <button onClick={() => setOpen(open === i ? null : i)} aria-expanded={open === i} className="w-full text-left px-5 py-4 flex items-center justify-between gap-4">
                   <span className="font-display font-semibold text-navy text-[14px] leading-snug text-balance">{f.q}</span>
                   <motion.span
                     animate={{ rotate: open === i ? 180 : 0 }}

@@ -255,7 +255,8 @@ function WhyThis({ text }: { text: string }) {
     <div className="mt-5">
       <button
         onClick={() => setOpen(!open)}
-        className={['flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg border transition-colors', open ? 'bg-teal/10 border-teal/30 text-teal' : 'border-line text-slate hover:border-teal/30 hover:text-teal'].join(' ')}
+        aria-expanded={open}
+        className={['flex items-center gap-1.5 text-xs font-semibold px-3 py-2.5 rounded-lg border transition-colors', open ? 'bg-teal/10 border-teal/30 text-teal' : 'border-line text-slate hover:border-teal/30 hover:text-teal'].join(' ')}
       >
         <ShieldCheck size={13} className="text-teal" />
         Base juridique de cette question
@@ -293,6 +294,7 @@ function StepShell({ eyebrow, title, subtitle, children, stepN }: { eyebrow: str
 function useCountUp(target: number, duration = 1100) {
   const [v, setV] = useState(0)
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setV(target); return }
     let raf = 0; const start = performance.now()
     const tick = (t: number) => { const p = Math.min(1, (t - start) / duration); const e = 1 - Math.pow(1 - p, 3); setV(Math.round(e * target)); if (p < 1) raf = requestAnimationFrame(tick) }
     raf = requestAnimationFrame(tick); return () => cancelAnimationFrame(raf)
@@ -307,8 +309,8 @@ function BigScore({ pct, color, band }: { pct: number; color: string; band: Band
       <p className="text-[11px] font-bold uppercase tracking-widest text-slate mb-3">Niveau d'obligation estimé</p>
       <div className="flex flex-col sm:flex-row sm:items-end gap-3 mb-6">
         <motion.p
-          className="font-display leading-none shrink-0"
-          style={{ fontSize: 80, fontWeight: 700, color }}
+          className="font-display leading-none shrink-0 text-[56px] sm:text-[80px]"
+          style={{ fontWeight: 700, color }}
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -589,7 +591,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
     return (
       <div className="min-h-screen bg-cream">
         <div className="bg-white border-b border-line px-4 py-3 flex items-center gap-3 print:hidden sticky top-0 z-10">
-          <button onClick={() => setShowResult(false)} className="text-slate hover:text-navy transition-colors"><ChevronLeft size={20} /></button>
+          <button onClick={() => setShowResult(false)} className="p-2.5 -ml-2.5 text-slate hover:text-navy transition-colors rounded-lg"><ChevronLeft size={20} /></button>
           <span className="text-sm font-semibold text-navy">Votre résultat</span>
         </div>
         <ResultScreen state={state} onRestart={() => { setState(INITIAL_STATE); setShowResult(false) }} />
