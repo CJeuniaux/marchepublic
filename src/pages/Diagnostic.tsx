@@ -199,19 +199,19 @@ function StepperBar({ current, total, labels }: { current: number; total: number
             <div className="flex flex-col items-center gap-1.5 flex-1">
               <div className={[
                 'w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all',
-                done   ? 'bg-teal border-teal text-white' :
+                done   ? 'bg-navy border-navy text-white' :
                 active ? 'bg-coral border-coral text-white' :
                          'bg-white border-line text-gris',
               ].join(' ')}>
                 {done ? <Check className="w-4 h-4" strokeWidth={3} /> : n}
               </div>
               <span className={['text-[10px] font-semibold text-center hidden sm:block',
-                active ? 'text-coral' : done ? 'text-teal' : 'text-gris'].join(' ')}>
+                active ? 'text-coral' : done ? 'text-navy' : 'text-gris'].join(' ')}>
                 {labels[i]}
               </span>
             </div>
             {n < total && (
-              <div className="flex-1 mt-[18px] mx-1" style={{ borderTop: `2px dashed ${done ? '#415338' : '#E4D9CC'}` }} />
+              <div className="flex-1 mt-[18px] mx-1" style={{ borderTop: `2px dashed ${done ? '#2E2348' : '#E4D9CC'}` }} />
             )}
           </div>
         )
@@ -256,16 +256,16 @@ function WhyThis({ text }: { text: string }) {
       <button
         onClick={() => setOpen(!open)}
         aria-expanded={open}
-        className={['flex items-center gap-1.5 text-xs font-semibold px-3 py-2.5 rounded-lg border transition-colors', open ? 'bg-teal/10 border-teal/30 text-teal' : 'border-line text-slate hover:border-teal/30 hover:text-teal'].join(' ')}
+        className={['flex items-center gap-1.5 text-xs font-semibold px-3 py-2.5 rounded-lg border transition-colors', open ? 'bg-navy/8 border-navy/20 text-navy' : 'border-line text-slate hover:border-navy/20 hover:text-navy'].join(' ')}
       >
-        <ShieldCheck size={13} className="text-teal" />
+        <ShieldCheck size={13} className="text-slate" />
         Base juridique de cette question
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}><ChevronDown size={13} /></motion.span>
       </button>
       <AnimatePresence initial={false}>
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }} className="overflow-hidden">
-            <p className="mt-2 px-4 py-3 border-l-2 border-teal/40 bg-teal/[0.04] rounded-r-lg text-xs text-navy/80 leading-relaxed">{text}</p>
+            <p className="mt-2 px-4 py-3 border-l-2 border-navy/20 bg-navy/[0.03] rounded-r-lg text-xs text-navy/80 leading-relaxed">{text}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -428,7 +428,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
         </h3>
         <ul className="space-y-2.5">
           {positives.map((p, i) => (<li key={'p' + i} className="flex items-start gap-2.5 text-sm text-navy/90"><span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: band.color }} />{p}</li>))}
-          {protective.map((p, i) => (<li key={'q' + i} className="flex items-start gap-2.5 text-sm text-slate"><Check className="w-4 h-4 shrink-0 mt-0.5 text-[#2F9E6F]" strokeWidth={2.5} />{p}</li>))}
+          {protective.map((p, i) => (<li key={'q' + i} className="flex items-start gap-2.5 text-sm text-slate"><Check className="w-4 h-4 shrink-0 mt-0.5 text-slate" strokeWidth={2.5} />{p}</li>))}
         </ul>
       </div></Item>
 
@@ -451,21 +451,21 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
       {/* 5. Documents utiles */}
       <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
         <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-5">
-          <span className="w-5 h-5 rounded-full bg-teal flex items-center justify-center shrink-0"><FileText className="w-3 h-3 text-white" /></span>
+          <span className="w-5 h-5 rounded-full bg-bleu flex items-center justify-center shrink-0"><FileText className="w-3 h-3 text-white" /></span>
           Documents utiles pour avancer
         </h3>
         <div className="grid sm:grid-cols-2 gap-3">
           {docs.map(d => (
-            <div key={d.id} className="rounded-xl border border-line p-4 hover:border-teal/40 hover:shadow-card transition-all flex flex-col">
+            <div key={d.id} className="rounded-xl border border-line p-4 hover:border-navy/15 hover:shadow-card transition-all flex flex-col">
               <div className="flex items-start gap-3 flex-1">
-                <span className="w-10 h-10 rounded-xl bg-sable flex items-center justify-center shrink-0"><FileText className="w-5 h-5 text-teal" /></span>
+                <span className="w-10 h-10 rounded-xl bg-sable flex items-center justify-center shrink-0"><FileText className="w-5 h-5 text-bleu" /></span>
                 <div className="min-w-0 flex-1">
                   <p className="font-display font-semibold text-navy text-sm leading-snug">{d.title}</p>
                   <p className="text-xs text-slate mt-1 leading-relaxed">{d.summary}</p>
-                  <span className="inline-block mt-2 text-[10px] font-semibold uppercase tracking-wide text-teal/80 bg-teal/10 px-2 py-0.5 rounded">{d.level}</span>
+                  <span className="inline-block mt-2 text-[10px] font-semibold uppercase tracking-wide text-slate bg-sable border border-line px-2 py-0.5 rounded">{d.level}</span>
                 </div>
               </div>
-              <a href={d.file} download className="mt-3 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-teal text-white text-sm font-semibold hover:brightness-110 transition-all">
+              <a href={d.file} download className="mt-3 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-110 transition-all">
                 <FileDown className="w-4 h-4" /> Télécharger la fiche
               </a>
             </div>
@@ -477,26 +477,26 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
       {/* 6. Sources officielles */}
       <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
         <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-1">
-          <span className="w-5 h-5 rounded-full bg-teal flex items-center justify-center shrink-0"><Landmark className="w-3 h-3 text-white" /></span>
+          <span className="w-5 h-5 rounded-full bg-bleu flex items-center justify-center shrink-0"><Landmark className="w-3 h-3 text-white" /></span>
           Sources officielles à vérifier
         </h3>
         <p className="text-xs text-slate mb-4 ml-7">Pour confirmer la procédure applicable auprès des sources de référence.</p>
         <div className="space-y-2.5">
           {sources.map(s => (
-            <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-line p-4 hover:border-teal/40 hover:bg-teal/[0.02] transition-colors group">
+            <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-line p-4 hover:border-bleu/20 hover:bg-bleu/[0.02] transition-colors group">
               <div className="flex items-start gap-3">
-                <span className="w-9 h-9 rounded-lg bg-sable flex items-center justify-center shrink-0 group-hover:bg-teal/10 transition-colors"><Landmark className="w-4 h-4 text-teal" /></span>
+                <span className="w-9 h-9 rounded-lg bg-sable flex items-center justify-center shrink-0 group-hover:bg-sable transition-colors"><Landmark className="w-4 h-4 text-bleu" /></span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <p className="font-display font-semibold text-navy text-sm leading-snug">{s.title}</p>
                     <ExternalLink className="w-3.5 h-3.5 text-slate shrink-0" />
                   </div>
                   <p className="text-xs text-slate mt-1 leading-relaxed">{s.desc}</p>
-                  <span className="inline-flex items-center gap-1 mt-2 text-[10px] font-semibold uppercase tracking-wide text-teal bg-teal/10 px-2 py-0.5 rounded border border-teal/20">
+                  <span className="inline-flex items-center gap-1 mt-2 text-[10px] font-semibold uppercase tracking-wide text-bleu bg-bleu/10 px-2 py-0.5 rounded border border-bleu/20">
                     <BadgeCheck className="w-3 h-3" /> Source officielle
                   </span>
                 </div>
-                <span className="ml-auto self-center text-xs font-semibold text-teal hidden sm:inline shrink-0">Consulter →</span>
+                <span className="ml-auto self-center text-xs font-semibold text-bleu hidden sm:inline shrink-0">Consulter →</span>
               </div>
             </a>
           ))}
@@ -533,19 +533,19 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
         <div className="rounded-2xl bg-white shadow-card border border-line overflow-hidden print:hidden">
           <div className="px-6 pt-5 pb-4">
             <h3 className="flex items-center gap-2 font-display font-bold text-navy text-sm mb-0.5">
-              <Sparkles className="w-4 h-4 text-teal" /> Gardez une trace de votre parcours
+              <Sparkles className="w-4 h-4 text-slate" /> Gardez une trace de votre parcours
             </h3>
             <p className="text-xs text-slate">Pour votre dossier de décision ou pour en discuter avec une personne compétente.</p>
           </div>
           <div className="border-t border-line flex flex-wrap">
             <button onClick={handleDownload} className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-navy border-r border-line hover:bg-cream transition-colors">
-              <FileDown className="w-4 h-4 text-teal" /> Télécharger (.txt)
+              <FileDown className="w-4 h-4 text-navy" /> Télécharger (.txt)
             </button>
             <button onClick={() => window.print()} className="flex-1 min-w-[120px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-navy border-r border-line hover:bg-cream transition-colors">
               <Printer className="w-4 h-4 text-slate" /> Imprimer
             </button>
             <button onClick={handleCopy} className="flex-1 min-w-[100px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-navy border-r border-line hover:bg-cream transition-colors">
-              {copied ? <><Check className="w-4 h-4 text-teal" /> Copié</> : <><Copy className="w-4 h-4 text-slate" /> Copier</>}
+              {copied ? <><Check className="w-4 h-4 text-navy" /> Copié</> : <><Copy className="w-4 h-4 text-slate" /> Copier</>}
             </button>
             <button onClick={onRestart} className="flex-1 min-w-[130px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-slate hover:bg-cream hover:text-navy transition-colors">
               <RotateCcw className="w-4 h-4" /> Recommencer
@@ -557,7 +557,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
       {/* Disclaimer */}
       <Item>
         <div className="rounded-xl bg-sable border border-line px-5 py-4 flex items-start gap-2.5">
-          <ShieldCheck className="w-4 h-4 text-teal shrink-0 mt-0.5" />
+          <ShieldCheck className="w-4 h-4 text-slate shrink-0 mt-0.5" />
           <p className="text-xs text-slate leading-relaxed">Ce score est une estimation indicative basée sur vos réponses. Il vous aide à identifier le niveau de vigilance à adopter, mais ne constitue pas un avis juridique. Les liens officiels ci-dessus permettent de vérifier la procédure applicable.</p>
         </div>
       </Item>

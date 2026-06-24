@@ -5,7 +5,7 @@ import {
   Globe, Cloud, Users, PenTool, Code2, Boxes, GraduationCap, Server,
   ChevronDown, Check, Clock, ShieldCheck, Lock, BookOpen, Briefcase, Building2,
 } from 'lucide-react'
-import { BuildingScene, LogoMark, TangleToArrow, StepGlyph, Signpost } from '../components/Graphics'
+import { LogoMark, TangleToArrow, StepGlyph, Signpost } from '../components/Graphics'
 
 const NOMAD_URL = 'https://nomadimpact.org'
 
@@ -79,7 +79,7 @@ function Header({ onStart }: { onStart: () => void }) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <a href="#top" className="flex items-center gap-2.5">
           <LogoMark className="h-6 w-auto" nodeColor="#2E2348" />
-          <span className="font-display font-bold text-navy text-[15px]">marchépublic<span className="text-teal">.be</span></span>
+          <span className="font-display font-bold text-navy text-[15px]">marchépublic<span className="text-coral">.be</span></span>
         </a>
         <nav className="hidden md:flex items-center gap-7">
           {links.map(([href, label]) => (
@@ -143,12 +143,17 @@ function Hero({ onStart }: { onStart: () => void }) {
           </motion.div>
 
           <motion.div
-            className="relative hidden lg:flex items-center justify-center"
+            className="relative hidden lg:block"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
-            <BuildingScene className="w-full max-w-lg" />
+            <div className="relative w-full aspect-[4/3] rounded-2xl bg-sable border border-line overflow-hidden">
+              <div className="absolute inset-0 dotgrid opacity-40" />
+              <div className="absolute inset-0 flex items-end justify-end p-6">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate/30">Illustration</span>
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
@@ -201,7 +206,9 @@ function HowSection({ onStart }: { onStart: () => void }) {
         <div className="grid md:grid-cols-3 gap-6">
           {steps.map((s, i) => (
             <Reveal key={s.n} delay={i * 0.1}>
-              <div className="bg-white border border-line rounded-2xl p-6 h-full shadow-card flex flex-col">
+              <div className="bg-white border border-line rounded-2xl overflow-hidden h-full shadow-card flex flex-col">
+                <div className="h-[3px] bg-coral" />
+                <div className="p-6 flex flex-col flex-1">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="w-9 h-9 rounded-full bg-coral flex items-center justify-center text-white text-sm font-bold shrink-0">{s.n}</span>
                 </div>
@@ -209,6 +216,7 @@ function HowSection({ onStart }: { onStart: () => void }) {
                 <p className="text-slate text-sm leading-relaxed flex-1">{s.desc}</p>
                 <div className="mt-6 pt-5 border-t border-line flex items-center justify-center">
                   <StepGlyph name={s.glyph} className="w-14 h-14 text-navy/40" />
+                </div>
                 </div>
               </div>
             </Reveal>
@@ -311,8 +319,8 @@ function ClarifySection() {
               <ul className="space-y-3">
                 {can.map(t => (
                   <li key={t} className="flex items-start gap-3 text-sm text-navy/85">
-                    <span className="mt-0.5 w-5 h-5 rounded-full bg-teal/15 flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3 text-teal" strokeWidth={3} />
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-navy/8 flex items-center justify-center shrink-0">
+                      <Check className="w-3 h-3 text-navy" strokeWidth={3} />
                     </span>
                     {t}
                   </li>
@@ -387,13 +395,13 @@ function FAQSection() {
         <div className="space-y-2">
           {FAQS.map((f, i) => (
             <Reveal key={i} delay={(i % 3) * 0.04}>
-              <div className={`rounded-xl border overflow-hidden transition-colors duration-150 ${open === i ? 'bg-white border-teal/40 shadow-card' : 'bg-white border-line'}`}>
+              <div className={`rounded-xl border overflow-hidden transition-colors duration-150 ${open === i ? 'bg-white border-coral/30 shadow-card' : 'bg-white border-line'}`}>
                 <button onClick={() => setOpen(open === i ? null : i)} aria-expanded={open === i} className="w-full text-left px-5 py-4 flex items-center justify-between gap-4">
                   <span className="font-display font-semibold text-navy text-[14px] leading-snug text-balance">{f.q}</span>
                   <motion.span
                     animate={{ rotate: open === i ? 180 : 0 }}
                     transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                    className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${open === i ? 'bg-teal text-white' : 'bg-sable text-slate'}`}
+                    className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${open === i ? 'bg-navy text-white' : 'bg-sable text-slate'}`}
                   >
                     <ChevronDown className="w-3.5 h-3.5" />
                   </motion.span>
@@ -539,10 +547,10 @@ function Footer({ onStart }: { onStart: () => void }) {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-3">
               <LogoMark className="h-6 w-auto" />
-              <span className="font-display font-bold text-white text-[14px]">marchépublic<span className="text-teal">.be</span></span>
+              <span className="font-display font-bold text-white text-[14px]">marchépublic<span className="text-coral">.be</span></span>
             </div>
             <p className="text-xs leading-relaxed">Outil de pré-diagnostic indépendant pour aider les ASBL belges à comprendre leurs obligations avant de choisir un prestataire.</p>
-            <button onClick={onStart} className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-teal hover:text-white transition-colors">
+            <button onClick={onStart} className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-coral hover:text-white transition-colors">
               Faire le diagnostic <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -569,7 +577,7 @@ function Footer({ onStart }: { onStart: () => void }) {
         </div>
         <div className="border-t border-white/8 pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-[11px]">© {new Date().getFullYear()} marchépublic.be — Tous droits réservés.</p>
-          <p className="text-[11px]">Un outil développé par <a href="https://nomadimpact.org" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-teal transition-colors">Nomad Impact</a></p>
+          <p className="text-[11px]">Un outil développé par <a href="https://nomadimpact.org" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-coral transition-colors">Nomad Impact</a></p>
         </div>
       </div>
     </footer>
