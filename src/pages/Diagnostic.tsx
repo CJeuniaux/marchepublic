@@ -405,7 +405,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
       <Item>
         <div className="rounded-2xl overflow-hidden shadow-card border" style={{ borderColor: band.ring }}>
           <div className="h-1.5" style={{ background: band.color }} />
-          <div className="px-6 py-7 bg-white">
+          <div className="px-6 py-7 bg-cream">
             <BigScore pct={pct} color={band.color} band={band} />
           </div>
         </div>
@@ -507,8 +507,8 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
       <Item>
         <div className="rounded-2xl bg-navy text-white relative overflow-hidden shadow-float">
           <div className="absolute inset-0 dotgrid-light opacity-30" />
-          <div className="absolute top-0 left-0 right-0 h-[3px] bg-teal" />
-          <Constellation className="absolute -right-10 -top-8 w-64 text-teal opacity-20 pointer-events-none" />
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-coral" />
+          <Constellation className="absolute -right-10 -top-8 w-64 text-coral opacity-[0.10] pointer-events-none" />
           <div className="relative px-6 py-7">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded text-[11px] font-semibold uppercase tracking-wide bg-white/10 text-aqua">Préparer la suite</span>
             <h3 className="mt-3 font-display text-xl sm:text-2xl font-bold tracking-tight">{tier.title}</h3>
@@ -516,7 +516,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
             <div className="mt-5 grid sm:grid-cols-3 gap-3">
               {NOMAD_OFFERS.map(o => (
                 <div key={o.title} className="rounded-xl bg-white/[0.06] border border-white/10 p-4">
-                  <span className="w-9 h-9 rounded-lg bg-teal/15 flex items-center justify-center mb-3"><o.icon className="w-4 h-4 text-teal" /></span>
+                  <span className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center mb-3"><o.icon className="w-4 h-4 text-white/70" /></span>
                   <p className="font-display font-semibold text-sm leading-snug">{o.title}</p>
                   <p className="text-xs text-aqua/70 mt-1 leading-relaxed">{o.desc}</p>
                 </div>

@@ -23,10 +23,11 @@ function Reveal({ children, className, delay = 0 }: { children: ReactNode; class
   )
 }
 
-function Eyebrow({ children, tone = 'teal' }: { children: ReactNode; tone?: 'teal' | 'cream' | 'coral' }) {
+function Eyebrow({ children, tone = 'sun' }: { children: ReactNode; tone?: 'sun' | 'teal' | 'cream' | 'coral' }) {
   const cls: Record<string, string> = {
+    sun:   'text-navy bg-sun/30 border border-sun/60',
     teal:  'text-teal bg-teal/10 border border-teal/20',
-    cream: 'text-aqua/80 bg-white/10 border border-white/15',
+    cream: 'text-white/70 bg-white/10 border border-white/15',
     coral: 'text-white bg-coral border border-coral/80',
   }
   return (
@@ -118,8 +119,8 @@ function Hero({ onStart }: { onStart: () => void }) {
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-20 sm:pt-24 sm:pb-28">
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}>
-            <div className="inline-flex items-center gap-2 border border-teal/40 text-teal text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded mb-6 bg-teal/5">
-              <ShieldCheck className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 border border-line text-navy/70 text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded mb-6 bg-sable">
+              <ShieldCheck className="w-3.5 h-3.5 text-slate/70" />
               Outil pédagogique indépendant · Belgique
             </div>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.2rem] font-bold leading-[1.06] tracking-tight text-balance text-navy">
@@ -139,7 +140,7 @@ function Hero({ onStart }: { onStart: () => void }) {
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-5">
               {TRUST_ITEMS.map(({ Icon, label }) => (
                 <span key={label} className="flex items-center gap-1.5 text-xs text-slate font-medium">
-                  <Icon className="w-3.5 h-3.5 text-teal/80" />
+                  <Icon className="w-3.5 h-3.5 text-slate/70" />
                   {label}
                 </span>
               ))}
@@ -219,8 +220,8 @@ function WhySection() {
           {items.map((c, i) => (
             <Reveal key={c.title} delay={i * 0.08}>
               <div className="h-full bg-white rounded-2xl border border-line p-6 shadow-card">
-                <div className="w-10 h-10 rounded-xl bg-navy flex items-center justify-center mb-5">
-                  <c.icon className="w-5 h-5 text-teal" />
+                <div className="w-10 h-10 rounded-xl bg-sable border border-line flex items-center justify-center mb-5">
+                  <c.icon className="w-5 h-5 text-coral" />
                 </div>
                 <h3 className="font-display font-bold text-navy mb-2">{c.title}</h3>
                 <p className="text-slate text-sm leading-relaxed">{c.desc}</p>
@@ -254,7 +255,7 @@ function HowSection({ onStart }: { onStart: () => void }) {
               <div className="bg-white border border-line rounded-2xl p-6 h-full shadow-card">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="w-8 h-8 rounded-lg bg-coral flex items-center justify-center text-white text-xs font-bold shrink-0">{s.n}</span>
-                  <s.icon className="w-5 h-5 text-teal" />
+                  <s.icon className="w-5 h-5 text-navy/50" />
                 </div>
                 <h3 className="font-display font-bold text-lg text-navy mb-2">{s.title}</h3>
                 <p className="text-slate text-sm leading-relaxed">{s.desc}</p>
@@ -265,7 +266,7 @@ function HowSection({ onStart }: { onStart: () => void }) {
         <Reveal className="mt-12 grid sm:grid-cols-[1.2fr_0.8fr] gap-8 items-center bg-white border border-line rounded-2xl p-6 sm:p-8 shadow-card">
           <ChecklistCard className="w-full max-w-sm mx-auto" />
           <div className="text-center sm:text-left">
-            <RisingPath className="w-32 mx-auto sm:mx-0 mb-4" stroke="#415338" hollow="#FBF7F1" />
+            <RisingPath className="w-32 mx-auto sm:mx-0 mb-4" stroke="#E63948" hollow="#FBF7F1" />
             <h3 className="font-display font-bold text-lg text-navy mb-2">Un chemin recommandé, pas un verdict</h3>
             <p className="text-slate text-sm leading-relaxed">À la fin, vous obtenez un score indicatif, le chemin recommandé, des documents utiles et les sources officielles à vérifier.</p>
           </div>
@@ -322,14 +323,14 @@ function ClarifySection() {
             </div>
           </Reveal>
           <Reveal delay={0.08}>
-            <div className="h-full bg-navy text-white rounded-2xl p-7 shadow-card relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-coral" />
+            <div className="h-full bg-cream rounded-2xl border border-coral/20 p-7 shadow-card relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-coral/40" />
               <Eyebrow tone="coral">Limites</Eyebrow>
-              <h3 className="mt-4 font-display font-bold text-lg mb-5">Ce qu'il ne remplace pas</h3>
+              <h3 className="mt-4 font-display font-bold text-navy text-lg mb-5">Ce qu'il ne remplace pas</h3>
               <ul className="space-y-3">
                 {cannot.map(t => (
-                  <li key={t} className="flex items-start gap-3 text-sm text-aqua/80">
-                    <span className="mt-0.5 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                  <li key={t} className="flex items-start gap-3 text-sm text-navy/80">
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-coral/10 flex items-center justify-center shrink-0">
                       <X className="w-3 h-3 text-coral" strokeWidth={3} />
                     </span>
                     {t}
@@ -356,14 +357,14 @@ function UseCasesSection({ onStart }: { onStart: () => void }) {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {USE_CASES.map((c, i) => (
             <Reveal key={c.title} delay={(i % 4) * 0.05}>
-              <button onClick={onStart} className="group w-full h-full text-left bg-cream rounded-2xl border border-line p-5 hover:bg-navy hover:border-navy transition-all duration-300 shadow-card">
-                <div className="w-10 h-10 rounded-xl bg-white group-hover:bg-teal flex items-center justify-center mb-4 transition-colors border border-line group-hover:border-teal">
-                  <c.icon className="w-5 h-5 text-slate group-hover:text-navy transition-colors" />
+              <button onClick={onStart} className="group w-full h-full text-left bg-white rounded-2xl border border-line p-5 hover:border-coral/40 hover:shadow-card transition-all duration-200 shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-sable group-hover:bg-coral/10 flex items-center justify-center mb-4 transition-colors border border-line group-hover:border-coral/20">
+                  <c.icon className="w-5 h-5 text-slate group-hover:text-coral transition-colors" />
                 </div>
-                <h3 className="font-display font-semibold text-navy group-hover:text-white text-[14px] mb-1 transition-colors flex items-center gap-1">
-                  {c.title}<ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all text-teal" />
+                <h3 className="font-display font-semibold text-navy text-[14px] mb-1 flex items-center gap-1">
+                  {c.title}<ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all text-coral" />
                 </h3>
-                <p className="text-xs text-slate group-hover:text-aqua/60 leading-relaxed transition-colors">{c.desc}</p>
+                <p className="text-xs text-slate leading-relaxed">{c.desc}</p>
               </button>
             </Reveal>
           ))}
@@ -459,17 +460,14 @@ function NomadImpactSection({ onStart }: { onStart: () => void }) {
         <Reveal>
           <div className="relative overflow-hidden rounded-2xl bg-navy text-white border border-white/5 shadow-float">
             <div className="absolute inset-0 dotgrid-light opacity-20" />
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-teal to-teal/30" />
-            <Constellation className="absolute top-4 right-4 w-36 text-teal opacity-[0.12] pointer-events-none" />
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-coral to-coral/40" />
+            <Constellation className="absolute top-4 right-4 w-36 text-coral opacity-[0.08] pointer-events-none" />
             <div className="relative px-6 py-10 sm:px-10 sm:py-12">
               <div className="mb-8">
-                <div className="inline-flex items-center gap-1.5 border border-teal/30 text-teal text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded mb-5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-teal" />
-                  Vous avez un projet digital à cadrer ?
-                </div>
-                <h2 className="font-display text-2xl sm:text-3xl font-bold leading-tight max-w-lg">
+                <Eyebrow tone="cream">Vous avez un projet digital à cadrer ?</Eyebrow>
+                <h2 className="mt-5 font-display text-2xl sm:text-3xl font-bold leading-tight max-w-lg">
                   marchépublic.be identifie vos obligations.<br />
-                  <span className="text-teal">Nomad Impact</span> vous aide à préparer la suite.
+                  <span className="text-coral">Nomad Impact</span> vous aide à préparer la suite.
                 </h2>
                 <p className="mt-3 text-aqua/70 text-sm leading-relaxed max-w-md">
                   Une fois votre situation clarifiée, passer à l'action demande méthode. Nomad Impact accompagne les ASBL et organisations belges dans la définition et la mise en œuvre de leurs projets digitaux.
@@ -485,8 +483,8 @@ function NomadImpactSection({ onStart }: { onStart: () => void }) {
                     transition={{ delay: i * 0.08, duration: 0.45 }}
                     className="bg-white/[0.06] border border-white/10 rounded-xl p-5"
                   >
-                    <div className="w-9 h-9 rounded-lg bg-teal/15 flex items-center justify-center mb-3">
-                      <offer.icon className="w-4 h-4 text-teal" />
+                    <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center mb-3">
+                      <offer.icon className="w-4 h-4 text-white/70" />
                     </div>
                     <h3 className="font-display font-semibold text-sm mb-1.5 leading-snug">{offer.title}</h3>
                     <p className="text-aqua/60 text-xs leading-relaxed">{offer.desc}</p>
@@ -514,17 +512,17 @@ function FinalCTA({ onStart }: { onStart: () => void }) {
     <section className="bg-cream pb-24">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <Reveal>
-          <div className="relative overflow-hidden rounded-2xl bg-navy text-white px-6 py-14 sm:px-12 sm:py-16 text-center border border-white/5 shadow-float">
-            <div className="absolute inset-0 dotgrid-light opacity-20" />
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-teal" />
+          <div className="relative overflow-hidden rounded-2xl bg-sable border border-line px-6 py-14 sm:px-12 sm:py-16 text-center shadow-card">
+            <div className="absolute inset-0 dotgrid opacity-25" />
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-coral" />
             <div className="relative">
-              <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-balance max-w-2xl mx-auto">Un projet en tête ? Clarifions d'abord vos obligations.</h2>
-              <p className="mt-4 text-aqua/70 max-w-xl mx-auto text-sm leading-relaxed">Cinq minutes pour obtenir un score, un chemin recommandé et les sources officielles belges à vérifier.</p>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-balance max-w-2xl mx-auto text-navy">Un projet en tête ? Clarifions d'abord vos obligations.</h2>
+              <p className="mt-4 text-slate max-w-xl mx-auto text-sm leading-relaxed">Cinq minutes pour obtenir un score, un chemin recommandé et les sources officielles belges à vérifier.</p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                 <button onClick={onStart} className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-coral text-white font-semibold hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
                   Faire le diagnostic <ArrowRight className="w-4 h-4" />
                 </button>
-                <a href="#cas" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg border border-white/20 text-white font-semibold text-sm hover:bg-white/8 transition-all">Voir des exemples</a>
+                <a href="#cas" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg border border-navy/20 text-navy font-semibold text-sm hover:bg-white transition-all">Voir des exemples</a>
               </div>
             </div>
           </div>
