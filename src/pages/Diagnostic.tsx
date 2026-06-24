@@ -2,8 +2,8 @@ import { useState, useEffect, type ReactNode, type ComponentType } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ChevronLeft, RotateCcw, Copy, Printer, Check,
-  ChevronDown, ShieldCheck, ListChecks, FileDown, FileText,
-  Target, Sparkles, Info, Landmark, ExternalLink, BadgeCheck, ArrowUpRight,
+  ChevronDown, ShieldCheck, FileDown, FileText,
+  Target, Sparkles, Landmark, ExternalLink, BadgeCheck, ArrowUpRight,
   Users, Globe, Network, Boxes, Building2, Briefcase, Shapes,
   Code2, Lightbulb, PenTool, GraduationCap, HardHat, Package, Wrench,
   ClipboardList, PenLine,
@@ -305,7 +305,7 @@ function BigScore({ pct, color, band }: { pct: number; color: string; band: Band
   return (
     <div>
       <p className="text-[11px] font-bold uppercase tracking-widest text-slate mb-3">Niveau d'obligation estimé</p>
-      <div className="flex flex-col sm:flex-row sm:items-end gap-3 mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-end gap-3 mb-6">
         <motion.p
           className="font-display leading-none shrink-0"
           style={{ fontSize: 80, fontWeight: 700, color }}
@@ -320,39 +320,45 @@ function BigScore({ pct, color, band }: { pct: number; color: string; band: Band
           <p className="text-sm text-slate mt-1 leading-relaxed">{band.phrase}</p>
         </div>
       </div>
-      <div className="space-y-1.5">
-        <div className="w-full h-3 rounded-full bg-line overflow-hidden">
-          <motion.div
-            className="h-full rounded-full"
-            style={{ background: color }}
-            initial={{ width: 0 }}
-            animate={{ width: pct + '%' }}
-            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-          />
+
+      {/* Segmented band bar with animated position marker */}
+      <div className="relative pt-4">
+        <motion.div
+          className="absolute top-0 w-0 h-0"
+          style={{
+            left: `clamp(4px, ${pct}%, calc(100% - 4px))`,
+            transform: 'translateX(-50%)',
+            borderLeft: '5px solid transparent',
+            borderRight: '5px solid transparent',
+            borderTop: `7px solid ${color}`,
+          }}
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        />
+        <div className="band-bar">
+          <div className="band-bar__tres-faible" />
+          <div className="band-bar__faible" />
+          <div className="band-bar__grise" />
+          <div className="band-bar__forte" />
+          <div className="band-bar__tres-forte" />
         </div>
-        <div className="flex justify-between text-[10px] text-gris font-medium">
-          <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>
-        </div>
+      </div>
+
+      {/* Band legend */}
+      <div className="flex flex-wrap gap-x-3 gap-y-1.5 mt-3">
+        {BANDS.map(b => (
+          <span key={b.key} className="flex items-center gap-1.5 text-[10px] font-semibold transition-colors"
+            style={{ color: b.key === band.key ? b.color : '#A8A096' }}>
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: b.color }} />
+            {b.min}–{b.max}%
+          </span>
+        ))}
       </div>
     </div>
   )
 }
 
-function BandStrip({ activeKey }: { activeKey: string }) {
-  return (
-    <div className="flex gap-1.5">
-      {BANDS.map(b => {
-        const on = b.key === activeKey
-        return (
-          <div key={b.key} className="flex-1">
-            <div className="h-1.5 rounded-full transition-all" style={{ background: on ? b.color : '#E4E7EC' }} />
-            <p className="mt-1.5 text-[9px] sm:text-[10px] font-semibold text-center leading-tight" style={{ color: on ? b.color : '#B4BCC8' }}>{b.min}–{b.max}%</p>
-          </div>
-        )
-      })}
-    </div>
-  )
-}
 
 const block = { hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }
 function Stagger({ children, className }: { children: ReactNode; className?: string }) {
@@ -396,23 +402,28 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
       {/* 1. Score */}
       <Item>
         <div className="rounded-2xl overflow-hidden shadow-card border" style={{ borderColor: band.ring }}>
-          <div className="h-1" style={{ background: band.color }} />
-          <div className="px-6 py-6 bg-white">
+          <div className="h-1.5" style={{ background: band.color }} />
+          <div className="px-6 py-7 bg-white">
             <BigScore pct={pct} color={band.color} band={band} />
-            <div className="mt-5"><BandStrip activeKey={band.key} /></div>
           </div>
         </div>
       </Item>
 
       {/* 2. Signification */}
       <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-3"><span className="w-5 h-5 rounded-full bg-sun flex items-center justify-center shrink-0"><Info className="w-3 h-3 text-navy" /></span> Ce que cela veut dire, simplement</h3>
+        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-3">
+          <span className="w-5 h-5 rounded-full bg-sun flex items-center justify-center shrink-0 text-[10px] font-black text-navy leading-none">1</span>
+          Ce que cela veut dire, simplement
+        </h3>
         <p className="text-sm text-navy/90 leading-relaxed">{band.meaning}</p>
       </div></Item>
 
       {/* 3. Ce qui a influencé le score */}
       <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-4"><span className="w-5 h-5 rounded-full bg-sun flex items-center justify-center shrink-0"><Target className="w-3 h-3 text-navy" /></span> Pourquoi ce résultat ?</h3>
+        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-4">
+          <span className="w-5 h-5 rounded-full bg-sun flex items-center justify-center shrink-0 text-[10px] font-black text-navy leading-none">2</span>
+          Pourquoi ce résultat ?
+        </h3>
         <ul className="space-y-2.5">
           {positives.map((p, i) => (<li key={'p' + i} className="flex items-start gap-2.5 text-sm text-navy/90"><span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: band.color }} />{p}</li>))}
           {protective.map((p, i) => (<li key={'q' + i} className="flex items-start gap-2.5 text-sm text-slate"><Check className="w-4 h-4 shrink-0 mt-0.5 text-[#2F9E6F]" strokeWidth={2.5} />{p}</li>))}
@@ -421,48 +432,69 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
 
       {/* 4. Chemin recommandé */}
       <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-4"><span className="w-5 h-5 rounded-full bg-sun flex items-center justify-center shrink-0"><ListChecks className="w-3 h-3 text-navy" /></span> Les étapes recommandées</h3>
+        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-4">
+          <span className="w-5 h-5 rounded-full bg-coral flex items-center justify-center shrink-0 text-[10px] font-black text-white leading-none">3</span>
+          Les étapes recommandées
+        </h3>
         <ol className="space-y-3">
-          {band.steps.map((step, i) => (<li key={i} className="flex items-start gap-3 text-sm text-navy/90"><span className="shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold text-white" style={{ background: band.color }}>{i + 1}</span>{step}</li>))}
+          {band.steps.map((step, i) => (
+            <li key={i} className="flex items-start gap-3 text-sm text-navy/90">
+              <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: band.color }}>{i + 1}</span>
+              {step}
+            </li>
+          ))}
         </ol>
       </div></Item>
 
       {/* 5. Documents utiles */}
       <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-4"><FileText className="w-4 h-4" /> Documents utiles pour avancer</h3>
-        <div className="space-y-3">
+        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-5">
+          <span className="w-5 h-5 rounded-full bg-teal flex items-center justify-center shrink-0"><FileText className="w-3 h-3 text-white" /></span>
+          Documents utiles pour avancer
+        </h3>
+        <div className="grid sm:grid-cols-2 gap-3">
           {docs.map(d => (
-            <div key={d.id} className="rounded-xl border border-line p-4 hover:border-teal/40 hover:shadow-card transition-all">
-              <div className="flex items-start gap-3">
-                <span className="w-10 h-10 rounded-xl bg-cream flex items-center justify-center shrink-0"><FileText className="w-5 h-5 text-slate" /></span>
+            <div key={d.id} className="rounded-xl border border-line p-4 hover:border-teal/40 hover:shadow-card transition-all flex flex-col">
+              <div className="flex items-start gap-3 flex-1">
+                <span className="w-10 h-10 rounded-xl bg-sable flex items-center justify-center shrink-0"><FileText className="w-5 h-5 text-teal" /></span>
                 <div className="min-w-0 flex-1">
                   <p className="font-display font-semibold text-navy text-sm leading-snug">{d.title}</p>
                   <p className="text-xs text-slate mt-1 leading-relaxed">{d.summary}</p>
-                  <span className="inline-block mt-2 text-[10px] font-semibold uppercase tracking-wide text-slate bg-cream px-2 py-0.5 rounded">{d.level}</span>
+                  <span className="inline-block mt-2 text-[10px] font-semibold uppercase tracking-wide text-teal/80 bg-teal/10 px-2 py-0.5 rounded">{d.level}</span>
                 </div>
               </div>
-              <a href={d.file} download className="mt-3 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-110 transition-all"><FileDown className="w-4 h-4" /> Télécharger la fiche</a>
+              <a href={d.file} download className="mt-3 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-teal text-white text-sm font-semibold hover:brightness-110 transition-all">
+                <FileDown className="w-4 h-4" /> Télécharger la fiche
+              </a>
             </div>
           ))}
         </div>
-        <p className="text-[11px] text-slate/70 mt-3">Fiches pratiques au format PDF. Contenu en cours de finalisation.</p>
+        <p className="text-[11px] text-slate/60 mt-4">Fiches pratiques au format PDF. Contenu en cours de finalisation.</p>
       </div></Item>
 
       {/* 6. Sources officielles */}
       <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 text-xs font-bold text-slate uppercase tracking-widest mb-1"><Landmark className="w-4 h-4" /> Sources officielles à vérifier</h3>
-        <p className="text-xs text-slate mb-4">Pour confirmer la procédure applicable auprès des sources de référence.</p>
+        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-1">
+          <span className="w-5 h-5 rounded-full bg-teal flex items-center justify-center shrink-0"><Landmark className="w-3 h-3 text-white" /></span>
+          Sources officielles à vérifier
+        </h3>
+        <p className="text-xs text-slate mb-4 ml-7">Pour confirmer la procédure applicable auprès des sources de référence.</p>
         <div className="space-y-2.5">
           {sources.map(s => (
-            <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-line p-4 hover:border-teal/40 hover:bg-teal/[0.02] transition-colors">
+            <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-line p-4 hover:border-teal/40 hover:bg-teal/[0.02] transition-colors group">
               <div className="flex items-start gap-3">
-                <span className="w-9 h-9 rounded-lg bg-cream flex items-center justify-center shrink-0"><Landmark className="w-4 h-4 text-slate" /></span>
+                <span className="w-9 h-9 rounded-lg bg-sable flex items-center justify-center shrink-0 group-hover:bg-teal/10 transition-colors"><Landmark className="w-4 h-4 text-teal" /></span>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5"><p className="font-display font-semibold text-navy text-sm leading-snug">{s.title}</p><ExternalLink className="w-3.5 h-3.5 text-slate shrink-0" /></div>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <p className="font-display font-semibold text-navy text-sm leading-snug">{s.title}</p>
+                    <ExternalLink className="w-3.5 h-3.5 text-slate shrink-0" />
+                  </div>
                   <p className="text-xs text-slate mt-1 leading-relaxed">{s.desc}</p>
-                  <span className="inline-flex items-center gap-1 mt-2 text-[10px] font-semibold uppercase tracking-wide text-teal"><BadgeCheck className="w-3.5 h-3.5" /> Source officielle</span>
+                  <span className="inline-flex items-center gap-1 mt-2 text-[10px] font-semibold uppercase tracking-wide text-teal bg-teal/10 px-2 py-0.5 rounded border border-teal/20">
+                    <BadgeCheck className="w-3 h-3" /> Source officielle
+                  </span>
                 </div>
-                <span className="ml-auto self-center text-xs font-semibold text-slate hidden sm:inline">Consulter →</span>
+                <span className="ml-auto self-center text-xs font-semibold text-teal hidden sm:inline shrink-0">Consulter →</span>
               </div>
             </a>
           ))}
@@ -494,23 +526,39 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
         </div>
       </Item>
 
-      {/* 8. Télécharger / actions */}
-      <Item><div className="rounded-2xl bg-white shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 font-display font-bold text-navy text-base mb-1"><Sparkles className="w-4 h-4 text-teal" /> Gardez une trace de votre parcours</h3>
-        <p className="text-sm text-slate mb-4">Pour votre dossier de décision ou pour en discuter avec une personne compétente.</p>
-        <div className="flex flex-wrap gap-2.5 print:hidden">
-          <button onClick={handleDownload} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-110 transition-all"><FileDown className="w-4 h-4" /> Télécharger (.txt)</button>
-          <button onClick={() => window.print()} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-line text-navy text-sm font-semibold hover:border-navy/30 transition-colors"><Printer className="w-4 h-4" /> Imprimer / PDF</button>
-          <button onClick={handleCopy} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-line text-navy text-sm font-semibold hover:border-navy/30 transition-colors">{copied ? <><Check className="w-4 h-4 text-teal" /> Copié</> : <><Copy className="w-4 h-4" /> Copier</>}</button>
-          <button onClick={onRestart} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-line text-navy text-sm font-semibold hover:border-navy/30 transition-colors"><RotateCcw className="w-4 h-4" /> Recommencer</button>
+      {/* 8. Actions bar */}
+      <Item>
+        <div className="rounded-2xl bg-white shadow-card border border-line overflow-hidden print:hidden">
+          <div className="px-6 pt-5 pb-4">
+            <h3 className="flex items-center gap-2 font-display font-bold text-navy text-sm mb-0.5">
+              <Sparkles className="w-4 h-4 text-teal" /> Gardez une trace de votre parcours
+            </h3>
+            <p className="text-xs text-slate">Pour votre dossier de décision ou pour en discuter avec une personne compétente.</p>
+          </div>
+          <div className="border-t border-line flex flex-wrap">
+            <button onClick={handleDownload} className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-navy border-r border-line hover:bg-cream transition-colors">
+              <FileDown className="w-4 h-4 text-teal" /> Télécharger (.txt)
+            </button>
+            <button onClick={() => window.print()} className="flex-1 min-w-[120px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-navy border-r border-line hover:bg-cream transition-colors">
+              <Printer className="w-4 h-4 text-slate" /> Imprimer
+            </button>
+            <button onClick={handleCopy} className="flex-1 min-w-[100px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-navy border-r border-line hover:bg-cream transition-colors">
+              {copied ? <><Check className="w-4 h-4 text-teal" /> Copié</> : <><Copy className="w-4 h-4 text-slate" /> Copier</>}
+            </button>
+            <button onClick={onRestart} className="flex-1 min-w-[130px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-slate hover:bg-cream hover:text-navy transition-colors">
+              <RotateCcw className="w-4 h-4" /> Recommencer
+            </button>
+          </div>
         </div>
-      </div></Item>
+      </Item>
 
       {/* Disclaimer */}
-      <Item><div className="rounded-xl bg-cream border border-line px-5 py-4 flex items-start gap-2.5">
-        <ShieldCheck className="w-4 h-4 text-teal shrink-0 mt-0.5" />
-        <p className="text-xs text-slate leading-relaxed">Ce score est une estimation indicative basée sur vos réponses. Il vous aide à identifier le niveau de vigilance à adopter, mais ne constitue pas un avis juridique. Les liens officiels ci-dessus permettent de vérifier la procédure applicable.</p>
-      </div></Item>
+      <Item>
+        <div className="rounded-xl bg-sable border border-line px-5 py-4 flex items-start gap-2.5">
+          <ShieldCheck className="w-4 h-4 text-teal shrink-0 mt-0.5" />
+          <p className="text-xs text-slate leading-relaxed">Ce score est une estimation indicative basée sur vos réponses. Il vous aide à identifier le niveau de vigilance à adopter, mais ne constitue pas un avis juridique. Les liens officiels ci-dessus permettent de vérifier la procédure applicable.</p>
+        </div>
+      </Item>
     </Stagger>
   )
 }
