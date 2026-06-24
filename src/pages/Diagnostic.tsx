@@ -198,7 +198,7 @@ function StepperBar({ current, total, labels }: { current: number; total: number
           <div key={n} className="flex items-start flex-1 last:flex-none">
             <div className="flex flex-col items-center gap-1.5 flex-1">
               <div className={[
-                'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all',
+                'w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all',
                 done   ? 'bg-teal border-teal text-white' :
                 active ? 'bg-coral border-coral text-white' :
                          'bg-white border-line text-gris',
@@ -211,7 +211,7 @@ function StepperBar({ current, total, labels }: { current: number; total: number
               </span>
             </div>
             {n < total && (
-              <div className="flex-1 mt-4 mx-1" style={{ borderTop: `2px dashed ${done ? '#415338' : '#E4D9CC'}` }} />
+              <div className="flex-1 mt-[18px] mx-1" style={{ borderTop: `2px dashed ${done ? '#415338' : '#E4D9CC'}` }} />
             )}
           </div>
         )
@@ -227,15 +227,15 @@ function OptionCard({ value, label, description, selected, onSelect, Icon }: {
     <motion.button
       whileTap={{ scale: 0.985 }} onClick={() => onSelect(value)}
       className={[
-        'group relative w-full text-left px-5 py-4 rounded-xl border-2 transition-all duration-150',
+        'group relative w-full text-left px-4 py-3.5 rounded-xl transition-all duration-150',
         selected
-          ? 'bg-coral/[0.05] border-coral shadow-coral/20 shadow-sm'
-          : 'bg-white border-line hover:border-coral/40 hover:-translate-y-0.5',
+          ? 'bg-coral/[0.05] border-2 border-coral shadow-sm'
+          : 'bg-white border border-line hover:border-coral/40',
       ].join(' ')}
     >
       <div className="flex items-start gap-3.5">
         {Icon ? (
-          <span className={['w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-colors', selected ? 'bg-coral text-white' : 'bg-cream text-slate group-hover:bg-coral/10'].join(' ')}><Icon className="w-6 h-6" /></span>
+          <span className={['w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors', selected ? 'bg-coral text-white' : 'bg-sable text-slate'].join(' ')}><Icon className="w-5 h-5" /></span>
         ) : (
           <span className={['mt-0.5 w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors', selected ? 'border-coral bg-coral' : 'border-line'].join(' ')}>{selected && <Check className="w-3 h-3 text-white" strokeWidth={3.5} />}</span>
         )}
@@ -255,16 +255,16 @@ function WhyThis({ text }: { text: string }) {
     <div className="mt-5">
       <button
         onClick={() => setOpen(!open)}
-        className={['flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg border transition-colors', open ? 'bg-coral/10 border-coral/30 text-navy' : 'border-line text-slate hover:border-coral/30 hover:text-navy'].join(' ')}
+        className={['flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg border transition-colors', open ? 'bg-teal/10 border-teal/30 text-teal' : 'border-line text-slate hover:border-teal/30 hover:text-teal'].join(' ')}
       >
-        <ShieldCheck size={13} className="text-coral" />
+        <ShieldCheck size={13} className="text-teal" />
         Base juridique de cette question
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}><ChevronDown size={13} /></motion.span>
       </button>
       <AnimatePresence initial={false}>
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }} className="overflow-hidden">
-            <p className="mt-2 px-4 py-3 border-l-2 border-coral/40 bg-coral/[0.04] rounded-r-lg text-xs text-navy/80 leading-relaxed">{text}</p>
+            <p className="mt-2 px-4 py-3 border-l-2 border-teal/40 bg-teal/[0.04] rounded-r-lg text-xs text-navy/80 leading-relaxed">{text}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -276,8 +276,8 @@ function StepShell({ eyebrow, title, subtitle, children, stepN }: { eyebrow: str
   return (
     <div>
       {stepN != null ? (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sun/30 text-navy text-[11px] font-bold mb-3">
-          <span className="w-3.5 h-3.5 rounded-full bg-sun flex items-center justify-center text-navy text-[9px] font-black">{stepN}</span>
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-sun/20 text-navy text-[11px] font-bold mb-3 border border-sun/40">
+          <span className="w-4 h-4 rounded-full bg-sun flex items-center justify-center text-navy text-[9px] font-black leading-none shrink-0">{stepN}</span>
           Question {stepN}
         </span>
       ) : (
@@ -701,7 +701,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
 
         {/* Navigation */}
         <div className="mt-6 flex items-center justify-between print:hidden">
-          <button onClick={goBack} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-line text-navy text-sm font-medium hover:bg-cream transition-colors">
+          <button onClick={goBack} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-line bg-white text-navy text-sm font-semibold hover:bg-cream transition-colors shadow-sm">
             <ChevronLeft size={16} /> {state.step === 1 ? 'Accueil' : 'Retour'}
           </button>
           <span className="text-xs text-gris hidden sm:block">Aucune donnée n'est conservée.</span>
