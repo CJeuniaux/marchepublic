@@ -92,7 +92,7 @@ function Header({ onStart }: { onStart: () => void }) {
           <button onClick={onStart} className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
             Faire le diagnostic <ArrowRight className="w-4 h-4" />
           </button>
-          <button onClick={() => setOpen(v => !v)} className="md:hidden p-2.5 rounded-lg text-navy hover:bg-navy/5">
+          <button onClick={() => setOpen(v => !v)} className="md:hidden p-3 rounded-lg text-navy hover:bg-navy/5">
             {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>

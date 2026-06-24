@@ -591,7 +591,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
     return (
       <div className="min-h-screen bg-cream">
         <div className="bg-white border-b border-line px-4 py-3 flex items-center gap-3 print:hidden sticky top-0 z-10">
-          <button onClick={() => setShowResult(false)} className="p-2.5 -ml-2.5 text-slate hover:text-navy transition-colors rounded-lg"><ChevronLeft size={20} /></button>
+          <button onClick={() => setShowResult(false)} className="p-3 -ml-3 text-slate hover:text-navy transition-colors rounded-lg"><ChevronLeft size={20} /></button>
           <span className="text-sm font-semibold text-navy">Votre résultat</span>
         </div>
         <ResultScreen state={state} onRestart={() => { setState(INITIAL_STATE); setShowResult(false) }} />
