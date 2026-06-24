@@ -80,7 +80,7 @@ function Header({ onStart }: { onStart: () => void }) {
     <header className={`sticky top-0 z-50 transition-all duration-200 ${scrolled ? 'bg-white border-b border-line shadow-[0_1px_8px_rgba(8,43,76,0.06)]' : 'bg-transparent'}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <a href="#top" className="flex items-center gap-2.5">
-          <LogoMark className="h-6 w-auto" nodeColor="#082B4C" />
+          <LogoMark className="h-6 w-auto" nodeColor="#2E2348" />
           <span className="font-display font-bold text-navy text-[15px]">marchépublic<span className="text-teal">.be</span></span>
         </a>
         <nav className="hidden md:flex items-center gap-7">
@@ -240,41 +240,41 @@ function HowSection({ onStart }: { onStart: () => void }) {
     { n: '03', icon: Gauge,   title: "Obtenir votre estimation", desc: "Vous recevez un score 0–100 %, un chemin recommandé et les sources officielles à vérifier." },
   ]
   return (
-    <section id="comment" className="relative bg-ink text-white py-20 sm:py-28 overflow-hidden">
-      <div className="absolute inset-0 dotgrid-light opacity-20" />
+    <section id="comment" className="relative bg-sable py-20 sm:py-28 overflow-hidden">
+      <div className="absolute inset-0 dotgrid opacity-30" />
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
         <Reveal className="max-w-xl mb-14">
-          <Eyebrow tone="cream">Comment ça marche</Eyebrow>
-          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold tracking-tight text-balance">Un diagnostic structuré en trois temps</h2>
-          <p className="mt-3 text-aqua/75">Le parcours suit une logique progressive : structure, projet, montant. À chaque réponse, le score se précise.</p>
+          <Eyebrow>Comment ça marche</Eyebrow>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Un diagnostic structuré en trois temps</h2>
+          <p className="mt-3 text-slate">Le parcours suit une logique progressive : structure, projet, montant. À chaque réponse, le score se précise.</p>
         </Reveal>
         <div className="grid md:grid-cols-3 gap-6 relative">
           {steps.map((s, i) => (
             <Reveal key={s.n} delay={i * 0.1} className="relative">
-              <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-6 h-full">
+              <div className="bg-white border border-line rounded-2xl p-6 h-full shadow-card">
                 <div className="flex items-center gap-3 mb-4">
                   <span className="w-8 h-8 rounded-lg bg-coral flex items-center justify-center text-white text-xs font-bold shrink-0">{s.n}</span>
                   <s.icon className="w-5 h-5 text-teal" />
                 </div>
-                <h3 className="font-display font-bold text-lg mb-2">{s.title}</h3>
-                <p className="text-aqua/70 text-sm leading-relaxed">{s.desc}</p>
+                <h3 className="font-display font-bold text-lg text-navy mb-2">{s.title}</h3>
+                <p className="text-slate text-sm leading-relaxed">{s.desc}</p>
               </div>
             </Reveal>
           ))}
         </div>
-        <Reveal className="mt-12 grid sm:grid-cols-[1.2fr_0.8fr] gap-8 items-center bg-white/[0.04] border border-white/10 rounded-2xl p-6 sm:p-8">
+        <Reveal className="mt-12 grid sm:grid-cols-[1.2fr_0.8fr] gap-8 items-center bg-white border border-line rounded-2xl p-6 sm:p-8 shadow-card">
           <ChecklistCard className="w-full max-w-sm mx-auto" />
           <div className="text-center sm:text-left">
-            <RisingPath className="w-32 mx-auto sm:mx-0 mb-4" stroke="#27C7C9" hollow="#061F36" />
-            <h3 className="font-display font-bold text-lg mb-2">Un chemin recommandé, pas un verdict</h3>
-            <p className="text-aqua/70 text-sm leading-relaxed">À la fin, vous obtenez un score indicatif, le chemin recommandé, des documents utiles et les sources officielles à vérifier.</p>
+            <RisingPath className="w-32 mx-auto sm:mx-0 mb-4" stroke="#415338" hollow="#FBF7F1" />
+            <h3 className="font-display font-bold text-lg text-navy mb-2">Un chemin recommandé, pas un verdict</h3>
+            <p className="text-slate text-sm leading-relaxed">À la fin, vous obtenez un score indicatif, le chemin recommandé, des documents utiles et les sources officielles à vérifier.</p>
           </div>
         </Reveal>
         <Reveal className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <button onClick={onStart} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
             Démarrer le diagnostic <ArrowRight className="w-4 h-4" />
           </button>
-          <p className="text-xs text-aqua/40">Aucune inscription · Vos réponses restent sur votre appareil</p>
+          <p className="text-xs text-slate/60">Aucune inscription · Vos réponses restent sur votre appareil</p>
         </Reveal>
       </div>
     </section>
@@ -375,23 +375,21 @@ function UseCasesSection({ onStart }: { onStart: () => void }) {
 
 function ForWhoSection({ onStart }: { onStart: () => void }) {
   return (
-    <section className="relative bg-teal text-navy py-20 sm:py-24 overflow-hidden">
-      <div className="absolute inset-0 dotgrid-dark opacity-50" />
+    <section className="relative bg-white py-20 sm:py-24 overflow-hidden">
+      <div className="absolute inset-0 dotgrid opacity-25" />
       <div className="relative max-w-5xl mx-auto px-4 sm:px-6 text-center">
         <Reveal>
-          <div className="inline-flex items-center gap-1.5 border border-navy/20 text-navy text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded mb-4">
-            Pour qui
-          </div>
-          <h2 className="mt-2 font-display text-3xl sm:text-4xl font-bold tracking-tight text-balance">Conçu pour celles et ceux qui font tourner le secteur</h2>
-          <p className="mt-3 text-navy/65 max-w-xl mx-auto">Si vous gérez une structure qui reçoit des fonds publics ou collabore avec des organismes publics, ce diagnostic est fait pour vous.</p>
+          <Eyebrow>Pour qui</Eyebrow>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Conçu pour celles et ceux qui font tourner le secteur</h2>
+          <p className="mt-3 text-slate max-w-xl mx-auto">Si vous gérez une structure qui reçoit des fonds publics ou collabore avec des organismes publics, ce diagnostic est fait pour vous.</p>
         </Reveal>
         <Reveal delay={0.08} className="mt-8 flex flex-wrap gap-2 justify-center">
           {AUDIENCES.map(a => (
-            <span key={a} className="px-3.5 py-1.5 rounded-lg bg-navy text-white font-medium text-sm">{a}</span>
+            <span key={a} className="px-3.5 py-1.5 rounded-lg bg-sable border border-line text-navy font-medium text-sm">{a}</span>
           ))}
         </Reveal>
         <Reveal delay={0.12} className="mt-8">
-          <button onClick={onStart} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-navy text-white font-semibold text-sm hover:brightness-110 transition-all">
+          <button onClick={onStart} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
             Faire le diagnostic <ArrowRight className="w-4 h-4" />
           </button>
         </Reveal>
