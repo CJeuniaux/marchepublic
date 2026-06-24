@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight, ArrowUpRight, Compass, Route, Gauge, Menu, X,
   Globe, Cloud, Users, PenTool, Code2, Boxes, GraduationCap, Server,
@@ -410,18 +410,32 @@ function FAQSection() {
         <div className="space-y-2">
           {FAQS.map((f, i) => (
             <Reveal key={i} delay={(i % 3) * 0.04}>
-              <div className={`rounded-xl border overflow-hidden transition-all ${open === i ? 'bg-white border-teal/40 shadow-card' : 'bg-white border-line'}`}>
+              <div className={`rounded-xl border overflow-hidden transition-colors duration-150 ${open === i ? 'bg-white border-teal/40 shadow-card' : 'bg-white border-line'}`}>
                 <button onClick={() => setOpen(open === i ? null : i)} className="w-full text-left px-5 py-4 flex items-center justify-between gap-4">
                   <span className="font-display font-semibold text-navy text-[14px] leading-snug text-balance">{f.q}</span>
-                  <span className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-all ${open === i ? 'bg-teal text-navy rotate-180' : 'bg-aqua text-slate'}`}>
+                  <motion.span
+                    animate={{ rotate: open === i ? 180 : 0 }}
+                    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                    className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${open === i ? 'bg-teal text-white' : 'bg-sable text-slate'}`}
+                  >
                     <ChevronDown className="w-3.5 h-3.5" />
-                  </span>
+                  </motion.span>
                 </button>
-                {open === i && (
-                  <div className="px-5 pb-4 border-t border-line">
-                    <p className="text-slate text-sm leading-relaxed pt-3">{f.a}</p>
-                  </div>
-                )}
+                <AnimatePresence initial={false}>
+                  {open === i && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-4 border-t border-line">
+                        <p className="text-slate text-sm leading-relaxed pt-3">{f.a}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </Reveal>
           ))}
