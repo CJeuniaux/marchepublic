@@ -207,3 +207,81 @@ export function Signpost({ className = '' }: { className?: string }) {
     </svg>
   )
 }
+
+/** BuildingScene — éditoriale: bâtiment belge, arbres, chemin, palette chaude. */
+export function BuildingScene({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 480 360" className={className} fill="none" aria-hidden>
+      {/* Sky */}
+      <rect width="480" height="360" fill="#FBF7F1" />
+      {/* Ground */}
+      <rect x="0" y="306" width="480" height="54" fill="#F4E9D8" />
+      <ellipse cx="240" cy="316" rx="230" ry="16" fill="#EDE0CC" />
+      {/* Cloud left */}
+      <ellipse cx="52" cy="72" rx="28" ry="14" fill="#F4E9D8" />
+      <ellipse cx="34" cy="76" rx="20" ry="12" fill="#F4E9D8" />
+      <ellipse cx="72" cy="78" rx="22" ry="11" fill="#F4E9D8" />
+      {/* Cloud right */}
+      <ellipse cx="428" cy="64" rx="26" ry="13" fill="#F4E9D8" />
+      <ellipse cx="410" cy="68" rx="18" ry="11" fill="#F4E9D8" />
+      <ellipse cx="446" cy="70" rx="20" ry="10" fill="#F4E9D8" />
+      {/* Far-left tree */}
+      <rect x="29" y="250" width="10" height="60" rx="4" fill="#354a2c" />
+      <ellipse cx="34" cy="228" rx="26" ry="34" fill="#415338" />
+      <ellipse cx="30" cy="218" rx="18" ry="24" fill="#4e6640" opacity="0.7" />
+      {/* Left mid tree */}
+      <rect x="80" y="260" width="8" height="50" rx="3" fill="#354a2c" />
+      <ellipse cx="84" cy="244" rx="20" ry="26" fill="#415338" opacity="0.85" />
+      {/* Main building — side wings */}
+      <rect x="108" y="182" width="80" height="130" rx="4" fill="#EDE0CC" stroke="#E4D9CC" strokeWidth="1.5" />
+      <rect x="292" y="182" width="80" height="130" rx="4" fill="#EDE0CC" stroke="#E4D9CC" strokeWidth="1.5" />
+      {/* Main building — central body */}
+      <rect x="152" y="142" width="176" height="170" rx="4" fill="#F4E9D8" stroke="#E4D9CC" strokeWidth="2" />
+      {/* Wing roofs */}
+      <path d="M96 186 L148 148 L200 186 Z" fill="#E63948" opacity="0.85" />
+      <path d="M280 186 L332 148 L384 186 Z" fill="#E63948" opacity="0.85" />
+      {/* Main roof */}
+      <path d="M136 146 L240 56 L344 146 Z" fill="#E63948" />
+      <path d="M140 146 L240 60 L340 146" fill="none" stroke="#c42535" strokeWidth="1" opacity="0.3" />
+      {/* Chimney */}
+      <rect x="290" y="78" width="16" height="52" rx="2" fill="#2E2348" />
+      <rect x="286" y="74" width="24" height="10" rx="2" fill="#1C1534" />
+      {/* Wing windows */}
+      <rect x="125" y="208" width="28" height="36" rx="4" fill="#2E5C8A" opacity="0.22" stroke="#2E2348" strokeWidth="1.5" />
+      <path d="M125 220 Q139 208 153 220" fill="none" stroke="#2E2348" strokeWidth="1" opacity="0.6" />
+      <rect x="327" y="208" width="28" height="36" rx="4" fill="#2E5C8A" opacity="0.22" stroke="#2E2348" strokeWidth="1.5" />
+      <path d="M327 220 Q341 208 355 220" fill="none" stroke="#2E2348" strokeWidth="1" opacity="0.6" />
+      {/* Center top windows */}
+      <rect x="184" y="162" width="28" height="36" rx="4" fill="#F4C48F" opacity="0.38" stroke="#2E2348" strokeWidth="1.5" />
+      <path d="M184 174 Q198 162 212 174" fill="none" stroke="#2E2348" strokeWidth="1" opacity="0.5" />
+      <rect x="268" y="162" width="28" height="36" rx="4" fill="#F4C48F" opacity="0.38" stroke="#2E2348" strokeWidth="1.5" />
+      <path d="M268 174 Q282 162 296 174" fill="none" stroke="#2E2348" strokeWidth="1" opacity="0.5" />
+      {/* Center lower windows */}
+      <rect x="184" y="214" width="28" height="36" rx="4" fill="#2E5C8A" opacity="0.2" stroke="#2E2348" strokeWidth="1.5" />
+      <rect x="268" y="214" width="28" height="36" rx="4" fill="#2E5C8A" opacity="0.2" stroke="#2E2348" strokeWidth="1.5" />
+      {/* Main door — arched */}
+      <rect x="214" y="246" width="52" height="66" rx="26" fill="#2E2348" />
+      <rect x="218" y="250" width="44" height="48" rx="22" fill="#2E5C8A" opacity="0.45" />
+      <circle cx="258" cy="282" r="3" fill="#F4C48F" />
+      {/* Door step */}
+      <rect x="200" y="308" width="80" height="7" rx="2" fill="#E4D9CC" />
+      {/* Path */}
+      <path d="M222 312 L206 360 L274 360 L258 312 Z" fill="#EDE0CC" opacity="0.9" />
+      {/* Right mid tree */}
+      <rect x="390" y="260" width="8" height="50" rx="3" fill="#354a2c" />
+      <ellipse cx="394" cy="244" rx="20" ry="26" fill="#415338" opacity="0.85" />
+      {/* Far-right tree */}
+      <rect x="438" y="248" width="10" height="62" rx="4" fill="#354a2c" />
+      <ellipse cx="443" cy="226" rx="26" ry="34" fill="#415338" />
+      <ellipse cx="448" cy="216" rx="18" ry="24" fill="#4e6640" opacity="0.7" />
+      {/* Bushes */}
+      <ellipse cx="118" cy="310" rx="24" ry="10" fill="#415338" opacity="0.55" />
+      <ellipse cx="362" cy="310" rx="22" ry="10" fill="#415338" opacity="0.55" />
+      <ellipse cx="192" cy="314" rx="14" ry="7" fill="#415338" opacity="0.4" />
+      <ellipse cx="288" cy="314" rx="14" ry="7" fill="#415338" opacity="0.4" />
+      {/* Sun accent */}
+      <circle cx="406" cy="46" r="18" fill="#F4C48F" opacity="0.55" />
+      <circle cx="406" cy="46" r="12" fill="#F4C48F" opacity="0.4" />
+    </svg>
+  )
+}

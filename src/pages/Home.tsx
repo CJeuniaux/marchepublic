@@ -1,12 +1,11 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  ArrowRight, ArrowUpRight, Compass, Route, Gauge, Menu, X,
+  ArrowRight, ArrowUpRight, Menu, X,
   Globe, Cloud, Users, PenTool, Code2, Boxes, GraduationCap, Server,
-  ChevronDown, Check, Target, ClipboardList, PenLine,
-  ShieldCheck, Clock, Lock,
+  ChevronDown, Check, Clock, ShieldCheck, Lock, BookOpen, Briefcase, Building2,
 } from 'lucide-react'
-import { HeroPathScene, LogoMark, TangleToArrow, ChecklistCard, RisingPath, Constellation, Signpost } from '../components/Graphics'
+import { BuildingScene, LogoMark, TangleToArrow, StepGlyph, Signpost } from '../components/Graphics'
 
 const NOMAD_URL = 'https://nomadimpact.org'
 
@@ -39,17 +38,15 @@ function Eyebrow({ children, tone = 'sun' }: { children: ReactNode; tone?: 'sun'
 }
 
 const USE_CASES = [
-  { icon: Globe,        title: 'Refaire votre site web',         desc: 'Refonte, CMS, développement sur mesure.' },
-  { icon: Cloud,        title: 'Acheter un SaaS',                desc: 'CRM, gestion de membres, plateforme.' },
-  { icon: Users,        title: 'Une mission de consultance',     desc: 'Audit, accompagnement, évaluation.' },
-  { icon: PenTool,      title: 'Engager un graphiste',           desc: 'Identité, campagne, rapport annuel.' },
-  { icon: Code2,        title: 'Un outil sur mesure',            desc: 'Application, plateforme, automatisation.' },
+  { icon: Globe,        title: 'Refaire votre site web',          desc: 'Refonte, CMS, développement sur mesure.' },
+  { icon: Cloud,        title: 'Acheter un SaaS',                 desc: 'CRM, gestion de membres, plateforme.' },
+  { icon: Users,        title: 'Une mission de consultance',      desc: 'Audit, accompagnement, évaluation.' },
+  { icon: PenTool,      title: 'Engager un graphiste',            desc: 'Identité, campagne, rapport annuel.' },
+  { icon: Code2,        title: 'Un outil sur mesure',             desc: 'Application, plateforme, automatisation.' },
   { icon: Boxes,        title: 'Sous-traiter un projet subsidié', desc: 'Prestation financée par un subside.' },
-  { icon: GraduationCap, title: 'Organiser une formation',      desc: 'Cycle, e-learning, certification.' },
-  { icon: Server,       title: 'Louer des services techniques',  desc: 'Hébergement, maintenance, support.' },
+  { icon: GraduationCap, title: 'Organiser une formation',       desc: 'Cycle, e-learning, certification.' },
+  { icon: Server,       title: 'Louer des services techniques',   desc: 'Hébergement, maintenance, support.' },
 ]
-
-const AUDIENCES = ['ASBL', 'Fondations', 'ONG', 'Fédérations', 'Associations culturelles', 'Acteurs sociaux', 'Clubs sportifs', 'Projets éducatifs', 'Porteurs de projets européens', 'Petites structures subsidiées']
 
 const FAQS = [
   { q: 'Une ASBL peut-elle vraiment être soumise aux marchés publics ?', a: "Oui. Une ASBL peut être qualifiée de « pouvoir adjudicateur » si elle est majoritairement financée par des fonds publics, contrôlée par une autorité publique, ou si sa gouvernance est dominée par des représentants publics. Le statut associatif ne protège pas automatiquement." },
@@ -62,10 +59,10 @@ const FAQS = [
 
 type TrustItem = { Icon: typeof Clock; label: string }
 const TRUST_ITEMS: TrustItem[] = [
-  { Icon: Clock, label: 'Environ 5 minutes' },
+  { Icon: Clock,       label: 'Environ 5 minutes' },
   { Icon: ShieldCheck, label: 'Sources officielles belges' },
-  { Icon: Lock, label: 'Sans inscription' },
-  { Icon: Check, label: 'Estimation indicative' },
+  { Icon: Lock,        label: 'Sans inscription' },
+  { Icon: Check,       label: 'Estimation indicative' },
 ]
 
 function Header({ onStart }: { onStart: () => void }) {
@@ -76,9 +73,9 @@ function Header({ onStart }: { onStart: () => void }) {
     fn(); window.addEventListener('scroll', fn, { passive: true })
     return () => window.removeEventListener('scroll', fn)
   }, [])
-  const links: [string, string][] = [['#pourquoi', 'Pourquoi'], ['#comment', 'Comment ça marche'], ['#cas', 'Cas fréquents'], ['#faq', 'FAQ']]
+  const links: [string, string][] = [['#comment', 'Comment ça marche'], ['#cas', 'Cas fréquents'], ['#faq', 'FAQ'], ['#pour-qui', 'Pour qui']]
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-200 ${scrolled ? 'bg-white border-b border-line shadow-[0_1px_8px_rgba(8,43,76,0.06)]' : 'bg-transparent'}`}>
+    <header className={`sticky top-0 z-50 transition-all duration-200 ${scrolled ? 'bg-white border-b border-line shadow-[0_1px_8px_rgba(8,43,76,0.06)]' : 'bg-white/95 border-b border-line'}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <a href="#top" className="flex items-center gap-2.5">
           <LogoMark className="h-6 w-auto" nodeColor="#2E2348" />
@@ -113,10 +110,8 @@ function Header({ onStart }: { onStart: () => void }) {
 function Hero({ onStart }: { onStart: () => void }) {
   return (
     <section id="top" className="relative overflow-hidden bg-cream">
-      <div className="absolute inset-0 dotgrid opacity-40" />
-      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-coral via-coral/60 to-transparent" />
-      <Constellation className="hidden lg:block absolute top-16 right-8 w-64 text-navy opacity-[0.06] pointer-events-none" />
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-20 sm:pt-24 sm:pb-28">
+      <div className="absolute top-0 left-0 right-0 h-[3px] bg-coral" />
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-8 sm:pt-24 sm:pb-12">
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}>
             <div className="inline-flex items-center gap-2 border border-line text-navy/70 text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded mb-6 bg-sable">
@@ -134,7 +129,7 @@ function Hero({ onStart }: { onStart: () => void }) {
                 Faire le diagnostic <ArrowRight className="w-4 h-4" />
               </button>
               <a href="#comment" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg border border-navy/20 text-navy font-semibold text-sm hover:bg-navy/5 transition-all">
-                Comprendre les critères
+                Voir le diagnostic
               </a>
             </div>
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-5">
@@ -147,87 +142,27 @@ function Hero({ onStart }: { onStart: () => void }) {
             </div>
           </motion.div>
 
-          <motion.div className="relative" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}>
-            <HeroPathScene className="absolute -inset-6 w-[calc(100%+3rem)] opacity-40 hidden sm:block pointer-events-none" />
-            <div className="relative animate-floaty">
-              <div className="bg-white text-navy rounded-2xl shadow-float p-6 sm:p-7 border border-line">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate">marchépublic.be</span>
-                  <span className="flex items-center gap-1.5 text-[10px] font-semibold text-slate"><Gauge className="w-3 h-3" /> Étape 3 ⁄ 5</span>
-                </div>
-                <div className="w-full bg-line rounded-full h-1 mb-5">
-                  <div className="bg-coral h-1 rounded-full" style={{ width: '60%' }} />
-                </div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-coral mb-1">Votre projet</p>
-                <p className="font-display font-bold text-base mb-4 leading-snug">Quel type de prestation souhaitez-vous commander ?</p>
-                <div className="space-y-2">
-                  {([['Site web ou application', true], ['Mission de consultance', false], ['Formation ou coaching', false]] as [string, boolean][]).map(([t, active]) => (
-                    <div key={t} className={`text-xs font-medium px-3.5 py-2.5 rounded-lg border-2 flex items-center gap-2.5 ${active ? 'border-coral bg-coral/[0.05] text-navy' : 'border-line text-slate'}`}>
-                      <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${active ? 'border-coral bg-coral' : 'border-line'}`}>
-                        {active && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
-                      </span>
-                      {t}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="absolute -bottom-5 -left-5 bg-navy text-white rounded-xl shadow-float px-4 py-3 flex items-center gap-2.5 animate-floaty-slow border border-white/10">
-                <span className="w-8 h-8 rounded-lg bg-coral/20 flex items-center justify-center text-coral text-sm font-bold shrink-0">74%</span>
-                <div>
-                  <p className="text-[9px] uppercase tracking-widest text-aqua/60 font-semibold">Score indicatif</p>
-                  <p className="text-xs font-bold">Forte probabilité</p>
-                </div>
-              </div>
-            </div>
+          <motion.div
+            className="relative hidden lg:flex items-center justify-center"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <BuildingScene className="w-full max-w-lg" />
           </motion.div>
         </div>
-
-        <div className="mt-16 pt-8 border-t border-line grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl">
-          {([['5 min', 'Pour tracer votre réponse'], ['8 questions', 'Guidées, sans jargon'], ['100 %', 'Indépendant & gratuit']] as [string, string][]).map(([n, l]) => (
-            <div key={n}>
-              <p className="font-display font-bold text-xl sm:text-2xl text-coral">{n}</p>
-              <p className="text-xs text-slate/70 mt-1 leading-snug">{l}</p>
-            </div>
-          ))}
-        </div>
       </div>
-      <div className="h-8 bg-gradient-to-b from-transparent to-sable" />
-    </section>
-  )
-}
 
-function WhySection() {
-  const items = [
-    { icon: Compass, title: 'Votre structure compte', desc: "Financement public, gouvernance, contrôle ou mission d'intérêt général peuvent influencer vos obligations." },
-    { icon: Route,   title: 'Votre projet compte',   desc: "Site web, logiciel, consultance, formation ou prestation externe : chaque achat doit être qualifié correctement." },
-    { icon: Gauge,   title: 'Le montant compte',      desc: "Le montant estimé HTVA oriente la procédure, les documents à préparer et le niveau de mise en concurrence." },
-  ]
-  return (
-    <section id="pourquoi" className="bg-cream py-20 sm:py-28">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center mb-16">
-          <Reveal className="max-w-2xl">
-            <Eyebrow>Pourquoi cet outil</Eyebrow>
-            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Quand le chemin n'est pas clair, les projets ralentissent.</h2>
-            <p className="mt-4 text-slate leading-relaxed">Une ASBL peut vite se retrouver face à une question simple en apparence : peut-on choisir librement un prestataire ou faut-il passer par une procédure de marché public ? marchépublic.be vous aide à identifier les points clés, estimer votre niveau d'obligation et avancer avec méthode.</p>
-          </Reveal>
-          <Reveal delay={0.1} className="text-navy">
-            <TangleToArrow className="w-full max-w-sm mx-auto" />
-            <p className="mt-3 text-center text-xs font-bold uppercase tracking-widest text-slate">Du doute à un chemin clair</p>
-          </Reveal>
-        </div>
-        <div className="grid md:grid-cols-3 gap-4">
-          {items.map((c, i) => (
-            <Reveal key={c.title} delay={i * 0.08}>
-              <div className="h-full bg-white rounded-2xl border border-line p-6 shadow-card">
-                <div className="w-10 h-10 rounded-xl bg-sable border border-line flex items-center justify-center mb-5">
-                  <c.icon className="w-5 h-5 text-coral" />
-                </div>
-                <h3 className="font-display font-bold text-navy mb-2">{c.title}</h3>
-                <p className="text-slate text-sm leading-relaxed">{c.desc}</p>
+      <div className="bg-sable border-t border-line">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+          <div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl">
+            {([['5 min', 'Pour tracer votre réponse'], ['8 questions', 'Guidées, sans jargon'], ['100 %', 'Indépendant et gratuit']] as [string, string][]).map(([n, l]) => (
+              <div key={n}>
+                <p className="font-display font-bold text-xl sm:text-2xl text-coral">{n}</p>
+                <p className="text-xs text-slate/70 mt-1 leading-snug">{l}</p>
               </div>
-            </Reveal>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -236,47 +171,110 @@ function WhySection() {
 
 function HowSection({ onStart }: { onStart: () => void }) {
   const steps = [
-    { n: '01', icon: Compass, title: 'Situer votre structure', desc: "ASBL, fondation, organisme subsidié ou structure hybride : on identifie les premiers indices." },
-    { n: '02', icon: Route,   title: 'Qualifier votre projet', desc: "Service, fourniture, développement digital, consultance ou formation : on précise ce que vous achetez." },
-    { n: '03', icon: Gauge,   title: "Obtenir votre estimation", desc: "Vous recevez un score 0–100 %, un chemin recommandé et les sources officielles à vérifier." },
+    {
+      n: 1,
+      glyph: 'structure',
+      title: 'Répondez aux questions',
+      desc: "Huit questions sur votre structure, votre financement, votre gouvernance et votre projet. Sans jargon.",
+    },
+    {
+      n: 2,
+      glyph: 'financement',
+      title: 'Obtenez votre estimation',
+      desc: "Un score indicatif 0–100 % calculé selon les critères officiels belges. Avec le détail de chaque facteur.",
+    },
+    {
+      n: 3,
+      glyph: 'projet',
+      title: 'Prenez une décision éclairée',
+      desc: "Un chemin recommandé, des documents utiles et les sources officielles à vérifier avant d'agir.",
+    },
   ]
   return (
-    <section id="comment" className="relative bg-sable py-20 sm:py-28 overflow-hidden">
-      <div className="absolute inset-0 dotgrid opacity-30" />
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
-        <Reveal className="max-w-xl mb-14">
+    <section id="comment" className="bg-sable py-20 sm:py-28">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <Reveal className="text-center max-w-2xl mx-auto mb-14">
           <Eyebrow>Comment ça marche</Eyebrow>
-          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Un diagnostic structuré en trois temps</h2>
-          <p className="mt-3 text-slate">Le parcours suit une logique progressive : structure, projet, montant. À chaque réponse, le score se précise.</p>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Le diagnostic en 2 étapes</h2>
+          <p className="mt-3 text-slate">Répondez aux questions, obtenez votre résultat. Le parcours suit une logique progressive : structure, projet, montant.</p>
         </Reveal>
-        <div className="grid md:grid-cols-3 gap-6 relative">
+        <div className="grid md:grid-cols-3 gap-6">
           {steps.map((s, i) => (
-            <Reveal key={s.n} delay={i * 0.1} className="relative">
-              <div className="bg-white border border-line rounded-2xl p-6 h-full shadow-card">
+            <Reveal key={s.n} delay={i * 0.1}>
+              <div className="bg-white border border-line rounded-2xl p-6 h-full shadow-card flex flex-col">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="w-8 h-8 rounded-lg bg-coral flex items-center justify-center text-white text-xs font-bold shrink-0">{s.n}</span>
-                  <s.icon className="w-5 h-5 text-navy/50" />
+                  <span className="w-9 h-9 rounded-full bg-coral flex items-center justify-center text-white text-sm font-bold shrink-0">{s.n}</span>
                 </div>
                 <h3 className="font-display font-bold text-lg text-navy mb-2">{s.title}</h3>
-                <p className="text-slate text-sm leading-relaxed">{s.desc}</p>
+                <p className="text-slate text-sm leading-relaxed flex-1">{s.desc}</p>
+                <div className="mt-6 pt-5 border-t border-line flex items-center justify-center">
+                  <StepGlyph name={s.glyph} className="w-14 h-14 text-navy/40" />
+                </div>
               </div>
             </Reveal>
           ))}
         </div>
-        <Reveal className="mt-12 grid sm:grid-cols-[1.2fr_0.8fr] gap-8 items-center bg-white border border-line rounded-2xl p-6 sm:p-8 shadow-card">
-          <ChecklistCard className="w-full max-w-sm mx-auto" />
-          <div className="text-center sm:text-left">
-            <RisingPath className="w-32 mx-auto sm:mx-0 mb-4" stroke="#E63948" hollow="#FBF7F1" />
-            <h3 className="font-display font-bold text-lg text-navy mb-2">Un chemin recommandé, pas un verdict</h3>
-            <p className="text-slate text-sm leading-relaxed">À la fin, vous obtenez un score indicatif, le chemin recommandé, des documents utiles et les sources officielles à vérifier.</p>
-          </div>
-        </Reveal>
         <Reveal className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <button onClick={onStart} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
             Démarrer le diagnostic <ArrowRight className="w-4 h-4" />
           </button>
           <p className="text-xs text-slate/60">Aucune inscription · Vos réponses restent sur votre appareil</p>
         </Reveal>
+      </div>
+    </section>
+  )
+}
+
+function StructureSection() {
+  const benefits = [
+    {
+      key: 'Équité',
+      title: 'Équité',
+      desc: "Toutes les structures ne sont pas logées à la même enseigne. Le diagnostic adapte ses critères à votre situation réelle.",
+    },
+    {
+      key: 'Pertinence',
+      title: 'Pertinence',
+      desc: "Les questions portent sur les éléments qui comptent vraiment : financement public, gouvernance, contrôle, montant.",
+    },
+    {
+      key: 'Sécurité',
+      title: 'Sécurité',
+      desc: "Chaque résultat renvoie aux sources officielles belges. Vous avancez avec méthode, pas à l'aveugle.",
+    },
+  ]
+  return (
+    <section className="bg-navy py-20 sm:py-28 relative overflow-hidden">
+      <div className="absolute inset-0 dotgrid-light opacity-10" />
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="grid lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-16 items-center">
+          <Reveal>
+            <Eyebrow tone="cream">Méthode</Eyebrow>
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-white tracking-tight text-balance leading-tight">
+              Un diagnostic structuré en trois temps
+            </h2>
+            <p className="mt-4 text-aqua/70 leading-relaxed">
+              Le parcours suit la logique des critères légaux belges. Chaque question éclaire un angle. L'ensemble forme une estimation argumentée, pas un verdict arbitraire.
+            </p>
+            <div className="mt-6 flex items-center gap-3">
+              <div className="w-2 h-2 rounded-full bg-coral" />
+              <span className="text-sm text-aqua/60">Basé sur la loi du 17 juin 2016 et ses arrêtés d'exécution</span>
+            </div>
+          </Reveal>
+          <div className="grid gap-4">
+            {benefits.map((b, i) => (
+              <Reveal key={b.key} delay={i * 0.1}>
+                <div className="bg-white/[0.06] border border-white/12 rounded-xl p-5 flex items-start gap-4">
+                  <span className="w-8 h-8 rounded-full bg-coral flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+                  <div>
+                    <h3 className="font-display font-bold text-white mb-1">{b.title}</h3>
+                    <p className="text-aqua/65 text-sm leading-relaxed">{b.desc}</p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   )
@@ -308,7 +306,7 @@ function ClarifySection() {
             <div className="h-full bg-white rounded-2xl border border-line p-7 shadow-card">
               <div className="flex items-center gap-2.5 mb-5">
                 <Signpost className="w-9 h-9 shrink-0" />
-                <h3 className="font-display font-bold text-navy text-lg">Ce que le tracé peut clarifier</h3>
+                <h3 className="font-display font-bold text-navy text-lg">Il vous aide à vous orienter</h3>
               </div>
               <ul className="space-y-3">
                 {can.map(t => (
@@ -323,10 +321,13 @@ function ClarifySection() {
             </div>
           </Reveal>
           <Reveal delay={0.08}>
-            <div className="h-full bg-cream rounded-2xl border border-coral/20 p-7 shadow-card relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-coral/40" />
-              <Eyebrow tone="coral">Limites</Eyebrow>
-              <h3 className="mt-4 font-display font-bold text-navy text-lg mb-5">Ce qu'il ne remplace pas</h3>
+            <div className="h-full bg-white rounded-2xl border border-line p-7 shadow-card">
+              <div className="flex items-center gap-2.5 mb-5">
+                <span className="w-9 h-9 rounded-full bg-coral/10 border border-coral/20 flex items-center justify-center shrink-0">
+                  <X className="w-4 h-4 text-coral" />
+                </span>
+                <h3 className="font-display font-bold text-navy text-lg">Il ne remplace pas</h3>
+              </div>
               <ul className="space-y-3">
                 {cannot.map(t => (
                   <li key={t} className="flex items-start gap-3 text-sm text-navy/80">
@@ -352,7 +353,7 @@ function UseCasesSection({ onStart }: { onStart: () => void }) {
         <Reveal className="max-w-2xl mb-10">
           <Eyebrow>Cas fréquents</Eyebrow>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Dans quels cas la question se pose</h2>
-          <p className="mt-3 text-slate">Ces achats du quotidien associatif déclenchent souvent la question. Cliquez sur le vôtre pour commencer le diagnostic.</p>
+          <p className="mt-3 text-slate">Ces achats du quotidien associatif déclenchent souvent la question.</p>
         </Reveal>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {USE_CASES.map((c, i) => (
@@ -374,31 +375,6 @@ function UseCasesSection({ onStart }: { onStart: () => void }) {
   )
 }
 
-function ForWhoSection({ onStart }: { onStart: () => void }) {
-  return (
-    <section className="relative bg-white py-20 sm:py-24 overflow-hidden">
-      <div className="absolute inset-0 dotgrid opacity-25" />
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 text-center">
-        <Reveal>
-          <Eyebrow>Pour qui</Eyebrow>
-          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Conçu pour celles et ceux qui font tourner le secteur</h2>
-          <p className="mt-3 text-slate max-w-xl mx-auto">Si vous gérez une structure qui reçoit des fonds publics ou collabore avec des organismes publics, ce diagnostic est fait pour vous.</p>
-        </Reveal>
-        <Reveal delay={0.08} className="mt-8 flex flex-wrap gap-2 justify-center">
-          {AUDIENCES.map(a => (
-            <span key={a} className="px-3.5 py-1.5 rounded-lg bg-sable border border-line text-navy font-medium text-sm">{a}</span>
-          ))}
-        </Reveal>
-        <Reveal delay={0.12} className="mt-8">
-          <button onClick={onStart} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
-            Faire le diagnostic <ArrowRight className="w-4 h-4" />
-          </button>
-        </Reveal>
-      </div>
-    </section>
-  )
-}
-
 function FAQSection() {
   const [open, setOpen] = useState<number | null>(0)
   return (
@@ -406,7 +382,7 @@ function FAQSection() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <Reveal className="mb-10">
           <Eyebrow>FAQ</Eyebrow>
-          <h2 className="mt-3 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight">Les réponses, sans le jargon</h2>
+          <h2 className="mt-3 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight">Les réponses, dans le jargon</h2>
         </Reveal>
         <div className="space-y-2">
           {FAQS.map((f, i) => (
@@ -447,85 +423,108 @@ function FAQSection() {
   )
 }
 
-const NOMAD_OFFERS = [
-  { icon: Target,        title: 'Cadrer votre projet',          desc: 'Ateliers de définition, cahier des charges, stratégie digitale.' },
-  { icon: ClipboardList, title: 'Préparer le devis',            desc: 'Spécifications techniques, critères, comparaison d\'offres.' },
-  { icon: PenLine,       title: 'Rédiger le cahier des charges', desc: 'Document structuré pour un appel à prestataires dans les règles.' },
+const AUDIENCE_PROFILES = [
+  {
+    key: 'asbl',
+    Icon: Users,
+    label: 'ASBL et collectifs',
+    desc: "Associations subventionnées, fédérations sectorielles, structures culturelles, sportives ou éducatives qui reçoivent des fonds publics.",
+    tags: ['ASBL', 'Fédérations', 'Associations culturelles', 'Clubs sportifs'],
+  },
+  {
+    key: 'sociale',
+    Icon: Building2,
+    label: 'Entreprises sociales',
+    desc: "Coopératives, entreprises à finalité sociale, structures d'insertion et organismes d'économie sociale partiellement financés.",
+    tags: ['Coopératives', 'Entreprises ESS', 'Structures d\'insertion'],
+  },
+  {
+    key: 'pro',
+    Icon: Briefcase,
+    label: 'Professionnels de l\'ess',
+    desc: "Coordinateurs de projets, directeurs financiers et gestionnaires de subventions qui cherchent une réponse claire avant d'agir.",
+    tags: ['Coordinateurs', 'Gestionnaires', 'Porteurs de projets'],
+  },
 ]
 
-function NomadImpactSection({ onStart }: { onStart: () => void }) {
+function AudienceSection({ onStart }: { onStart: () => void }) {
   return (
-    <section className="bg-white py-20 sm:py-28">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        <Reveal>
-          <div className="relative overflow-hidden rounded-2xl bg-navy text-white border border-white/5 shadow-float">
-            <div className="absolute inset-0 dotgrid-light opacity-20" />
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-coral to-coral/40" />
-            <Constellation className="absolute top-4 right-4 w-36 text-coral opacity-[0.08] pointer-events-none" />
-            <div className="relative px-6 py-10 sm:px-10 sm:py-12">
-              <div className="mb-8">
-                <Eyebrow tone="cream">Vous avez un projet digital à cadrer ?</Eyebrow>
-                <h2 className="mt-5 font-display text-2xl sm:text-3xl font-bold leading-tight max-w-lg">
-                  marchépublic.be identifie vos obligations.<br />
-                  <span className="text-coral">Nomad Impact</span> vous aide à préparer la suite.
-                </h2>
-                <p className="mt-3 text-aqua/70 text-sm leading-relaxed max-w-md">
-                  Une fois votre situation clarifiée, passer à l'action demande méthode. Nomad Impact accompagne les ASBL et organisations belges dans la définition et la mise en œuvre de leurs projets digitaux.
-                </p>
+    <section id="pour-qui" className="bg-sable py-20 sm:py-28">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <Reveal className="max-w-2xl mb-12">
+          <Eyebrow>Pour qui</Eyebrow>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Conçu pour celles et ceux qui font tourner le secteur</h2>
+          <p className="mt-3 text-slate">Si vous gérez une structure qui reçoit des fonds publics ou collabore avec des organismes publics, ce diagnostic est fait pour vous.</p>
+        </Reveal>
+        <div className="grid md:grid-cols-3 gap-5">
+          {AUDIENCE_PROFILES.map((a, i) => (
+            <Reveal key={a.key} delay={i * 0.1}>
+              <div className="h-full bg-white rounded-2xl border border-line p-6 shadow-card flex flex-col">
+                <div className="w-12 h-12 rounded-xl bg-sable border border-line flex items-center justify-center mb-5">
+                  <a.Icon className="w-6 h-6 text-navy/60" />
+                </div>
+                <h3 className="font-display font-bold text-navy text-lg mb-2">{a.label}</h3>
+                <p className="text-slate text-sm leading-relaxed flex-1">{a.desc}</p>
+                <div className="mt-5 pt-4 border-t border-line flex flex-wrap gap-1.5">
+                  {a.tags.map(t => (
+                    <span key={t} className="px-2.5 py-1 rounded bg-sable border border-line text-navy/70 text-[11px] font-medium">{t}</span>
+                  ))}
+                </div>
               </div>
-              <div className="grid sm:grid-cols-3 gap-3 mb-8">
-                {NOMAD_OFFERS.map((offer, i) => (
-                  <motion.div
-                    key={offer.title}
-                    initial={{ opacity: 0, y: 12 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.08, duration: 0.45 }}
-                    className="bg-white/[0.06] border border-white/10 rounded-xl p-5"
-                  >
-                    <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center mb-3">
-                      <offer.icon className="w-4 h-4 text-white/70" />
-                    </div>
-                    <h3 className="font-display font-semibold text-sm mb-1.5 leading-snug">{offer.title}</h3>
-                    <p className="text-aqua/60 text-xs leading-relaxed">{offer.desc}</p>
-                  </motion.div>
-                ))}
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <button onClick={onStart} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
-                  Faire le diagnostic <ArrowRight className="w-4 h-4" />
-                </button>
-                <a href={NOMAD_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-white/20 text-white font-semibold text-sm hover:bg-white/8 transition-all">
-                  Découvrir Nomad Impact <ArrowUpRight className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
-          </div>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal delay={0.15} className="mt-10 text-center">
+          <button onClick={onStart} className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg bg-coral text-white font-semibold hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
+            Faire le diagnostic <ArrowRight className="w-4 h-4" />
+          </button>
         </Reveal>
       </div>
     </section>
   )
 }
 
-function FinalCTA({ onStart }: { onStart: () => void }) {
+function BottomCTA({ onStart }: { onStart: () => void }) {
+  const offers = [
+    { Icon: BookOpen, title: 'Cadrer votre projet', desc: 'Ateliers de définition, cahier des charges, stratégie digitale.' },
+    { Icon: TangleToArrow, title: 'Préparer le dossier', desc: 'Spécifications techniques, critères, comparaison d\'offres.' },
+    { Icon: Briefcase,   title: 'Rédiger les documents', desc: 'Document structuré pour un appel à prestataires dans les règles.' },
+  ]
   return (
-    <section className="bg-cream pb-24">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+    <section className="bg-navy py-20 sm:py-28 relative overflow-hidden">
+      <div className="absolute inset-0 dotgrid-light opacity-10" />
+      <div className="relative max-w-5xl mx-auto px-4 sm:px-6">
         <Reveal>
-          <div className="relative overflow-hidden rounded-2xl bg-sable border border-line px-6 py-14 sm:px-12 sm:py-16 text-center shadow-card">
-            <div className="absolute inset-0 dotgrid opacity-25" />
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-coral" />
-            <div className="relative">
-              <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-balance max-w-2xl mx-auto text-navy">Un projet en tête ? Clarifions d'abord vos obligations.</h2>
-              <p className="mt-4 text-slate max-w-xl mx-auto text-sm leading-relaxed">Cinq minutes pour obtenir un score, un chemin recommandé et les sources officielles belges à vérifier.</p>
-              <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-                <button onClick={onStart} className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-coral text-white font-semibold hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
-                  Faire le diagnostic <ArrowRight className="w-4 h-4" />
-                </button>
-                <a href="#cas" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg border border-navy/20 text-navy font-semibold text-sm hover:bg-white transition-all">Voir des exemples</a>
-              </div>
-            </div>
+          <div className="text-center mb-12">
+            <Eyebrow tone="cream">Un projet en tête ?</Eyebrow>
+            <h2 className="mt-5 font-display text-3xl sm:text-4xl font-bold text-white tracking-tight text-balance max-w-2xl mx-auto">
+              Clarifications d'abord vos obligations.
+            </h2>
+            <p className="mt-4 text-aqua/65 max-w-xl mx-auto text-sm leading-relaxed">
+              Cinq minutes pour obtenir un score, un chemin recommandé et les sources officielles belges à vérifier.
+            </p>
           </div>
+        </Reveal>
+        <div className="grid sm:grid-cols-3 gap-4 mb-10">
+          {offers.map((o, i) => (
+            <Reveal key={o.title} delay={i * 0.08}>
+              <div className="bg-white/[0.06] border border-white/12 rounded-xl p-5">
+                <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center mb-3">
+                  <o.Icon className="w-4 h-4 text-white/70" />
+                </div>
+                <h3 className="font-display font-semibold text-white text-sm mb-1.5">{o.title}</h3>
+                <p className="text-aqua/55 text-xs leading-relaxed">{o.desc}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal className="flex flex-col sm:flex-row gap-3 justify-center">
+          <button onClick={onStart} className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-coral text-white font-semibold hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
+            Faire le diagnostic <ArrowRight className="w-4 h-4" />
+          </button>
+          <a href={NOMAD_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg border border-white/20 text-white font-semibold text-sm hover:bg-white/8 transition-all">
+            Découvrir Nomad Impact <ArrowUpRight className="w-4 h-4" />
+          </a>
         </Reveal>
       </div>
     </section>
@@ -550,7 +549,7 @@ function Footer({ onStart }: { onStart: () => void }) {
           <div>
             <p className="text-white text-[10px] font-bold uppercase tracking-widest mb-4">Naviguer</p>
             <ul className="space-y-2.5 text-sm">
-              {([['#pourquoi', 'Pourquoi cet outil'], ['#comment', 'Comment ça marche'], ['#cas', 'Cas fréquents'], ['#faq', 'FAQ']] as [string, string][]).map(([h, l]) => (
+              {([['#comment', 'Comment ça marche'], ['#cas', 'Cas fréquents'], ['#faq', 'FAQ'], ['#pour-qui', 'Pour qui']] as [string, string][]).map(([h, l]) => (
                 <li key={l}><a href={h} className="hover:text-white transition-colors text-xs">{l}</a></li>
               ))}
             </ul>
@@ -583,14 +582,13 @@ export function Home({ onStart }: { onStart: () => void }) {
       <Header onStart={onStart} />
       <main>
         <Hero onStart={onStart} />
-        <WhySection />
         <HowSection onStart={onStart} />
+        <StructureSection />
         <ClarifySection />
         <UseCasesSection onStart={onStart} />
-        <ForWhoSection onStart={onStart} />
         <FAQSection />
-        <NomadImpactSection onStart={onStart} />
-        <FinalCTA onStart={onStart} />
+        <AudienceSection onStart={onStart} />
+        <BottomCTA onStart={onStart} />
       </main>
       <Footer onStart={onStart} />
     </div>
