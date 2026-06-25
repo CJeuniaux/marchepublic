@@ -27,7 +27,11 @@ export function LeadGateModal({ documentId, documentTitle, documentFile, score, 
     setStatus('loading')
     const result = await saveLead({ email, organisation: organisation || undefined, document_id: documentId, score, band, consent })
     if (!result.ok) {
-      setError("Une erreur est survenue. Veuillez réessayer.")
+      setError(
+        result.error === 'configuration_missing'
+          ? "Le service de téléchargement n'est pas encore configuré. Contactez hello@nomadimpact.org pour recevoir ce document."
+          : "Une erreur est survenue lors de l'enregistrement. Veuillez réessayer ou contacter hello@nomadimpact.org."
+      )
       setStatus('error')
       return
     }
@@ -35,7 +39,7 @@ export function LeadGateModal({ documentId, documentTitle, documentFile, score, 
     // Déclenche le téléchargement
     const a = document.createElement('a')
     a.href = documentFile
-    a.download = documentFile.split('/').pop() ?? 'document.pdf'
+    a.download = documentFile.split('/').pop() ?? 'document.docx'
     document.body.appendChild(a)
     a.click()
     a.remove()

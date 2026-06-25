@@ -128,11 +128,11 @@ function explain(s: DiagState): { positives: string[]; protective: string[] } {
 
 interface Doc { id: string; title: string; summary: string; level: string; file: string }
 const DOCS: Record<string, Doc> = {
-  sous30k: { id: 'sous30k', title: 'Acheter ou commander une prestation sous 30.000 € HTVA', summary: "Les bons réflexes pour commander en règle quand le montant reste sous le seuil.", level: 'Idéal sous 30.000 € HTVA', file: '/resources/acheter-sous-30000.pdf' },
-  comparer: { id: 'comparer', title: 'Comparer plusieurs prestataires simplement', summary: "Une méthode claire pour mettre en concurrence sans alourdir votre projet.", level: 'Bonne pratique à tout niveau', file: '/resources/comparer-prestataires.pdf' },
-  cadrer_digital: { id: 'cadrer_digital', title: 'Cadrer un projet digital avant de demander des prix', summary: "Définir votre besoin web ou logiciel pour obtenir des offres comparables.", level: 'Projets digitaux', file: '/resources/cadrer-projet-digital.pdf' },
-  over30k: { id: 'over30k', title: 'Que faire si votre projet dépasse 30.000 € HTVA ?', summary: "Les procédures qui se déclenchent au-delà du seuil et comment les aborder.", level: 'Dès 30.000 € HTVA ou risque élevé', file: '/resources/au-dela-de-30000.pdf' },
-  asbl_subsidiee: { id: 'asbl_subsidiee', title: "ASBL subsidiée : quelles obligations d'achat vérifier ?", summary: "Les points à contrôler dans vos conventions de subvention avant d'acheter.", level: 'ASBL & structures subsidiées', file: '/resources/asbl-subsidiee-obligations.pdf' },
+  sous30k: { id: 'sous30k', title: 'Acheter ou commander une prestation sous 30.000 € HTVA', summary: "Les bons réflexes pour commander en règle quand le montant reste sous le seuil.", level: 'Idéal sous 30.000 € HTVA', file: '/resources/acheter-sous-30000.docx' },
+  comparer: { id: 'comparer', title: 'Comparer plusieurs prestataires simplement', summary: "Une méthode claire pour mettre en concurrence sans alourdir votre projet.", level: 'Bonne pratique à tout niveau', file: '/resources/comparer-prestataires.docx' },
+  cadrer_digital: { id: 'cadrer_digital', title: 'Cadrer un projet digital avant de demander des prix', summary: "Définir votre besoin web ou logiciel pour obtenir des offres comparables.", level: 'Projets digitaux', file: '/resources/cadrer-projet-digital.docx' },
+  over30k: { id: 'over30k', title: 'Que faire si votre projet dépasse 30.000 € HTVA ?', summary: "Les procédures qui se déclenchent au-delà du seuil et comment les aborder.", level: 'Dès 30.000 € HTVA ou risque élevé', file: '/resources/au-dela-de-30000.docx' },
+  asbl_subsidiee: { id: 'asbl_subsidiee', title: "ASBL subsidiée : quelles obligations d'achat vérifier ?", summary: "Les points à contrôler dans vos conventions de subvention avant d'acheter.", level: 'ASBL & structures subsidiées', file: '/resources/asbl-subsidiee-obligations.docx' },
 }
 function recommendDocs(s: DiagState, bandKey: string): Doc[] {
   const ids = new Set<string>()
@@ -497,7 +497,10 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
                     <div className="min-w-0 flex-1">
                       <p className="font-display font-semibold text-navy text-sm leading-snug">{d.title}</p>
                       <p className="text-xs text-slate mt-1 leading-relaxed">{d.summary}</p>
-                      <span className="inline-block mt-2 text-[10px] font-semibold uppercase tracking-wide text-slate bg-sable border border-line px-2 py-0.5 rounded">{d.level}</span>
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                    <span className="inline-block text-[10px] font-semibold uppercase tracking-wide text-slate bg-sable border border-line px-2 py-0.5 rounded">{d.level}</span>
+                    <span className="inline-block text-[10px] font-bold uppercase tracking-wide text-bleu bg-bleu/10 border border-bleu/20 px-2 py-0.5 rounded">.docx éditable</span>
+                  </div>
                     </div>
                   </div>
                   <button

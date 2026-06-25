@@ -40,9 +40,7 @@ export async function saveLead(payload: LeadPayload): Promise<{ ok: boolean; err
   const key = import.meta.env.VITE_SUPABASE_ANON_KEY
 
   if (!url || !key) {
-    // Pas configuré — on continue sans stocker (degradation gracieuse)
-    console.warn('[marchepublic] Supabase non configuré. Lead non enregistré.', payload)
-    return { ok: true }
+    return { ok: false, error: 'configuration_missing' }
   }
 
   try {
