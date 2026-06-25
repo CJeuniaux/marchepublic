@@ -121,25 +121,25 @@ function Hero({ onStart }: { onStart: () => void }) {
   return (
     <section id="top" className="relative overflow-hidden bg-cream">
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-coral" />
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-8 sm:pt-24 sm:pb-12">
-        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-8 sm:pt-24 sm:pb-12">
+        <div className="grid lg:grid-cols-[1fr_1fr] gap-8 lg:gap-12 items-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}>
             <div className="inline-flex items-center gap-2 border border-line text-navy/70 text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded mb-6 bg-sable">
               <ShieldCheck className="w-3.5 h-3.5 text-slate/70" />
-              Outil pédagogique indépendant · Belgique
+              Diagnostic marchés publics · ASBL belges · Gratuit
             </div>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.2rem] font-bold leading-[1.06] tracking-tight text-balance text-navy">
               Votre ASBL doit-elle passer par un <span className="text-coral">marché public ?</span>
             </h1>
             <p className="mt-5 text-lg text-slate leading-relaxed max-w-xl">
-              En 5 minutes, identifiez les indices qui déterminent vos obligations : structure, financement, gouvernance, projet et montant. Vous obtenez un score indicatif, un chemin recommandé et les sources officielles à vérifier.
+              Achat subsidié, prestation de service, mission de consultance ou projet digital — en 5 minutes, identifiez si votre achat peut relever des règles des marchés publics en Belgique. Score indicatif, chemin recommandé, sources officielles.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
               <button onClick={onStart} className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-coral text-white font-semibold hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
-                Faire le diagnostic <ArrowRight className="w-4 h-4" />
+                Faire le diagnostic gratuit <ArrowRight className="w-4 h-4" />
               </button>
               <a href="#comment" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg border border-navy/20 text-navy font-semibold text-sm hover:bg-navy/5 transition-all">
-                Voir le diagnostic
+                Comment ça marche
               </a>
             </div>
             <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-5">
@@ -153,21 +153,22 @@ function Hero({ onStart }: { onStart: () => void }) {
           </motion.div>
 
           <motion.div
-            className="relative hidden lg:block"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="relative hidden lg:flex items-center justify-center"
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="relative w-full aspect-[4/3] rounded-2xl bg-sable border border-line overflow-hidden">
-              <img
-                src="/images/hero-illustration.png"
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 w-full h-full object-cover"
-                onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
-              />
-              <div className="absolute inset-0 dotgrid opacity-40" />
-            </div>
+            <img
+              src="/images/hero-illustration.png"
+              alt="Diagnostic marchés publics pour ASBL belges — illustration"
+              className="w-full max-w-[540px] h-auto object-contain drop-shadow-[0_8px_32px_rgba(46,35,72,0.10)]"
+              onError={e => {
+                const el = e.currentTarget as HTMLImageElement
+                el.style.display = 'none'
+                const ph = el.parentElement
+                if (ph) ph.innerHTML = '<div class="w-full aspect-[4/3] rounded-2xl bg-sable border border-line dotgrid opacity-60"></div>'
+              }}
+            />
           </motion.div>
         </div>
       </div>

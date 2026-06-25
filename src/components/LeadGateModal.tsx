@@ -147,7 +147,7 @@ export function LeadGateModal({ documentId, documentTitle, documentFile, score, 
                         </div>
                       </div>
                       <p className="text-xs text-slate leading-relaxed">
-                        J'accepte que mon adresse email soit conservée pour recevoir la ressource et être recontacté·e par <strong className="text-navy">Nomad Impact</strong> à propos de mes besoins. Vous pouvez demander la suppression de vos données à tout moment.
+                        J'accepte que mon adresse email soit conservée pour recevoir la ressource et être recontacté·e par <strong className="text-navy">marchépublic.be</strong> à propos de mes besoins. Vous pouvez demander la suppression de vos données à tout moment.
                       </p>
                     </label>
                   </div>
