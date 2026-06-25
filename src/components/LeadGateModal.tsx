@@ -38,11 +38,15 @@ export function LeadGateModal({ documentId, documentTitle, documentFile, score, 
       user_agent: navigator.userAgent,
     })
     if (!result.ok) {
-      setError(
-        result.error === 'configuration_missing'
-          ? "Le service de téléchargement n'est pas encore configuré. Veuillez réessayer ou nous contacter via marchépublic.be."
-          : "Une erreur est survenue lors de l'enregistrement. Veuillez réessayer ou nous contacter via marchépublic.be."
-      )
+      // Log full error for diagnosis — safe: does not expose keys, only Supabase response body
+      console.error('[LeadGate] saveLead failed:', result.error)
+      if (result.error === 'configuration_missing') {
+        setError("Le service de téléchargement n'est pas encore configuré. Veuillez nous contacter via marchépublic.be.")
+      } else {
+        // Show truncated raw error in UI temporarily so the operator can diagnose
+        const detail = result.error ? ` (${String(result.error).slice(0, 120)})` : ''
+        setError(`Une erreur est survenue lors de l'enregistrement. Veuillez réessayer ou nous contacter via marchépublic.be.${detail}`)
+      }
       setStatus('error')
       return
     }

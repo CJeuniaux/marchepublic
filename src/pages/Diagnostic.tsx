@@ -133,6 +133,7 @@ const DOCS: Record<string, Doc> = {
   cadrer_digital: { id: 'cadrer_digital', title: 'Cadrer un projet digital avant de demander des prix', summary: "Définir votre besoin web ou logiciel pour obtenir des offres comparables.", level: 'Projets digitaux', file: '/resources/cadrer-projet-digital.docx' },
   over30k: { id: 'over30k', title: 'Que faire si votre projet dépasse 30.000 € HTVA ?', summary: "Les procédures qui se déclenchent au-delà du seuil et comment les aborder.", level: 'Dès 30.000 € HTVA ou risque élevé', file: '/resources/au-dela-de-30000.docx' },
   asbl_subsidiee: { id: 'asbl_subsidiee', title: "ASBL subsidiée : quelles obligations d'achat vérifier ?", summary: "Les points à contrôler dans vos conventions de subvention avant d'acheter.", level: 'ASBL & structures subsidiées', file: '/resources/asbl-subsidiee-obligations.docx' },
+  template_prix: { id: 'template_prix', title: "Template — Demande de prix / Consultation simplifiée", summary: "Document de travail à compléter pour comparer plusieurs prestataires. Document pratique, à adapter et à faire valider.", level: 'Document de travail · non validé juridiquement', file: '/resources/template-demande-de-prix.docx' },
 }
 function recommendDocs(s: DiagState, bandKey: string): Doc[] {
   const ids = new Set<string>()
@@ -141,11 +142,12 @@ function recommendDocs(s: DiagState, bandKey: string): Doc[] {
   const over30k = ['30k_seuil', 'sup_seuil'].includes(s.montant ?? '')
   const assocType = ['asbl', 'fondation', 'ong', 'federation'].includes(s.structureType ?? '')
   ids.add('comparer')
+  ids.add('template_prix')
   if (under30k || s.montant === 'nsp' || !high) ids.add('sous30k')
   if (over30k || high) ids.add('over30k')
   if (s.prestationType === 'digital') ids.add('cadrer_digital')
   if (assocType && (s.subsidieSpecifique !== 'non' || s.financementPct !== 'moins_10' || high)) ids.add('asbl_subsidiee')
-  const order = ['sous30k', 'comparer', 'cadrer_digital', 'over30k', 'asbl_subsidiee']
+  const order = ['sous30k', 'comparer', 'template_prix', 'cadrer_digital', 'over30k', 'asbl_subsidiee']
   return order.filter(id => ids.has(id)).map(id => DOCS[id])
 }
 
@@ -382,6 +384,10 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
   const tier = nomadTier(pct)
   const [copied, setCopied] = useState(false)
   const [gateDoc, setGateDoc] = useState<Doc | null>(null)
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [])
 
   const summaryText = [
     'Résultat du parcours — marchépublic.be', '',

@@ -1,5 +1,5 @@
 """
-Génère les 5 fiches pratiques en format .docx
+Génère les fiches pratiques en format .docx
 Usage: python3 scripts/generate-docx.py
 Output: public/resources/*.docx
 """
@@ -18,19 +18,19 @@ CORAL = RGBColor(0xE6, 0x39, 0x48)
 NAVY  = RGBColor(0x2E, 0x23, 0x48)
 SLATE = RGBColor(0x5E, 0x6B, 0x7D)
 GREY  = RGBColor(0xA0, 0x98, 0x90)
+WARN  = RGBColor(0x8B, 0x50, 0x10)
 
 
 def new_doc(title: str, subtitle: str) -> Document:
     doc = Document()
 
-    # Marges
     for section in doc.sections:
         section.top_margin    = Cm(2)
         section.bottom_margin = Cm(2)
         section.left_margin   = Cm(2.5)
         section.right_margin  = Cm(2.5)
 
-    # En-tête
+    # En-tête : marchépublic.be uniquement
     hdr = doc.add_paragraph()
     hdr.alignment = WD_ALIGN_PARAGRAPH.LEFT
     r = hdr.add_run("marchépublic.be")
@@ -38,11 +38,11 @@ def new_doc(title: str, subtitle: str) -> Document:
     r.font.size = Pt(14)
     r.font.color.rgb = CORAL
 
-    r2 = hdr.add_run("  ·  Fiche pratique — Nomad Impact ASBL")
+    r2 = hdr.add_run("  ·  Ressource pratique — document de travail à adapter")
     r2.font.size = Pt(9)
     r2.font.color.rgb = SLATE
 
-    # Ligne de séparation : paragraphe avec bordure bottom
+    # Séparateur coral
     sep = doc.add_paragraph()
     pPr = sep._p.get_or_add_pPr()
     pBdr = OxmlElement('w:pBdr')
@@ -55,9 +55,25 @@ def new_doc(title: str, subtitle: str) -> Document:
     pPr.append(pBdr)
     sep.paragraph_format.space_after = Pt(4)
 
-    # Titre
+    # Avertissement de conformité en haut de chaque document
+    warn_box = doc.add_paragraph()
+    warn_box.paragraph_format.space_before = Pt(6)
+    warn_box.paragraph_format.space_after  = Pt(10)
+    rw = warn_box.add_run(
+        "⚠  DOCUMENT DE TRAVAIL — À ADAPTER À VOTRE CONTEXTE\n"
+        "Ce document est une aide pratique éducative. Il ne constitue pas un avis juridique "
+        "et ne garantit pas la conformité légale de votre procédure. "
+        "Avant tout usage dans une procédure réelle, faites-le valider par une personne compétente "
+        "en marchés publics (juriste, conseiller juridique, bailleur de fonds). "
+        "marchépublic.be est un outil indépendant — non affilié à une autorité publique belge."
+    )
+    rw.font.size = Pt(8.5)
+    rw.font.color.rgb = WARN
+    rw.italic = True
+
+    # Titre principal
     p = doc.add_paragraph()
-    p.paragraph_format.space_before = Pt(10)
+    p.paragraph_format.space_before = Pt(4)
     p.paragraph_format.space_after  = Pt(4)
     r = p.add_run(title)
     r.bold = True
@@ -82,7 +98,6 @@ def heading(doc: Document, text: str, level: int = 2):
     r.bold = True
     r.font.size = Pt(13) if level == 2 else Pt(11)
     r.font.color.rgb = NAVY
-    # Petite barre gauche via bordure
     pPr = p._p.get_or_add_pPr()
     pBdr = OxmlElement('w:pBdr')
     left = OxmlElement('w:left')
@@ -115,7 +130,6 @@ def bullet(doc: Document, items: list, checked: bool = False):
 def table_grid(doc: Document, headers: list, rows: list):
     t = doc.add_table(rows=1 + len(rows), cols=len(headers))
     t.style = 'Table Grid'
-    # En-têtes
     hdr_cells = t.rows[0].cells
     for i, h in enumerate(headers):
         hdr_cells[i].text = h
@@ -123,7 +137,6 @@ def table_grid(doc: Document, headers: list, rows: list):
         run.bold = True
         run.font.size = Pt(9)
         run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-        # Fond via XML
         tc = hdr_cells[i]._tc
         tcPr = tc.get_or_add_tcPr()
         shd = OxmlElement('w:shd')
@@ -131,7 +144,6 @@ def table_grid(doc: Document, headers: list, rows: list):
         shd.set(qn('w:color'), 'auto')
         shd.set(qn('w:fill'), '2E2348')
         tcPr.append(shd)
-    # Données
     for ri, row in enumerate(rows):
         row_cells = t.rows[ri + 1].cells
         for ci, cell in enumerate(row):
@@ -142,6 +154,7 @@ def table_grid(doc: Document, headers: list, rows: list):
 
 
 def disclaimer(doc: Document):
+    """Pied de page avec avertissement légal renforcé et sources officielles."""
     doc.add_paragraph()
     sep = doc.add_paragraph()
     pPr = sep._p.get_or_add_pPr()
@@ -153,8 +166,19 @@ def disclaimer(doc: Document):
     top.set(qn('w:color'), 'E4D9CC')
     pBdr.append(top)
     pPr.append(pBdr)
-    r = sep.add_run("⚠  Avertissement : Ce document est fourni à titre pédagogique uniquement. Il ne constitue pas un avis juridique. Pour toute situation engageante, consultez un·e juriste ou un service compétent en marchés publics. marchépublic.be est un outil indépendant de Nomad Impact ASBL — non affilié à une autorité publique.")
-    r.font.size = Pt(8.5)
+
+    r = sep.add_run(
+        "⚠  Avertissement — Ce document est fourni à titre éducatif et pratique uniquement. "
+        "Il ne constitue pas un avis juridique. Il ne garantit pas la conformité de votre procédure "
+        "avec la législation applicable. Adaptez-le impérativement à votre contexte avant tout usage réel. "
+        "À faire valider par une personne compétente avant usage dans une procédure réelle. "
+        "marchépublic.be est un outil indépendant — non affilié à une autorité publique belge.\n"
+        "Sources officielles à consulter : BOSA (bosa.belgium.be) · "
+        "e-Procurement (publicprocurement.be) · SPF Économie (economie.fgov.be) · "
+        "Marchés publics Wallonie (marchespublics.wallonie.be) · "
+        "Règlement général UE 2016/679 (RGPD) pour les données personnelles."
+    )
+    r.font.size = Pt(8)
     r.font.color.rgb = SLATE
     r.italic = True
 
@@ -352,7 +376,7 @@ def doc_over_30k():
             ["> 221 000 €", "Procédure ouverte (appel d'offres)", "e-Procurement + JOUE"],
         ]
     )
-    body(doc, "Note : pour les marchés de travaux, les seuils sont différents (seuil européen à 5 382 000 €). Ces montants peuvent être révisés annuellement par la Commission européenne.")
+    body(doc, "Note : pour les marchés de travaux, les seuils sont différents (seuil européen à 5 382 000 €). Ces montants peuvent être révisés. Vérifiez les seuils actuels sur bosa.belgium.be avant toute procédure.")
 
     heading(doc, "Procédure négociée sans publication (30k–143k €)")
     body(doc, "C'est la procédure la plus fréquente pour les ASBL soumises aux règles. Elle comprend :")
@@ -376,7 +400,7 @@ def doc_over_30k():
         "Contrat ou bon de commande signé.",
     ], checked=True)
 
-    heading(doc, "Ressources officielles")
+    heading(doc, "Ressources officielles à consulter")
     bullet(doc, [
         "BOSA : bosa.belgium.be/fr/marche-publics-regles-et-procedures",
         "SPF Économie : economie.fgov.be/fr/themes/marches-publics",
@@ -451,10 +475,115 @@ def doc_asbl_subsidiee():
     print("✓ asbl-subsidiee-obligations.docx")
 
 
+# ─── Document 6 — Template demande de prix ───────────────────────────────────
+
+def doc_template_demande_prix():
+    doc = new_doc(
+        "Template — Demande de prix / Consultation simplifiée",
+        "Document de travail à adapter — aide pratique pour comparer des prestataires. Non validé juridiquement."
+    )
+
+    heading(doc, "Mode d'emploi de ce template")
+    body(doc, "Ce document est un modèle de travail simplifié. Il vous aide à structurer une demande de prix informelle ou une consultation simplifiée selon la méthode des 3 devis. Il ne remplace pas un cahier spécial des charges (CSC) au sens de la loi du 17 juin 2016.")
+    body(doc, "Adaptez chaque section à votre contexte avant d'envoyer. Si votre marché dépasse 30 000 € HTVA ou si votre convention de subvention impose une procédure formelle, utilisez ce document uniquement comme point de départ et faites-le valider.")
+
+    heading(doc, "SECTION A — Identification de votre organisation")
+    table_grid(doc,
+        ["Champ", "À compléter"],
+        [
+            ["Nom de l'organisation", ""],
+            ["Type (ASBL, fondation, autre)", ""],
+            ["Adresse", ""],
+            ["Contact responsable de l'achat", ""],
+            ["Email de contact", ""],
+            ["Date d'envoi de la demande", ""],
+            ["Date limite de réponse souhaitée", ""],
+        ]
+    )
+
+    heading(doc, "SECTION B — Description du besoin")
+    body(doc, "Décrivez ci-dessous ce que vous souhaitez acheter ou commander. Soyez précis : le prestataire doit pouvoir faire une offre comparable aux autres candidats.")
+    table_grid(doc,
+        ["Élément", "Description"],
+        [
+            ["Objet de la demande (en 1 phrase)", ""],
+            ["Description détaillée de la prestation", ""],
+            ["Livrables attendus", ""],
+            ["Délai de réalisation souhaité", ""],
+            ["Lieu de prestation (si applicable)", ""],
+            ["Budget indicatif HTVA (facultatif)", ""],
+            ["Conditions particulières", ""],
+        ]
+    )
+
+    heading(doc, "SECTION C — Critères d'évaluation des offres")
+    body(doc, "Définissez vos critères AVANT de recevoir les offres. Ne les modifiez pas après réception.")
+    table_grid(doc,
+        ["Critère", "Poids (%)", "Description"],
+        [
+            ["Prix total HTVA", "_____ %", "Offre la plus compétitive"],
+            ["Compréhension du besoin", "_____ %", "Qualité de la proposition"],
+            ["Expérience / références", "_____ %", "Projets similaires réalisés"],
+            ["Délai de réalisation", "_____ %", "Respect du calendrier"],
+            ["Autres (à préciser)", "_____ %", ""],
+            ["TOTAL", "100 %", ""],
+        ]
+    )
+
+    heading(doc, "SECTION D — Tableau comparatif des offres reçues")
+    body(doc, "À compléter après réception des offres. Conservez ce tableau dans votre dossier.")
+    table_grid(doc,
+        ["Critère", "Poids", "Prestataire A", "Prestataire B", "Prestataire C"],
+        [
+            ["Prix HTVA", "", "", "", ""],
+            ["Score compréhension /10", "", "", "", ""],
+            ["Score expérience /10", "", "", "", ""],
+            ["Score délai /10", "", "", "", ""],
+            ["Score autres /10", "", "", "", ""],
+            ["TOTAL PONDÉRÉ /10", "", "", "", ""],
+        ]
+    )
+
+    heading(doc, "SECTION E — Justification du choix")
+    body(doc, "À compléter et à signer avant de notifier les prestataires.")
+    bullet(doc, [
+        "Prestataire retenu : ___________________________",
+        "Score total obtenu : ________ / 10",
+        "Raison principale du choix : ___________________________",
+        "Date de la décision : ___________________________",
+        "Nom et fonction du signataire : ___________________________",
+        "Signature : ___________________________",
+    ])
+
+    heading(doc, "SECTION F — Checklist dossier à conserver")
+    bullet(doc, [
+        "Ce document complété et signé.",
+        "Les 3 offres reçues (emails, devis, propositions écrites).",
+        "Le tableau comparatif complété (Section D).",
+        "La justification du choix (Section E).",
+        "Le bon de commande ou contrat signé avec le prestataire retenu.",
+        "Les éventuelles lettres d'information aux prestataires non retenus.",
+        "Toute correspondance pertinente avec le bailleur de fonds.",
+    ], checked=True)
+
+    heading(doc, "Sources officielles à consulter")
+    bullet(doc, [
+        "BOSA — règles et procédures : bosa.belgium.be/fr/marche-publics-regles-et-procedures",
+        "e-Procurement — plateforme officielle belge : publicprocurement.be",
+        "SPF Économie — marchés publics : economie.fgov.be/fr/themes/marches-publics",
+        "Marchés publics Wallonie : marchespublics.wallonie.be",
+    ])
+
+    disclaimer(doc)
+    doc.save(os.path.join(OUT, 'template-demande-de-prix.docx'))
+    print("✓ template-demande-de-prix.docx")
+
+
 if __name__ == '__main__':
     doc_sous_30k()
     doc_comparer()
     doc_cadrer_digital()
     doc_over_30k()
     doc_asbl_subsidiee()
+    doc_template_demande_prix()
     print("\nDone — fichiers dans public/resources/")
