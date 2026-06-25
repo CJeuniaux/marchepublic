@@ -8,7 +8,8 @@ import {
   Code2, Lightbulb, PenTool, GraduationCap, HardHat, Package, Wrench,
   ClipboardList, PenLine,
 } from 'lucide-react'
-import { Constellation } from '../components/Graphics'
+import { LogoMark } from '../components/Graphics'
+import { LeadGateModal } from '../components/LeadGateModal'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type LucideIcon = ComponentType<any>
@@ -380,6 +381,7 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
   const sources = selectSources(pct, state.montant)
   const tier = nomadTier(pct)
   const [copied, setCopied] = useState(false)
+  const [gateDoc, setGateDoc] = useState<Doc | null>(null)
 
   const summaryText = [
     'Résultat du parcours — marchépublic.be', '',
@@ -400,168 +402,212 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
   }
 
   return (
-    <Stagger className="max-w-2xl mx-auto px-4 py-8 space-y-4">
-      {/* 1. Score */}
-      <Item>
-        <div className="rounded-2xl overflow-hidden shadow-card border" style={{ borderColor: band.ring }}>
-          <div className="h-1.5" style={{ background: band.color }} />
-          <div className="px-6 py-7 bg-cream">
-            <BigScore pct={pct} color={band.color} band={band} />
-          </div>
-        </div>
-      </Item>
+    <div>
+      {gateDoc && (
+        <LeadGateModal
+          documentId={gateDoc.id}
+          documentTitle={gateDoc.title}
+          documentFile={gateDoc.file}
+          score={pct}
+          band={band.key}
+          onClose={() => setGateDoc(null)}
+        />
+      )}
 
-      {/* 2. Signification */}
-      <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-3">
-          <span className="w-5 h-5 rounded-full bg-sun flex items-center justify-center shrink-0 text-[10px] font-black text-navy leading-none">1</span>
-          Ce que cela veut dire, simplement
-        </h3>
-        <p className="text-sm text-navy/90 leading-relaxed">{band.meaning}</p>
-      </div></Item>
-
-      {/* 3. Ce qui a influencé le score */}
-      <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-4">
-          <span className="w-5 h-5 rounded-full bg-sun flex items-center justify-center shrink-0 text-[10px] font-black text-navy leading-none">2</span>
-          Pourquoi ce résultat ?
-        </h3>
-        <ul className="space-y-2.5">
-          {positives.map((p, i) => (<li key={'p' + i} className="flex items-start gap-2.5 text-sm text-navy/90"><span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: band.color }} />{p}</li>))}
-          {protective.map((p, i) => (<li key={'q' + i} className="flex items-start gap-2.5 text-sm text-slate"><Check className="w-4 h-4 shrink-0 mt-0.5 text-slate" strokeWidth={2.5} />{p}</li>))}
-        </ul>
-      </div></Item>
-
-      {/* 4. Chemin recommandé */}
-      <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-4">
-          <span className="w-5 h-5 rounded-full bg-coral flex items-center justify-center shrink-0 text-[10px] font-black text-white leading-none">3</span>
-          Les étapes recommandées
-        </h3>
-        <ol className="space-y-3">
-          {band.steps.map((step, i) => (
-            <li key={i} className="flex items-start gap-3 text-sm text-navy/90">
-              <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: band.color }}>{i + 1}</span>
-              {step}
-            </li>
-          ))}
-        </ol>
-      </div></Item>
-
-      {/* 5. Documents utiles */}
-      <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-5">
-          <span className="w-5 h-5 rounded-full bg-bleu flex items-center justify-center shrink-0"><FileText className="w-3 h-3 text-white" /></span>
-          Documents utiles pour avancer
-        </h3>
-        <div className="grid sm:grid-cols-2 gap-3">
-          {docs.map(d => (
-            <div key={d.id} className="rounded-xl border border-line p-4 hover:border-navy/15 hover:shadow-card transition-all flex flex-col">
-              <div className="flex items-start gap-3 flex-1">
-                <span className="w-10 h-10 rounded-xl bg-sable flex items-center justify-center shrink-0"><FileText className="w-5 h-5 text-bleu" /></span>
-                <div className="min-w-0 flex-1">
-                  <p className="font-display font-semibold text-navy text-sm leading-snug">{d.title}</p>
-                  <p className="text-xs text-slate mt-1 leading-relaxed">{d.summary}</p>
-                  <span className="inline-block mt-2 text-[10px] font-semibold uppercase tracking-wide text-slate bg-sable border border-line px-2 py-0.5 rounded">{d.level}</span>
-                </div>
+      {/* Score */}
+      <section className="bg-cream py-10 sm:py-16">
+        <Stagger className="max-w-4xl mx-auto px-4 sm:px-6 space-y-5">
+          <Item>
+            <div className="rounded-2xl overflow-hidden shadow-card border" style={{ borderColor: band.ring }}>
+              <div className="h-1.5" style={{ background: band.color }} />
+              <div className="px-6 py-8 bg-white">
+                <BigScore pct={pct} color={band.color} band={band} />
               </div>
-              <a href={d.file} download className="mt-3 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-110 transition-all">
-                <FileDown className="w-4 h-4" /> Télécharger la fiche
-              </a>
             </div>
-          ))}
-        </div>
-        <p className="text-[11px] text-slate/60 mt-4">Fiches pratiques au format PDF. Contenu en cours de finalisation.</p>
-      </div></Item>
+          </Item>
+          <Item>
+            <div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
+              <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-3">
+                <span className="w-5 h-5 rounded-full bg-sun flex items-center justify-center shrink-0 text-[10px] font-black text-navy leading-none">1</span>
+                Ce que cela veut dire, simplement
+              </h3>
+              <p className="text-sm text-navy/90 leading-relaxed">{band.meaning}</p>
+            </div>
+          </Item>
+        </Stagger>
+      </section>
 
-      {/* 6. Sources officielles */}
-      <Item><div className="bg-white rounded-2xl shadow-card border border-line px-6 py-5">
-        <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-1">
-          <span className="w-5 h-5 rounded-full bg-bleu flex items-center justify-center shrink-0"><Landmark className="w-3 h-3 text-white" /></span>
-          Sources officielles à vérifier
-        </h3>
-        <p className="text-xs text-slate mb-4 ml-7">Pour confirmer la procédure applicable auprès des sources de référence.</p>
-        <div className="space-y-2.5">
-          {sources.map(s => (
-            <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-line p-4 hover:border-bleu/20 hover:bg-bleu/[0.02] transition-colors group">
-              <div className="flex items-start gap-3">
-                <span className="w-9 h-9 rounded-lg bg-sable flex items-center justify-center shrink-0 group-hover:bg-sable transition-colors"><Landmark className="w-4 h-4 text-bleu" /></span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <p className="font-display font-semibold text-navy text-sm leading-snug">{s.title}</p>
-                    <ExternalLink className="w-3.5 h-3.5 text-slate shrink-0" />
+      {/* Pourquoi ce résultat */}
+      <section className="bg-sable py-10 sm:py-16 border-t border-line">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <motion.div variants={block} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
+            <div className="bg-white rounded-2xl shadow-card border border-line px-6 py-6">
+              <h3 className="flex items-center gap-2 text-sm font-bold text-navy mb-4">
+                <span className="w-5 h-5 rounded-full bg-sun flex items-center justify-center shrink-0 text-[10px] font-black text-navy leading-none">2</span>
+                Pourquoi ce résultat ?
+              </h3>
+              <ul className="space-y-2.5">
+                {positives.map((p, i) => (<li key={'p' + i} className="flex items-start gap-2.5 text-sm text-navy/90"><span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: band.color }} />{p}</li>))}
+                {protective.map((p, i) => (<li key={'q' + i} className="flex items-start gap-2.5 text-sm text-slate"><Check className="w-4 h-4 shrink-0 mt-0.5 text-slate" strokeWidth={2.5} />{p}</li>))}
+              </ul>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Étapes recommandées */}
+      <section className="bg-white py-10 sm:py-16 border-t border-line">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <motion.div variants={block} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
+            <div className="mb-6">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded text-[11px] font-bold tracking-widest uppercase bg-sun/30 border border-sun/60 text-navy">
+                <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
+                Chemin recommandé
+              </span>
+              <h2 className="mt-3 font-display text-2xl sm:text-3xl font-bold text-navy">Les étapes à suivre</h2>
+            </div>
+            <ol className="space-y-3">
+              {band.steps.map((step, i) => (
+                <li key={i} className="flex items-start gap-4 bg-white rounded-xl border border-line p-4 shadow-sm">
+                  <span className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: band.color }}>{i + 1}</span>
+                  <span className="text-sm text-navy/90 leading-relaxed pt-0.5">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Documents utiles */}
+      <section className="bg-cream py-10 sm:py-16 border-t border-line">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <motion.div variants={block} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
+            <div className="mb-8">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded text-[11px] font-bold tracking-widest uppercase bg-sun/30 border border-sun/60 text-navy">
+                <FileText className="w-3 h-3" /> Documents
+              </span>
+              <h2 className="mt-3 font-display text-2xl sm:text-3xl font-bold text-navy">Ressources pour avancer</h2>
+              <p className="mt-2 text-sm text-slate">Fiches pratiques sélectionnées selon votre résultat. Téléchargement gratuit.</p>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {docs.map(d => (
+                <div key={d.id} className="bg-white rounded-2xl border border-line p-5 hover:border-navy/15 hover:shadow-card transition-all flex flex-col shadow-sm">
+                  <div className="flex items-start gap-3 flex-1">
+                    <span className="w-10 h-10 rounded-xl bg-sable flex items-center justify-center shrink-0"><FileText className="w-5 h-5 text-bleu" /></span>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-display font-semibold text-navy text-sm leading-snug">{d.title}</p>
+                      <p className="text-xs text-slate mt-1 leading-relaxed">{d.summary}</p>
+                      <span className="inline-block mt-2 text-[10px] font-semibold uppercase tracking-wide text-slate bg-sable border border-line px-2 py-0.5 rounded">{d.level}</span>
+                    </div>
                   </div>
-                  <p className="text-xs text-slate mt-1 leading-relaxed">{s.desc}</p>
-                  <span className="inline-flex items-center gap-1 mt-2 text-[10px] font-semibold uppercase tracking-wide text-bleu bg-bleu/10 px-2 py-0.5 rounded border border-bleu/20">
-                    <BadgeCheck className="w-3 h-3" /> Source officielle
-                  </span>
-                </div>
-                <span className="ml-auto self-center text-xs font-semibold text-bleu hidden sm:inline shrink-0">Consulter →</span>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div></Item>
-
-      {/* 7. Tunnel Nomad Impact */}
-      <Item>
-        <div className="rounded-2xl bg-navy text-white relative overflow-hidden shadow-float">
-          <div className="absolute inset-0 dotgrid-light opacity-30" />
-          <div className="absolute top-0 left-0 right-0 h-[3px] bg-coral" />
-          <Constellation className="absolute -right-10 -top-8 w-64 text-coral opacity-[0.10] pointer-events-none" />
-          <div className="relative px-6 py-7">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded text-[11px] font-semibold uppercase tracking-wide bg-white/10 text-aqua">Préparer la suite</span>
-            <h3 className="mt-3 font-display text-xl sm:text-2xl font-bold tracking-tight">{tier.title}</h3>
-            <p className="mt-2 text-sm text-aqua/85 leading-relaxed max-w-xl">{tier.text}</p>
-            <div className="mt-5 grid sm:grid-cols-3 gap-3">
-              {NOMAD_OFFERS.map(o => (
-                <div key={o.title} className="rounded-xl bg-white/[0.06] border border-white/10 p-4">
-                  <span className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center mb-3"><o.icon className="w-4 h-4 text-white/70" /></span>
-                  <p className="font-display font-semibold text-sm leading-snug">{o.title}</p>
-                  <p className="text-xs text-aqua/70 mt-1 leading-relaxed">{o.desc}</p>
+                  <button
+                    onClick={() => setGateDoc(d)}
+                    className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-110 transition-all"
+                  >
+                    <FileDown className="w-4 h-4" /> Télécharger la fiche
+                  </button>
                 </div>
               ))}
             </div>
-            <a href={NOMAD_URL} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all shadow-coral">{tier.cta} <ArrowUpRight className="w-4 h-4" /></a>
-            <p className="mt-3 text-[11px] text-aqua/50">Nomad Impact accompagne les ASBL pour reprendre le contrôle de leurs outils digitaux. Cet outil est indépendant et gratuit.</p>
-          </div>
+          </motion.div>
         </div>
-      </Item>
+      </section>
 
-      {/* 8. Actions bar */}
-      <Item>
-        <div className="rounded-2xl bg-white shadow-card border border-line overflow-hidden print:hidden">
-          <div className="px-6 pt-5 pb-4">
-            <h3 className="flex items-center gap-2 font-display font-bold text-navy text-sm mb-0.5">
-              <Sparkles className="w-4 h-4 text-slate" /> Gardez une trace de votre parcours
-            </h3>
-            <p className="text-xs text-slate">Pour votre dossier de décision ou pour en discuter avec une personne compétente.</p>
-          </div>
-          <div className="border-t border-line flex flex-wrap">
-            <button onClick={handleDownload} className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-navy border-r border-line hover:bg-cream transition-colors">
-              <FileDown className="w-4 h-4 text-navy" /> Télécharger (.txt)
-            </button>
-            <button onClick={() => window.print()} className="flex-1 min-w-[120px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-navy border-r border-line hover:bg-cream transition-colors">
-              <Printer className="w-4 h-4 text-slate" /> Imprimer
-            </button>
-            <button onClick={handleCopy} className="flex-1 min-w-[100px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-navy border-r border-line hover:bg-cream transition-colors">
-              {copied ? <><Check className="w-4 h-4 text-navy" /> Copié</> : <><Copy className="w-4 h-4 text-slate" /> Copier</>}
-            </button>
-            <button onClick={onRestart} className="flex-1 min-w-[130px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-slate hover:bg-cream hover:text-navy transition-colors">
-              <RotateCcw className="w-4 h-4" /> Recommencer
-            </button>
-          </div>
+      {/* Sources officielles */}
+      <section className="bg-white py-10 sm:py-16 border-t border-line">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <motion.div variants={block} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
+            <div className="mb-7">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded text-[11px] font-bold tracking-widest uppercase bg-sun/30 border border-sun/60 text-navy">
+                <Landmark className="w-3 h-3" /> Sources officielles
+              </span>
+              <h2 className="mt-3 font-display text-2xl sm:text-3xl font-bold text-navy">Vérifiez les sources de référence</h2>
+              <p className="mt-2 text-sm text-slate">Pour confirmer la procédure applicable avant d'agir.</p>
+            </div>
+            <div className="space-y-3">
+              {sources.map(s => (
+                <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-line p-4 hover:border-bleu/20 hover:bg-bleu/[0.02] transition-colors group bg-white shadow-sm">
+                  <div className="flex items-start gap-3">
+                    <span className="w-9 h-9 rounded-lg bg-sable flex items-center justify-center shrink-0"><Landmark className="w-4 h-4 text-bleu" /></span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <p className="font-display font-semibold text-navy text-sm leading-snug">{s.title}</p>
+                        <ExternalLink className="w-3.5 h-3.5 text-slate shrink-0" />
+                      </div>
+                      <p className="text-xs text-slate mt-1 leading-relaxed">{s.desc}</p>
+                      <span className="inline-flex items-center gap-1 mt-2 text-[10px] font-semibold uppercase tracking-wide text-bleu bg-bleu/10 px-2 py-0.5 rounded border border-bleu/20">
+                        <BadgeCheck className="w-3 h-3" /> Source officielle
+                      </span>
+                    </div>
+                    <span className="ml-auto self-center text-xs font-semibold text-bleu hidden sm:inline shrink-0">Consulter →</span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </motion.div>
         </div>
-      </Item>
+      </section>
 
-      {/* Disclaimer */}
-      <Item>
-        <div className="rounded-xl bg-sable border border-line px-5 py-4 flex items-start gap-2.5">
-          <ShieldCheck className="w-4 h-4 text-slate shrink-0 mt-0.5" />
-          <p className="text-xs text-slate leading-relaxed">Ce score est une estimation indicative basée sur vos réponses. Il vous aide à identifier le niveau de vigilance à adopter, mais ne constitue pas un avis juridique. Les liens officiels ci-dessus permettent de vérifier la procédure applicable.</p>
+      {/* Nomad Impact */}
+      <section className="bg-navy py-12 sm:py-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <motion.div variants={block} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="rounded-2xl relative overflow-hidden"
+          >
+            <div className="absolute inset-0 dotgrid-light opacity-20" />
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-coral" />
+            <div className="relative px-6 sm:px-10 py-8 sm:py-10">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded text-[11px] font-semibold uppercase tracking-wide bg-white/10 text-aqua">Préparer la suite</span>
+              <h3 className="mt-3 font-display text-xl sm:text-2xl font-bold tracking-tight text-white">{tier.title}</h3>
+              <p className="mt-2 text-sm text-aqua/85 leading-relaxed max-w-xl">{tier.text}</p>
+              <div className="mt-6 grid sm:grid-cols-3 gap-3">
+                {NOMAD_OFFERS.map(o => (
+                  <div key={o.title} className="rounded-xl bg-white/[0.06] border border-white/10 p-4">
+                    <span className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center mb-3"><o.icon className="w-4 h-4 text-white/70" /></span>
+                    <p className="font-display font-semibold text-sm leading-snug text-white">{o.title}</p>
+                    <p className="text-xs text-aqua/70 mt-1 leading-relaxed">{o.desc}</p>
+                  </div>
+                ))}
+              </div>
+              <a href={NOMAD_URL} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all shadow-coral">{tier.cta} <ArrowUpRight className="w-4 h-4" /></a>
+              <p className="mt-3 text-[11px] text-aqua/50">Nomad Impact accompagne les ASBL pour reprendre le contrôle de leurs outils digitaux. Cet outil est indépendant et gratuit.</p>
+            </div>
+          </motion.div>
         </div>
-      </Item>
-    </Stagger>
+      </section>
+
+      {/* Actions bar + disclaimer */}
+      <section className="bg-white py-10 border-t border-line print:hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-4">
+          <div className="rounded-2xl bg-white shadow-card border border-line overflow-hidden">
+            <div className="px-6 pt-5 pb-4">
+              <h3 className="flex items-center gap-2 font-display font-bold text-navy text-sm mb-0.5">
+                <Sparkles className="w-4 h-4 text-slate" /> Gardez une trace de votre parcours
+              </h3>
+              <p className="text-xs text-slate">Pour votre dossier de décision ou pour en discuter avec une personne compétente.</p>
+            </div>
+            <div className="border-t border-line flex flex-wrap">
+              <button onClick={handleDownload} className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-navy border-r border-line hover:bg-cream transition-colors">
+                <FileDown className="w-4 h-4 text-navy" /> Télécharger (.txt)
+              </button>
+              <button onClick={() => window.print()} className="flex-1 min-w-[120px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-navy border-r border-line hover:bg-cream transition-colors">
+                <Printer className="w-4 h-4 text-slate" /> Imprimer
+              </button>
+              <button onClick={handleCopy} className="flex-1 min-w-[100px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-navy border-r border-line hover:bg-cream transition-colors">
+                {copied ? <><Check className="w-4 h-4 text-navy" /> Copié</> : <><Copy className="w-4 h-4 text-slate" /> Copier</>}
+              </button>
+              <button onClick={onRestart} className="flex-1 min-w-[130px] inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-slate hover:bg-cream hover:text-navy transition-colors">
+                <RotateCcw className="w-4 h-4" /> Recommencer
+              </button>
+            </div>
+          </div>
+          <div className="rounded-xl bg-sable border border-line px-5 py-4 flex items-start gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-slate shrink-0 mt-0.5" />
+            <p className="text-xs text-slate leading-relaxed">Ce score est une estimation indicative basée sur vos réponses. Il vous aide à identifier le niveau de vigilance à adopter, mais ne constitue pas un avis juridique. Les liens officiels ci-dessus permettent de vérifier la procédure applicable.</p>
+          </div>
+        </div>
+      </section>
+    </div>
   )
 }
 
@@ -590,9 +636,13 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
   if (showResult) {
     return (
       <div className="min-h-screen bg-cream">
-        <div className="bg-white border-b border-line px-4 py-3 flex items-center gap-3 print:hidden sticky top-0 z-10">
-          <button onClick={() => setShowResult(false)} className="p-3 -ml-3 text-slate hover:text-navy transition-colors rounded-lg"><ChevronLeft size={20} /></button>
-          <span className="text-sm font-semibold text-navy">Votre résultat</span>
+        <div className="bg-white border-b border-line px-4 py-3 flex items-center justify-between print:hidden sticky top-0 z-10">
+          <button onClick={() => setShowResult(false)} className="flex items-center gap-2 text-slate hover:text-navy transition-colors text-sm font-medium p-1"><ChevronLeft size={16} /> Retour</button>
+          <button onClick={onBack} className="flex items-center gap-2">
+            <LogoMark className="h-5 w-auto" nodeColor="#2E2348" />
+            <span className="font-display font-bold text-navy text-[13px]">marchépublic<span className="text-coral">.be</span></span>
+          </button>
+          <span className="text-sm font-semibold text-navy pr-1">Votre résultat</span>
         </div>
         <ResultScreen state={state} onRestart={() => { setState(INITIAL_STATE); setShowResult(false) }} />
       </div>
@@ -630,7 +680,10 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
       <div className="relative print:hidden bg-white border-b border-line sticky top-0 z-20">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={goBack} className="flex items-center gap-2 text-slate hover:text-navy transition-colors text-sm font-medium"><ChevronLeft size={16} /> Retour</button>
-          <span className="font-display font-semibold text-navy text-sm">Mon diagnostic</span>
+          <button onClick={onBack} className="flex items-center gap-2">
+            <LogoMark className="h-5 w-auto" nodeColor="#2E2348" />
+            <span className="font-display font-bold text-navy text-[13px]">marchépublic<span className="text-coral">.be</span></span>
+          </button>
           <span className="text-xs text-gris font-medium">Étape {state.step} sur {TOTAL_STEPS}</span>
         </div>
       </div>

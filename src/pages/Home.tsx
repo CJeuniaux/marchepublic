@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight, ArrowUpRight, Menu, X,
   Globe, Cloud, Users, PenTool, Code2, Boxes, GraduationCap, Server,
-  ChevronDown, Check, Clock, ShieldCheck, Lock, BookOpen, Briefcase, Building2,
+  ChevronDown, Check, Clock, ShieldCheck, Lock, BookOpen, Briefcase, Building2, ClipboardList,
 } from 'lucide-react'
-import { LogoMark, TangleToArrow, StepGlyph, Signpost } from '../components/Graphics'
+import { LogoMark, StepGlyph, Signpost } from '../components/Graphics'
 
 const NOMAD_URL = 'https://nomadimpact.org'
 
@@ -55,6 +55,16 @@ const FAQS = [
   { q: 'Puis-je choisir un prestataire que je connais déjà ?', a: "Si vous êtes soumis aux règles, le principe est la mise en concurrence équitable. Si vous ne l'êtes pas, vous gardez la liberté de choix. C'est précisément ce que le parcours aide à clarifier." },
   { q: 'Quelle différence entre un devis et un marché public ?', a: "Un devis est une simple demande de prix. Un marché public est une procédure encadrée par la loi : étapes obligatoires, délais, transparence, parfois publication." },
   { q: 'Cet outil remplace-t-il un juriste ?', a: "Non, et il ne le prétend pas. C'est un pré-diagnostic pédagogique et indépendant : il trace un chemin clair et renvoie aux sources officielles. Pour une situation engageante ou complexe, faites valider votre procédure par une personne compétente." },
+  { q: "Quel est le seuil à partir duquel un marché public est obligatoire pour une ASBL ?", a: "Il n'existe pas de seuil unique universel. Le premier critère est votre qualité de pouvoir adjudicateur : si vous l'êtes, tous vos marchés sont en principe soumis à la loi du 17 juin 2016, quel que soit le montant. Des procédures allégées s'appliquent en dessous de certains seuils (30 000 € HTVA pour des achats courants, 143 000 € pour des fournitures et services, etc.). Si vous n'êtes pas pouvoir adjudicateur, c'est votre convention de subvention qui fixe les règles." },
+  { q: "Ma convention de subvention parle de mise en concurrence. Est-ce équivalent à un marché public ?", a: "Pas nécessairement. Certaines conventions imposent une mise en concurrence simplifiée (ex. trois devis comparés) sans exiger le respect formel de la loi sur les marchés publics. D'autres renvoient explicitement à cette loi. Lisez attentivement votre convention et, si c'est flou, demandez à votre organisme subsidieur de clarifier par écrit." },
+  { q: "Qu'est-ce qu'un pouvoir adjudicateur exactement ?", a: "C'est la notion clé de la loi belge. Est pouvoir adjudicateur : l'État, les Régions, les Communautés, les provinces, les communes — mais aussi les organismes de droit public qui réunissent trois conditions cumulatives : créé pour satisfaire un besoin d'intérêt général, doté de la personnalité juridique, et dont l'activité est financée ou contrôlée majoritairement par des autorités publiques." },
+  { q: "Mon ASBL est subsidiée par la Région wallonne. Sommes-nous automatiquement soumis à la loi ?", a: "Recevoir un subside wallon est un indice sérieux, mais pas suffisant seul. Il faut aussi que la structure soit créée pour satisfaire un besoin d'intérêt général et que le financement ou le contrôle public soit majoritaire. Le diagnostic vous aide à évaluer ces trois conditions ensemble." },
+  { q: "Quelle procédure utiliser pour un achat entre 30 000 € et 143 000 € HTVA ?", a: "Si vous êtes pouvoir adjudicateur, vous pouvez généralement recourir à une procédure négociée sans publication préalable pour des marchés de fournitures et services sous 143 000 € HTVA. Cela implique de consulter plusieurs prestataires, de comparer les offres sur des critères définis et de justifier votre choix. Le détail figure à l'article 42 de la loi du 17 juin 2016." },
+  { q: "Faut-il publier sur e-Procurement pour tous les marchés publics ?", a: "Non. En dessous de certains seuils (typiquement 30 000 € pour des marchés simples), aucune publication n'est obligatoire. Au-delà, une publication sur l'Espace de Publication des Marchés Publics (e-Procurement) devient nécessaire. Au-delà des seuils européens (environ 143 000 € pour les services), une publication au Journal Officiel de l'UE s'ajoute." },
+  { q: "Mon ASBL achète des services numériques (hébergement, SaaS, développement). Cela entre-t-il dans les marchés publics ?", a: "Oui, si vous êtes pouvoir adjudicateur. Les services numériques sont des marchés de services au sens de la loi. Le type de prestation (logiciel en mode SaaS, développement sur mesure, hébergement cloud) ne modifie pas l'obligation : c'est le montant et votre statut qui déterminent la procédure." },
+  { q: "Peut-on fractionner un marché pour rester sous les seuils ?", a: "Non. Le fractionnement artificiel d'un marché pour contourner les seuils est explicitement interdit par la loi (article 2, §8 de la loi du 17 juin 2016). La valeur estimée d'un marché doit prendre en compte l'ensemble de la commande ou de la période de prestation." },
+  { q: "Que risque-t-on si on ne respecte pas les règles sur les marchés publics ?", a: "Les risques sont multiples : récupération des subsides par l'organisme financeur, annulation du contrat, sanctions administratives, voire pénales dans les cas les plus graves. Par ailleurs, un prestataire écarté irrégulièrement peut introduire un recours et obtenir des dommages et intérêts." },
+  { q: "Y a-t-il des exemptions pour les ASBL du secteur culturel ou social ?", a: "La loi prévoit certaines exemptions sectorielles (notamment pour certains marchés de services à la personne, services sociaux ou culturels sous seuils européens), mais elles sont limitées et bien précises. L'exemption ne s'applique pas automatiquement : il faut vérifier que la prestation correspond exactement aux codes CPV exemptés." },
 ]
 
 type TrustItem = { Icon: typeof Clock; label: string }
@@ -149,10 +159,14 @@ function Hero({ onStart }: { onStart: () => void }) {
             transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="relative w-full aspect-[4/3] rounded-2xl bg-sable border border-line overflow-hidden">
+              <img
+                src="/images/hero-illustration.webp"
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover"
+                onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+              />
               <div className="absolute inset-0 dotgrid opacity-40" />
-              <div className="absolute inset-0 flex items-end justify-end p-6">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate/30">Illustration</span>
-              </div>
             </div>
           </motion.div>
         </div>
@@ -160,9 +174,9 @@ function Hero({ onStart }: { onStart: () => void }) {
 
       <div className="bg-sable border-t border-line">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-          <div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl">
-            {([['5 min', 'Pour tracer votre réponse'], ['8 questions', 'Guidées, sans jargon'], ['100 %', 'Indépendant et gratuit']] as [string, string][]).map(([n, l]) => (
-              <div key={n}>
+          <div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto">
+            {([['5 min', 'Pour tracer votre réponse'], ['8 questions', 'Guidées, sans jargon'], ['100 %', 'Gratuit']] as [string, string][]).map(([n, l]) => (
+              <div key={n} className="text-center">
                 <p className="font-display font-bold text-xl sm:text-2xl text-coral">{n}</p>
                 <p className="text-xs text-slate/70 mt-1 leading-snug">{l}</p>
               </div>
@@ -494,9 +508,9 @@ function AudienceSection({ onStart }: { onStart: () => void }) {
 
 function BottomCTA({ onStart }: { onStart: () => void }) {
   const offers = [
-    { Icon: BookOpen, title: 'Cadrer votre projet', desc: 'Ateliers de définition, cahier des charges, stratégie digitale.' },
-    { Icon: TangleToArrow, title: 'Préparer le dossier', desc: 'Spécifications techniques, critères, comparaison d\'offres.' },
-    { Icon: Briefcase,   title: 'Rédiger les documents', desc: 'Document structuré pour un appel à prestataires dans les règles.' },
+    { Icon: BookOpen,       title: 'Cadrer votre projet',   desc: 'Ateliers de définition, cahier des charges, stratégie digitale.' },
+    { Icon: ClipboardList, title: 'Préparer le dossier',   desc: 'Spécifications techniques, critères, comparaison d\'offres.' },
+    { Icon: Briefcase,     title: 'Rédiger les documents', desc: 'Document structuré pour un appel à prestataires dans les règles.' },
   ]
   return (
     <section className="bg-navy py-20 sm:py-28 relative overflow-hidden">
@@ -539,7 +553,7 @@ function BottomCTA({ onStart }: { onStart: () => void }) {
   )
 }
 
-function Footer({ onStart }: { onStart: () => void }) {
+function Footer({ onStart, onLegal }: { onStart: () => void; onLegal: (page: 'mentions-legales' | 'confidentialite') => void }) {
   return (
     <footer className="bg-ink text-aqua/50 border-t border-white/5">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14">
@@ -565,9 +579,9 @@ function Footer({ onStart }: { onStart: () => void }) {
           <div>
             <p className="text-white text-[10px] font-bold uppercase tracking-widest mb-4">Informations</p>
             <ul className="space-y-2.5">
-              {['Mentions légales', 'Confidentialité', 'Contact'].map(l => (
-                <li key={l}><a href="#" className="hover:text-white transition-colors text-xs">{l}</a></li>
-              ))}
+              <li><button onClick={() => onLegal('mentions-legales')} className="hover:text-white transition-colors text-xs text-left">Mentions légales</button></li>
+              <li><button onClick={() => onLegal('confidentialite')} className="hover:text-white transition-colors text-xs text-left">Confidentialité</button></li>
+              <li><a href="mailto:hello@nomadimpact.org" className="hover:text-white transition-colors text-xs">Contact</a></li>
             </ul>
           </div>
           <div>
@@ -584,7 +598,7 @@ function Footer({ onStart }: { onStart: () => void }) {
   )
 }
 
-export function Home({ onStart }: { onStart: () => void }) {
+export function Home({ onStart, onLegal }: { onStart: () => void; onLegal: (page: 'mentions-legales' | 'confidentialite') => void }) {
   return (
     <div className="min-h-screen bg-cream">
       <Header onStart={onStart} />
@@ -598,7 +612,7 @@ export function Home({ onStart }: { onStart: () => void }) {
         <AudienceSection onStart={onStart} />
         <BottomCTA onStart={onStart} />
       </main>
-      <Footer onStart={onStart} />
+      <Footer onStart={onStart} onLegal={onLegal} />
     </div>
   )
 }

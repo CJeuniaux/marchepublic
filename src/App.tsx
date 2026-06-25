@@ -3,8 +3,10 @@ import { AnimatePresence } from 'framer-motion'
 import { Home } from './pages/Home'
 import { Diagnostic } from './pages/Diagnostic'
 import { Intro } from './components/Intro'
+import { MentionsLegales } from './pages/MentionsLegales'
+import { Confidentialite } from './pages/Confidentialite'
 
-type Page = 'home' | 'diagnostic'
+type Page = 'home' | 'diagnostic' | 'mentions-legales' | 'confidentialite'
 
 export default function App() {
   const [page, setPage] = useState<Page>('home')
@@ -28,7 +30,11 @@ export default function App() {
       <AnimatePresence>{intro && <Intro key="intro" onDone={finishIntro} />}</AnimatePresence>
       {page === 'diagnostic'
         ? <Diagnostic onBack={() => go('home')} />
-        : <Home onStart={() => go('diagnostic')} />}
+        : page === 'mentions-legales'
+        ? <MentionsLegales onBack={() => go('home')} />
+        : page === 'confidentialite'
+        ? <Confidentialite onBack={() => go('home')} />
+        : <Home onStart={() => go('diagnostic')} onLegal={go} />}
     </>
   )
 }
