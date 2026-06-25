@@ -73,13 +73,13 @@ interface Band {
 
 const BANDS: Band[] = [
   {
-    key: 'tres_faible', min: 0, max: 20, label: 'Risque très faible', verdict: 'Votre parcours indique un risque très faible', color: '#138A6E', tint: '#E6F6F0', ring: '#9DDCC7',
+    key: 'tres_faible', min: 0, max: 20, label: 'Risque très faible', verdict: 'Votre parcours indique un risque très faible', color: '#2E5C8A', tint: '#E6EFF7', ring: '#A8C4DE',
     phrase: "Probabilité très faible que les règles des marchés publics s'appliquent à ce projet.",
     meaning: "Votre organisation ne présente quasiment aucun des critères qui rendent un acheteur soumis aux marchés publics, et le montant en jeu reste limité. Vous pouvez avancer sereinement, en gardant une trace écrite de votre raisonnement.",
     steps: ['Gardez une trace écrite de ce parcours dans votre dossier de décision.', "Demandez tout de même 2 à 3 offres comparatives : c'est une bonne pratique de saine gestion.", "Si votre projet dépend d'une convention de subvention spécifique, vérifiez aussi les règles imposées par ce financement.", 'Refaites le parcours si votre financement ou votre montant évolue.'],
   },
   {
-    key: 'faible', min: 21, max: 40, label: 'Vigilance à documenter', verdict: 'Votre parcours indique une vigilance à documenter', color: '#2F9E6F', tint: '#EAF6EE', ring: '#A7DCBE',
+    key: 'faible', min: 21, max: 40, label: 'Vigilance à documenter', verdict: 'Votre parcours indique une vigilance à documenter', color: '#4a7db0', tint: '#EAF0F7', ring: '#B8CCDE',
     phrase: "Probabilité faible, mais quelques éléments méritent d'être documentés avant d'avancer.",
     meaning: "Les règles ont peu de chances de s'appliquer. Une mise en concurrence légère et quelques justificatifs suffisent généralement à sécuriser votre décision et à la rendre défendable.",
     steps: ['Sollicitez plusieurs prestataires et comparez-les sur des critères clairs et écrits.', 'Conservez les offres reçues et la justification de votre choix.', "Vérifiez les clauses d'achat de votre convention de subvention si le projet est subsidié.", 'Documentez votre analyse : en cas de contrôle, vous montrez une démarche sérieuse.'],

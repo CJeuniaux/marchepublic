@@ -4,16 +4,22 @@ import { motion } from 'framer-motion'
 /**
  * LogoMark — le zigzag de l'écran de chargement, en version compacte.
  */
-export function LogoMark({ className = '', nodeColor = '#FFFFFF' }: { className?: string; nodeColor?: string }) {
+export function LogoMark({
+  className = '',
+  nodeColor = '#FFFFFF',
+  lineColor,
+  finalColor = '#E63948',
+}: { className?: string; nodeColor?: string; lineColor?: string; finalColor?: string }) {
   const nodes = [
     { x: 10, y: 40 }, { x: 34, y: 22 }, { x: 60, y: 36 }, { x: 86, y: 18 }, { x: 110, y: 30 },
   ]
   const path = 'M10 40 L34 22 L60 36 L86 18 L110 30'
+  const stroke = lineColor ?? nodeColor
   return (
     <svg viewBox="0 0 120 48" className={className} fill="none" aria-hidden>
-      <path d={path} stroke="#415338" strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />
+      <path d={path} stroke={stroke} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />
       {nodes.map((n, i) => (
-        <circle key={i} cx={n.x} cy={n.y} r={i === nodes.length - 1 ? 6.5 : 5} fill={i === nodes.length - 1 ? '#E63948' : nodeColor} />
+        <circle key={i} cx={n.x} cy={n.y} r={i === nodes.length - 1 ? 6.5 : 5} fill={i === nodes.length - 1 ? finalColor : nodeColor} />
       ))}
     </svg>
   )
@@ -33,7 +39,7 @@ export function ParcoursProgress({ current, total = 5 }: { current: number; tota
     <svg viewBox="0 0 120 48" className="w-full" fill="none" aria-hidden>
       <path d={path} stroke="rgba(255,255,255,0.16)" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
       <motion.path
-        d={path} stroke="#415338" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"
+        d={path} stroke="#E63948" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"
         initial={{ pathLength: 0 }} animate={{ pathLength: frac }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       />
       {nodes.map((n, i) => {
@@ -42,7 +48,7 @@ export function ParcoursProgress({ current, total = 5 }: { current: number; tota
         return (
           <g key={i}>
             {cur && <motion.circle cx={n.x} cy={n.y} r={9} fill="#E63948" opacity={0.25} initial={{ scale: 0.6 }} animate={{ scale: [0.8, 1.15, 0.9] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }} style={{ transformOrigin: `${n.x}px ${n.y}px` }} />}
-            <circle cx={n.x} cy={n.y} r={cur ? 5.5 : 4.5} fill={done ? '#415338' : cur ? '#E63948' : '#2E2348'} stroke={done || cur ? 'none' : 'rgba(255,255,255,0.4)'} strokeWidth={1.5} />
+            <circle cx={n.x} cy={n.y} r={cur ? 5.5 : 4.5} fill={done ? '#2E2348' : cur ? '#E63948' : '#2E2348'} stroke={done || cur ? 'none' : 'rgba(255,255,255,0.4)'} strokeWidth={1.5} />
           </g>
         )
       })}
@@ -184,10 +190,10 @@ export function Constellation({ className = '', hollow = '#2E2348' }: { classNam
 export function HeroPathScene({ className = '' }: { className?: string }) {
   return (
     <svg viewBox="0 0 420 380" className={className} fill="none" aria-hidden>
-      <path d="M40 340 C 80 260, 60 210, 140 190 S 250 150, 230 90 S 320 40, 380 60" stroke="#DDF7F4" strokeWidth={2.5} strokeLinecap="round" strokeDasharray="2 10" opacity={0.7} />
-      <path d="M40 340 C 80 260, 60 210, 140 190 S 250 150, 230 90 S 320 40, 380 60" stroke="#415338" strokeWidth={3} strokeLinecap="round" />
+      <path d="M40 340 C 80 260, 60 210, 140 190 S 250 150, 230 90 S 320 40, 380 60" stroke="#E4D9CC" strokeWidth={2.5} strokeLinecap="round" strokeDasharray="2 10" opacity={0.7} />
+      <path d="M40 340 C 80 260, 60 210, 140 190 S 250 150, 230 90 S 320 40, 380 60" stroke="#2E2348" strokeWidth={3} strokeLinecap="round" />
       <path d="M140 190 C 180 210, 240 230, 300 215" stroke="#F4C28F" strokeWidth={2.5} strokeLinecap="round" strokeDasharray="6 8" />
-      <circle cx="40" cy="340" r="8" fill="#FFFFFF" stroke="#415338" strokeWidth={3} />
+      <circle cx="40" cy="340" r="8" fill="#FFFFFF" stroke="#2E2348" strokeWidth={3} />
       <circle cx="140" cy="190" r="7" fill="#2E2348" />
       <circle cx="230" cy="90" r="7" fill="#2E2348" />
       <circle cx="300" cy="215" r="6" fill="#F4C28F" />
@@ -202,7 +208,7 @@ export function Signpost({ className = '' }: { className?: string }) {
   return (
     <svg viewBox="0 0 64 64" className={className} fill="none" aria-hidden>
       <rect x="30" y="14" width="4" height="40" rx="2" fill="#607086" />
-      <path d="M14 18 h26 l8 6 l-8 6 H14 z" fill="#415338" />
+      <path d="M14 18 h26 l8 6 l-8 6 H14 z" fill="#2E2348" />
       <path d="M50 32 H24 l-8 6 l8 6 h26 z" fill="#E63948" />
     </svg>
   )

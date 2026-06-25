@@ -146,14 +146,14 @@
     @apply badge-status bg-sun text-navy;
   }
 
-  /* FACULTATIF — vert tendre */
+  /* FACULTATIF */
   .badge-facultatif {
-    @apply badge-status bg-teal text-white;
+    @apply badge-status bg-bleu text-white;
   }
 
-  /* SOURCE OFFICIELLE — vert outline */
+  /* SOURCE OFFICIELLE */
   .badge-source {
-    @apply badge-status bg-teal/10 text-teal border border-teal/25;
+    @apply badge-status bg-bleu/10 text-bleu border border-bleu/25;
   }
 
   /* ── Section header badges (result page) ─── */
@@ -175,9 +175,9 @@
     @apply section-dot bg-coral text-white;
   }
 
-  /* Green — Documents utiles / Sources officielles */
-  .section-dot-teal {
-    @apply section-dot bg-teal text-white;
+  /* Blue — Documents utiles / Sources officielles */
+  .section-dot-bleu {
+    @apply section-dot bg-bleu text-white;
   }
 
   /* ── Eyebrow labels ──────────────────────── */
@@ -193,8 +193,8 @@
     @apply eyebrow text-coral;
   }
 
-  .eyebrow-teal {
-    @apply eyebrow text-teal;
+  .eyebrow-bleu {
+    @apply eyebrow text-bleu;
   }
 
   .eyebrow-slate {
@@ -209,8 +209,8 @@
     @apply w-full h-3 rounded-full overflow-hidden flex;
   }
 
-  .band-bar__tres-faible { background-color: #138A6E; @apply flex-1; }
-  .band-bar__faible      { background-color: #2F9E6F; @apply flex-1; }
+  .band-bar__tres-faible { background-color: #2E5C8A; @apply flex-1; }
+  .band-bar__faible      { background-color: #4a7db0; @apply flex-1; }
   .band-bar__grise       { background-color: #C97A18; @apply flex-1; }
   .band-bar__forte       { background-color: #E2603C; @apply flex-1; }
   .band-bar__tres-forte  { background-color: #D6473C; @apply flex-1; }

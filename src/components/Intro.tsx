@@ -28,14 +28,14 @@ export function Intro({ onDone }: { onDone: () => void }) {
       transition={{ duration: 0.6, ease: 'easeInOut' }}
     >
       <div className="absolute inset-0 dotgrid-light opacity-50" />
-      <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-teal/20 blur-3xl" />
+      <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-coral/20 blur-3xl" />
       <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-coral/20 blur-3xl" />
 
       <svg viewBox="0 0 600 280" className="w-[min(90vw,600px)] relative">
         <motion.path
           d={path}
           fill="none"
-          stroke="#45C7C7"
+          stroke="#C8BEF5"
           strokeWidth={3}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -72,7 +72,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
         transition={{ delay: 1.6, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         <p className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
-          marchépublic<span className="text-teal">.be</span>
+          marchépublic<span className="text-coral">.be</span>
         </p>
         <p className="mt-2 text-sm text-aqua/70">Le labyrinthe juridique, transformé en parcours clair.</p>
       </motion.div>

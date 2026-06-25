@@ -22,10 +22,10 @@ function Reveal({ children, className, delay = 0 }: { children: ReactNode; class
   )
 }
 
-function Eyebrow({ children, tone = 'sun' }: { children: ReactNode; tone?: 'sun' | 'teal' | 'cream' | 'coral' }) {
+function Eyebrow({ children, tone = 'sun' }: { children: ReactNode; tone?: 'sun' | 'bleu' | 'cream' | 'coral' }) {
   const cls: Record<string, string> = {
     sun:   'text-navy bg-sun/30 border border-sun/60',
-    teal:  'text-teal bg-teal/10 border border-teal/20',
+    bleu:  'text-bleu bg-bleu/10 border border-bleu/20',
     cream: 'text-white/70 bg-white/10 border border-white/15',
     coral: 'text-white bg-coral border border-coral/80',
   }
@@ -160,7 +160,7 @@ function Hero({ onStart }: { onStart: () => void }) {
           >
             <div className="relative w-full aspect-[4/3] rounded-2xl bg-sable border border-line overflow-hidden">
               <img
-                src="/images/hero-illustration.webp"
+                src="/images/hero-illustration.png"
                 alt=""
                 aria-hidden="true"
                 className="absolute inset-0 w-full h-full object-cover"
@@ -560,7 +560,7 @@ function Footer({ onStart, onLegal }: { onStart: () => void; onLegal: (page: 'me
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-3">
-              <LogoMark className="h-6 w-auto" />
+              <LogoMark className="h-6 w-auto" nodeColor="#FFFFFF" lineColor="#FFFFFF" finalColor="#FFFFFF" />
               <span className="font-display font-bold text-white text-[14px]">marchépublic<span className="text-coral">.be</span></span>
             </div>
             <p className="text-xs leading-relaxed">Outil de pré-diagnostic indépendant pour aider les ASBL belges à comprendre leurs obligations avant de choisir un prestataire.</p>
