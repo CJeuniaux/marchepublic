@@ -1,10 +1,10 @@
 import { ArrowLeft } from 'lucide-react'
 import { LogoMark } from '../components/Graphics'
+import { ContactForm } from '../components/ContactForm'
 
 export function MentionsLegales({ onBack }: { onBack: () => void }) {
   return (
     <div className="min-h-screen bg-cream">
-      {/* Header */}
       <header className="bg-white border-b border-line sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <button onClick={onBack} className="flex items-center gap-2.5">
@@ -35,9 +35,8 @@ export function MentionsLegales({ onBack }: { onBack: () => void }) {
             <div className="bg-white rounded-2xl border border-line p-6 shadow-card space-y-2 text-sm">
               <p><strong className="text-navy">Dénomination :</strong> Nomad Impact ASBL</p>
               <p><strong className="text-navy">Forme juridique :</strong> Association sans but lucratif (ASBL) de droit belge</p>
-              <p><strong className="text-navy">Numéro d'entreprise :</strong> À préciser</p>
-              <p><strong className="text-navy">Siège social :</strong> À préciser — Belgique</p>
-              <p><strong className="text-navy">Contact :</strong> <a href="mailto:hello@nomadimpact.org" className="text-coral hover:underline">hello@nomadimpact.org</a></p>
+              <p><strong className="text-navy">Numéro d'entreprise :</strong> 1033.998.026</p>
+              <p><strong className="text-navy">Siège social :</strong> Avenue Cardinal Mercier 50, 5000 Namur — Belgique</p>
               <p><strong className="text-navy">Site web :</strong> <a href="https://nomadimpact.org" target="_blank" rel="noopener noreferrer" className="text-coral hover:underline">nomadimpact.org</a></p>
             </div>
           </section>
@@ -96,16 +95,14 @@ export function MentionsLegales({ onBack }: { onBack: () => void }) {
 
           <section>
             <h2 className="font-display font-bold text-navy text-xl mb-3">Contact</h2>
-            <p>Pour toute question relative au site ou à vos données personnelles :</p>
-            <a href="mailto:hello@nomadimpact.org" className="inline-flex items-center gap-2 mt-3 px-5 py-2.5 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-105 transition-all">
-              hello@nomadimpact.org
-            </a>
+            <p className="mb-5">Pour toute question relative au site ou à vos données personnelles, utilisez le formulaire ci-dessous :</p>
+            <ContactForm />
           </section>
 
         </div>
 
         <div className="mt-12 pt-6 border-t border-line text-xs text-slate/60">
-          Dernière mise à jour : juin 2025 · marchépublic.be est un outil de Nomad Impact ASBL
+          Dernière mise à jour : juin 2025 · marchépublic.be est un outil de Nomad Impact ASBL — Avenue Cardinal Mercier 50, 5000 Namur — BCE 1033.998.026
         </div>
       </main>
     </div>

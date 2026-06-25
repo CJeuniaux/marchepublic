@@ -1,5 +1,6 @@
 import { ArrowLeft } from 'lucide-react'
 import { LogoMark } from '../components/Graphics'
+import { ContactForm } from '../components/ContactForm'
 
 export function Confidentialite({ onBack }: { onBack: () => void }) {
   return (
@@ -32,8 +33,8 @@ export function Confidentialite({ onBack }: { onBack: () => void }) {
             <h2 className="font-display font-bold text-navy text-xl mb-3">Responsable du traitement</h2>
             <div className="bg-white rounded-2xl border border-line p-6 shadow-card space-y-1.5">
               <p><strong className="text-navy">Nomad Impact ASBL</strong></p>
-              <p>ASBL de droit belge — Capacity builder digital pour les ASBL et structures à impact</p>
-              <p>Contact : <a href="mailto:hello@nomadimpact.org" className="text-coral hover:underline">hello@nomadimpact.org</a></p>
+              <p>ASBL de droit belge — BCE 1033.998.026</p>
+              <p>Avenue Cardinal Mercier 50, 5000 Namur — Belgique</p>
             </div>
           </section>
 
@@ -104,7 +105,7 @@ export function Confidentialite({ onBack }: { onBack: () => void }) {
                 <li><strong className="text-navy">Droit d'opposition</strong> : vous opposer à certains traitements</li>
                 <li><strong className="text-navy">Droit à la portabilité</strong> : recevoir vos données dans un format lisible</li>
               </ul>
-              <p className="mt-3">Pour exercer vos droits : <a href="mailto:hello@nomadimpact.org" className="text-coral hover:underline">hello@nomadimpact.org</a></p>
+              <p className="mt-3">Pour exercer vos droits, utilisez le formulaire de contact ci-dessous.</p>
               <p className="mt-2 text-xs">Vous pouvez également introduire une réclamation auprès de l'Autorité de protection des données belge : <a href="https://www.dataprotectionauthority.be" target="_blank" rel="noopener noreferrer" className="text-coral hover:underline">dataprotectionauthority.be</a></p>
             </div>
           </section>
@@ -115,10 +116,16 @@ export function Confidentialite({ onBack }: { onBack: () => void }) {
             <p className="mt-3">Le site peut utiliser des données de session locales (sessionStorage) pour éviter de ré-afficher l'écran d'introduction. Ces données restent sur votre appareil et ne sont pas transmises.</p>
           </section>
 
+          <section>
+            <h2 className="font-display font-bold text-navy text-xl mb-3">Contact</h2>
+            <p className="mb-5">Pour exercer vos droits ou poser toute question relative à vos données personnelles :</p>
+            <ContactForm />
+          </section>
+
         </div>
 
         <div className="mt-12 pt-6 border-t border-line text-xs text-slate/60">
-          Dernière mise à jour : juin 2025 · marchépublic.be est un outil de Nomad Impact ASBL
+          Dernière mise à jour : juin 2025 · marchépublic.be est un outil de Nomad Impact ASBL — Avenue Cardinal Mercier 50, 5000 Namur — BCE 1033.998.026
         </div>
       </main>
     </div>
