@@ -52,7 +52,7 @@ export async function saveLead(payload: LeadPayload): Promise<{ ok: boolean; err
   }
 
   try {
-    const res = await fetch(`${url}/rest/v1/leads`, {
+    const res = await fetch(`${url.replace(/\/$/, '')}/rest/v1/leads`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
