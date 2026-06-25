@@ -52,7 +52,11 @@ export async function saveLead(payload: LeadPayload): Promise<{ ok: boolean; err
   }
 
   try {
-    const res = await fetch(`${url.replace(/\/$/, '')}/rest/v1/leads`, {
+    // Normalize URL: strip trailing slash and any /rest/v1 suffix the user may have included
+    const baseUrl = url.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '')
+    const endpoint = `${baseUrl}/rest/v1/leads`
+    console.log('[leads] POST', endpoint)
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
