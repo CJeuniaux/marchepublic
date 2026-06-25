@@ -159,7 +159,7 @@ function Hero({ onStart }: { onStart: () => void }) {
             transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
             <img
-              src="/images/hero-illustration.png"
+              src="/images/hero-illustration.png?v=2"
               alt="Diagnostic marchés publics pour ASBL belges — illustration"
               className="w-full max-w-[540px] h-auto object-contain drop-shadow-[0_8px_32px_rgba(46,35,72,0.10)]"
               onError={e => {
