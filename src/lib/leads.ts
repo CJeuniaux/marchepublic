@@ -8,11 +8,15 @@
  *   create table leads (
  *     id uuid default gen_random_uuid() primary key,
  *     email text not null,
- *     organisation text,
+ *     organization text,
  *     document_id text,
+ *     document_title text,
  *     score integer,
  *     band text,
  *     consent boolean default true,
+ *     source text,
+ *     page_url text,
+ *     user_agent text,
  *     created_at timestamptz default now()
  *   );
  *   -- Autoriser les INSERT anonymes (RLS)
@@ -26,13 +30,17 @@
  * 4. Pour exporter les leads : Supabase dashboard > Table Editor > leads > Export CSV
  */
 
-interface LeadPayload {
+export interface LeadPayload {
   email: string
-  organisation?: string
+  organization?: string   // matches Supabase column name exactly
   document_id?: string
+  document_title?: string
   score?: number
   band?: string
   consent: boolean
+  source?: string
+  page_url?: string
+  user_agent?: string
 }
 
 export async function saveLead(payload: LeadPayload): Promise<{ ok: boolean; error?: string }> {
@@ -56,10 +64,12 @@ export async function saveLead(payload: LeadPayload): Promise<{ ok: boolean; err
     })
     if (!res.ok) {
       const text = await res.text()
+      console.error('[leads] Supabase insert failed:', res.status, text)
       return { ok: false, error: text }
     }
     return { ok: true }
   } catch (e) {
+    console.error('[leads] Network error:', e)
     return { ok: false, error: String(e) }
   }
 }

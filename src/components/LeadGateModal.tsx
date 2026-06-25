@@ -25,12 +25,23 @@ export function LeadGateModal({ documentId, documentTitle, documentFile, score, 
     e.preventDefault()
     if (!isValid) return
     setStatus('loading')
-    const result = await saveLead({ email, organisation: organisation || undefined, document_id: documentId, score, band, consent })
+    const result = await saveLead({
+      email,
+      organization: organisation || undefined,  // matches Supabase column exactly
+      document_id: documentId,
+      document_title: documentTitle,
+      score,
+      band,
+      consent,
+      source: 'marchepublic.be',
+      page_url: window.location.href,
+      user_agent: navigator.userAgent,
+    })
     if (!result.ok) {
       setError(
         result.error === 'configuration_missing'
-          ? "Le service de téléchargement n'est pas encore configuré. Contactez hello@nomadimpact.org pour recevoir ce document."
-          : "Une erreur est survenue lors de l'enregistrement. Veuillez réessayer ou contacter hello@nomadimpact.org."
+          ? "Le service de téléchargement n'est pas encore configuré. Veuillez réessayer ou nous contacter via marchépublic.be."
+          : "Une erreur est survenue lors de l'enregistrement. Veuillez réessayer ou nous contacter via marchépublic.be."
       )
       setStatus('error')
       return
@@ -147,7 +158,7 @@ export function LeadGateModal({ documentId, documentTitle, documentFile, score, 
                         </div>
                       </div>
                       <p className="text-xs text-slate leading-relaxed">
-                        J'accepte que mon adresse email soit conservée pour recevoir la ressource et être recontacté·e par <strong className="text-navy">marchépublic.be</strong> à propos de mes besoins. Vous pouvez demander la suppression de vos données à tout moment.
+                        J'accepte que MarchéPublic.be conserve mon adresse email afin de me transmettre cette ressource et, le cas échéant, me recontacter à propos de mon diagnostic. Vous pouvez demander la suppression de vos données à tout moment.
                       </p>
                     </label>
                   </div>
