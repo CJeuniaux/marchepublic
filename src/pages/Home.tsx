@@ -558,8 +558,8 @@ function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-l
   return (
     <footer className="bg-ink text-aqua/50 border-t border-white/5">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
-          <div className="lg:col-span-1">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-10">
+          <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-3">
               <LogoMark className="h-6 w-auto" nodeColor="#FFFFFF" lineColor="#FFFFFF" finalColor="#FFFFFF" />
               <span className="font-display font-bold text-white text-[14px]">marchépublic<span className="text-coral">.be</span></span>
@@ -586,6 +586,20 @@ function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-l
             </ul>
           </div>
           <div>
+            <p className="text-white text-[10px] font-bold uppercase tracking-widest mb-4">Ressources</p>
+            <ul className="space-y-2.5 text-sm">
+              {([
+                ['/marche-public-asbl/', 'Marché public ASBL'],
+                ['/achat-subsidie-marche-public/', 'Achat subsidié'],
+                ['/devis-ou-marche-public/', 'Devis ou marché public'],
+                ['/subvention-marche-public/', 'Subvention et marché public'],
+                ['/seuils-marche-public-asbl/', 'Seuils applicables'],
+              ] as [string, string][]).map(([h, l]) => (
+                <li key={l}><a href={h} className="hover:text-white transition-colors text-xs">{l}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
             <p className="text-white text-[10px] font-bold uppercase tracking-widest mb-4">Informations</p>
             <ul className="space-y-2.5">
               <li><button onClick={() => onLegal('mentions-legales')} className="hover:text-white transition-colors text-xs text-left">Mentions légales</button></li>
@@ -600,7 +614,7 @@ function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-l
         </div>
         <div className="border-t border-white/8 pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-[11px]">© {new Date().getFullYear()} marchépublic.be. Tous droits réservés.</p>
-          <p className="text-[11px]">Un outil développé par <a href="https://nomadimpact.org" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-coral transition-colors">Nomad Impact</a></p>
+          <p className="text-[11px]">Un outil développé par <a href="https://nomadimpact.org" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-coral transition-colors">Nomad Impact</a> · <a href="/marche-public-asbl/" className="hover:text-white transition-colors">Marché public ASBL</a> · <a href="/devis-ou-marche-public/" className="hover:text-white transition-colors">Devis ou marché public</a></p>
         </div>
       </div>
     </footer>
