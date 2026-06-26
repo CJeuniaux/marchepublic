@@ -1,4 +1,10 @@
 {
+  "redirects": [
+    { "source": "/marche-public-asbl/", "destination": "/asbl-et-marche-public/", "permanent": true },
+    { "source": "/marche-public-asbl", "destination": "/asbl-et-marche-public/", "permanent": true },
+    { "source": "/seuils-marche-public-asbl/", "destination": "/seuils-marches-publics-asbl/", "permanent": true },
+    { "source": "/seuils-marche-public-asbl", "destination": "/seuils-marches-publics-asbl/", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
