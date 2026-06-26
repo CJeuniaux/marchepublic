@@ -51,13 +51,13 @@ const USE_CASES = [
 const FAQS = [
   { q: 'Une ASBL peut-elle vraiment être soumise aux marchés publics ?', a: "Oui. Une ASBL peut être qualifiée de « pouvoir adjudicateur » si elle est majoritairement financée par des fonds publics, contrôlée par une autorité publique, ou si sa gouvernance est dominée par des représentants publics. Le statut associatif ne protège pas automatiquement." },
   { q: "Recevoir un subside m'oblige-t-il à faire un marché public ?", a: "Pas mécaniquement. Recevoir un subside ne suffit pas. Mais si le financement public dépasse certains seuils, ou si votre convention impose une mise en concurrence, vos obligations changent." },
-  { q: 'Trois devis suffisent-ils ?', a: "Souvent c'est une bonne pratique — parfois c'est insuffisant. Selon votre statut et le montant, une procédure formalisée peut être exigée. Demander trois devis ne vous met pas automatiquement en règle." },
+  { q: 'Trois devis suffisent-ils ?', a: "C'est souvent une bonne pratique, mais parfois insuffisant. Selon votre statut et le montant, une procédure formalisée peut être exigée. Demander trois devis ne vous met pas automatiquement en règle." },
   { q: 'Puis-je choisir un prestataire que je connais déjà ?', a: "Si vous êtes soumis aux règles, le principe est la mise en concurrence équitable. Si vous ne l'êtes pas, vous gardez la liberté de choix. C'est précisément ce que le parcours aide à clarifier." },
   { q: 'Quelle différence entre un devis et un marché public ?', a: "Un devis est une simple demande de prix. Un marché public est une procédure encadrée par la loi : étapes obligatoires, délais, transparence, parfois publication." },
   { q: 'Cet outil remplace-t-il un juriste ?', a: "Non, et il ne le prétend pas. C'est un pré-diagnostic pédagogique et indépendant : il trace un chemin clair et renvoie aux sources officielles. Pour une situation engageante ou complexe, faites valider votre procédure par une personne compétente." },
   { q: "Quel est le seuil à partir duquel un marché public est obligatoire pour une ASBL ?", a: "Il n'existe pas de seuil unique universel. Le premier critère est votre qualité de pouvoir adjudicateur : si vous l'êtes, tous vos marchés sont en principe soumis à la loi du 17 juin 2016, quel que soit le montant. Des procédures allégées s'appliquent en dessous de certains seuils (30 000 € HTVA pour des achats courants, 143 000 € pour des fournitures et services, etc.). Si vous n'êtes pas pouvoir adjudicateur, c'est votre convention de subvention qui fixe les règles." },
   { q: "Ma convention de subvention parle de mise en concurrence. Est-ce équivalent à un marché public ?", a: "Pas nécessairement. Certaines conventions imposent une mise en concurrence simplifiée (ex. trois devis comparés) sans exiger le respect formel de la loi sur les marchés publics. D'autres renvoient explicitement à cette loi. Lisez attentivement votre convention et, si c'est flou, demandez à votre organisme subsidieur de clarifier par écrit." },
-  { q: "Qu'est-ce qu'un pouvoir adjudicateur exactement ?", a: "C'est la notion clé de la loi belge. Est pouvoir adjudicateur : l'État, les Régions, les Communautés, les provinces, les communes — mais aussi les organismes de droit public qui réunissent trois conditions cumulatives : créé pour satisfaire un besoin d'intérêt général, doté de la personnalité juridique, et dont l'activité est financée ou contrôlée majoritairement par des autorités publiques." },
+  { q: "Qu'est-ce qu'un pouvoir adjudicateur exactement ?", a: "C'est la notion clé de la loi belge. Est pouvoir adjudicateur : l'État, les Régions, les Communautés, les provinces, les communes, mais aussi les organismes de droit public qui réunissent trois conditions cumulatives : créé pour satisfaire un besoin d'intérêt général, doté de la personnalité juridique, et dont l'activité est financée ou contrôlée majoritairement par des autorités publiques." },
   { q: "Mon ASBL est subsidiée par la Région wallonne. Sommes-nous automatiquement soumis à la loi ?", a: "Recevoir un subside wallon est un indice sérieux, mais pas suffisant seul. Il faut aussi que la structure soit créée pour satisfaire un besoin d'intérêt général et que le financement ou le contrôle public soit majoritaire. Le diagnostic vous aide à évaluer ces trois conditions ensemble." },
   { q: "Quelle procédure utiliser pour un achat entre 30 000 € et 143 000 € HTVA ?", a: "Si vous êtes pouvoir adjudicateur, vous pouvez généralement recourir à une procédure négociée sans publication préalable pour des marchés de fournitures et services sous 143 000 € HTVA. Cela implique de consulter plusieurs prestataires, de comparer les offres sur des critères définis et de justifier votre choix. Le détail figure à l'article 42 de la loi du 17 juin 2016." },
   { q: "Faut-il publier sur e-Procurement pour tous les marchés publics ?", a: "Non. En dessous de certains seuils (typiquement 30 000 € pour des marchés simples), aucune publication n'est obligatoire. Au-delà, une publication sur l'Espace de Publication des Marchés Publics (e-Procurement) devient nécessaire. Au-delà des seuils européens (environ 143 000 € pour les services), une publication au Journal Officiel de l'UE s'ajoute." },
@@ -72,7 +72,7 @@ const TRUST_ITEMS: TrustItem[] = [
   { Icon: Clock,       label: 'Environ 5 minutes' },
   { Icon: ShieldCheck, label: 'Sources officielles belges' },
   { Icon: Lock,        label: 'Sans inscription' },
-  { Icon: Check,       label: 'Estimation indicative' },
+  { Icon: Check,       label: 'Premier repère, pas avis juridique' },
 ]
 
 function Header({ onStart }: { onStart: () => void }) {
@@ -129,14 +129,14 @@ function Hero({ onStart }: { onStart: () => void }) {
               Diagnostic marchés publics · ASBL belges · Gratuit
             </div>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.2rem] font-bold leading-[1.06] tracking-tight text-balance text-navy">
-              Votre ASBL doit-elle passer par un <span className="text-coral">marché public ?</span>
+              Vous ne savez pas si votre achat doit passer par un <span className="text-coral">marché public ?</span>
             </h1>
             <p className="mt-5 text-lg text-slate leading-relaxed max-w-xl">
-              Achat subsidié, prestation de service, mission de consultance ou projet digital — en 5 minutes, identifiez si votre achat peut relever des règles des marchés publics en Belgique. Score indicatif, chemin recommandé, sources officielles.
+              Avant de signer un devis ou de commander une prestation avec des subsides, faites le point. En quelques questions, marchépublic.be vous aide à repérer si la question des marchés publics peut se poser. Score indicatif, pistes concrètes, sources officielles.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
               <button onClick={onStart} className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-coral text-white font-semibold hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
-                Faire le diagnostic gratuit <ArrowRight className="w-4 h-4" />
+                Faire le diagnostic <ArrowRight className="w-4 h-4" />
               </button>
               <a href="#comment" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg border border-navy/20 text-navy font-semibold text-sm hover:bg-navy/5 transition-all">
                 Comment ça marche
@@ -215,8 +215,8 @@ function HowSection({ onStart }: { onStart: () => void }) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <Reveal className="text-center max-w-2xl mx-auto mb-14">
           <Eyebrow>Comment ça marche</Eyebrow>
-          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Le diagnostic en 2 étapes</h2>
-          <p className="mt-3 text-slate">Répondez aux questions, obtenez votre résultat. Le parcours suit une logique progressive : structure, projet, montant.</p>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Comment ça se passe</h2>
+          <p className="mt-3 text-slate">Quelques questions, un résultat. Le parcours suit la logique des critères belges : structure, financement, montant.</p>
         </Reveal>
         <div className="grid md:grid-cols-3 gap-6">
           {steps.map((s, i) => (
@@ -277,7 +277,7 @@ function StructureSection() {
               Un diagnostic structuré en trois temps
             </h2>
             <p className="mt-4 text-aqua/70 leading-relaxed">
-              Le parcours suit la logique des critères légaux belges. Chaque question éclaire un angle. L'ensemble forme une estimation argumentée, pas un verdict arbitraire.
+              Le parcours suit la logique des critères légaux belges. Chaque question éclaire un angle précis. Le résultat est un repère argumenté, pas un verdict.
             </p>
             <div className="mt-6 flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-coral" />
@@ -405,7 +405,7 @@ function FAQSection() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <Reveal className="mb-10">
           <Eyebrow>FAQ</Eyebrow>
-          <h2 className="mt-3 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight">Les réponses, dans le jargon</h2>
+          <h2 className="mt-3 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight">Questions fréquentes</h2>
         </Reveal>
         <div className="space-y-2">
           {FAQS.map((f, i) => (
@@ -521,10 +521,10 @@ function BottomCTA({ onStart }: { onStart: () => void }) {
           <div className="text-center mb-12">
             <Eyebrow tone="cream">Un projet en tête ?</Eyebrow>
             <h2 className="mt-5 font-display text-3xl sm:text-4xl font-bold text-white tracking-tight text-balance max-w-2xl mx-auto">
-              Clarifications d'abord vos obligations.
+              Clarifiez d'abord vos obligations.
             </h2>
             <p className="mt-4 text-aqua/65 max-w-xl mx-auto text-sm leading-relaxed">
-              Cinq minutes pour obtenir un score, un chemin recommandé et les sources officielles belges à vérifier.
+              Quelques minutes pour obtenir un repère indicatif, des pistes concrètes et les sources officielles belges à vérifier avant d'agir.
             </p>
           </div>
         </Reveal>
@@ -599,7 +599,7 @@ function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-l
           </div>
         </div>
         <div className="border-t border-white/8 pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p className="text-[11px]">© {new Date().getFullYear()} marchépublic.be — Tous droits réservés.</p>
+          <p className="text-[11px]">© {new Date().getFullYear()} marchépublic.be. Tous droits réservés.</p>
           <p className="text-[11px]">Un outil développé par <a href="https://nomadimpact.org" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-coral transition-colors">Nomad Impact</a></p>
         </div>
       </div>

@@ -86,9 +86,9 @@ const BANDS: Band[] = [
   },
   {
     key: 'grise', min: 41, max: 60, label: "Zone d'attention", verdict: "Votre parcours indique une zone d'attention", color: '#C97A18', tint: '#FDF3E1', ring: '#F4D69A',
-    phrase: "Situation ambiguë : l'application des règles ne peut être ni écartée ni confirmée avec certitude.",
+    phrase: "Des indices montrent que la question mérite d'être vérifiée. L'application des règles ne peut être ni écartée ni confirmée avec certitude.",
     meaning: "Plusieurs critères se compensent ou restent incertains. Le réflexe le plus sûr est de préparer votre achat comme s'il pouvait être soumis, puis de lever les doutes restants sur les points précis identifiés ci-dessous.",
-    steps: ["Adoptez le scénario prudent : préparez votre achat comme s'il pouvait être soumis.", 'Formalisez une mise en concurrence : besoin écrit, critères, plusieurs offres comparées.', 'Levez les incertitudes sur les critères clés (financement public, contrôle, montant).', "Si le projet est subsidié, confrontez votre convention de subvention à ses obligations d'achat."],
+    steps: ["Adoptez le scénario prudent : préparez votre achat comme s'il pouvait être soumis.", 'Formalisez une mise en concurrence : besoin écrit, critères, plusieurs offres comparées.', 'Levez les incertitudes sur les critères clés (financement public, contrôle, montant).', "Si le projet est subsidié, vérifiez aussi les obligations d'achat de votre convention de subvention."],
   },
   {
     key: 'forte', min: 61, max: 80, label: 'Forte probabilité', verdict: 'Votre parcours indique une forte probabilité', color: '#E2603C', tint: '#FCEAE3', ring: '#F5C0AB',
@@ -110,7 +110,7 @@ function explain(s: DiagState): { positives: string[]; protective: string[] } {
   const pos: string[] = []; const pro: string[] = []
   if (s.structureType === 'organisme_public') pos.push("Vous êtes un organisme public : vous êtes en principe directement visé·e par la réglementation des marchés publics.")
   if (s.reglesSubsidiant === 'oui') pos.push("Votre convention de subvention impose explicitement le respect des marchés publics : cette obligation contractuelle prime.")
-  if (s.financementPct === 'plus_50') pos.push("Plus de la moitié de votre budget provient de fonds publics — un critère central de la qualification de pouvoir adjudicateur.")
+  if (s.financementPct === 'plus_50') pos.push("Plus de la moitié de votre budget provient de fonds publics (un critère central de la qualification de pouvoir adjudicateur).")
   else if (s.financementPct === 'entre_10_50') pos.push("Une part significative de votre financement est publique.")
   else if (s.financementPct === 'moins_10') pro.push("Votre financement public paraît marginal.")
   if (s.controlCA === 'oui') pos.push("Une autorité publique contrôle la majorité de votre conseil d'administration.")
@@ -778,7 +778,7 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
                       { value: 'autre', label: 'Autre', description: 'Catégorie non listée' },
                     ].map(opt => <OptionCard key={opt.value} {...opt} Icon={PRESTA_ICON[opt.value]} selected={state.prestationType === opt.value} onSelect={v => set('prestationType', v)} />)}
                   </div>
-                  <WhyThis text="Le type de prestation détermine la catégorie de marché (travaux, fournitures ou services) et donc les seuils légaux applicables — les travaux ont des seuils spécifiques." />
+                  <WhyThis text="Le type de prestation détermine la catégorie de marché (travaux, fournitures ou services) et donc les seuils légaux applicables. Les travaux ont des seuils spécifiques." />
                 </StepShell>
               )}
 
