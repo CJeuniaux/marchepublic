@@ -3,6 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, ArrowRight, Check, FileDown } from 'lucide-react'
 import { saveLead } from '../lib/leads'
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void
+  }
+}
+
 interface Props {
   documentId: string
   documentTitle: string
@@ -51,6 +57,15 @@ export function LeadGateModal({ documentId, documentTitle, documentFile, score, 
       return
     }
     setStatus('done')
+    // GA4 — conversion lead (email stocké avec succès)
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', 'generate_lead', {
+        document_id: documentId,
+        document_title: documentTitle,
+        score,
+        band,
+      })
+    }
     // Déclenche le téléchargement
     const a = document.createElement('a')
     a.href = documentFile
