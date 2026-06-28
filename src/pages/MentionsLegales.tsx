@@ -38,7 +38,7 @@ export function MentionsLegales({ onBack }: { onBack: () => void }) {
               <p><strong className="text-navy">Responsable de la publication :</strong> Charlotte Jeuniaux</p>
               <p><strong className="text-navy">Numéro d'entreprise :</strong> 1033.998.026</p>
               <p><strong className="text-navy">Siège social :</strong> Avenue Cardinal Mercier 50, 5000 Namur — Belgique</p>
-              <p><strong className="text-navy">Contact :</strong> <a href="mailto:hello@nomadimpact.org" className="text-coral hover:underline">hello@nomadimpact.org</a></p>
+              <p><strong className="text-navy">Contact :</strong> <a href="mailto:marchepublic@nomadimpact.org" className="text-coral hover:underline">marchepublic@nomadimpact.org</a></p>
               <p><strong className="text-navy">Site web :</strong> <a href="https://nomadimpact.org" target="_blank" rel="noopener noreferrer" className="text-coral hover:underline">nomadimpact.org</a></p>
             </div>
           </section>

@@ -36,7 +36,7 @@ export function Confidentialite({ onBack }: { onBack: () => void }) {
               <p>Responsable du traitement : Charlotte Jeuniaux</p>
               <p>ASBL de droit belge — BCE 1033.998.026</p>
               <p>Avenue Cardinal Mercier 50, 5000 Namur — Belgique</p>
-              <p>Contact : <a href="mailto:hello@nomadimpact.org" className="text-coral hover:underline">hello@nomadimpact.org</a></p>
+              <p>Contact : <a href="mailto:marchepublic@nomadimpact.org" className="text-coral hover:underline">marchepublic@nomadimpact.org</a></p>
             </div>
           </section>
 

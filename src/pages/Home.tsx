@@ -605,7 +605,7 @@ function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-l
               <li><button onClick={() => onLegal('mentions-legales')} className="hover:text-white transition-colors text-xs text-left">Mentions légales</button></li>
               <li><button onClick={() => onLegal('confidentialite')} className="hover:text-white transition-colors text-xs text-left">Confidentialité</button></li>
               <li><button onClick={() => onLegal('cgu')} className="hover:text-white transition-colors text-xs text-left">Conditions d'utilisation</button></li>
-              <li><a href="mailto:hello@nomadimpact.org" className="hover:text-white transition-colors text-xs">Contact</a></li>
+              <li><a href="mailto:marchepublic@nomadimpact.org" className="hover:text-white transition-colors text-xs">Contact</a></li>
             </ul>
           </div>
           <div>

@@ -38,7 +38,7 @@ export function CGU({ onBack }: { onBack: () => void }) {
               <p>Responsable : Charlotte Jeuniaux</p>
               <p>ASBL de droit belge — BCE 1033.998.026</p>
               <p>Avenue Cardinal Mercier 50, 5000 Namur — Belgique</p>
-              <p>Contact : <a href="mailto:hello@nomadimpact.org" className="text-coral hover:underline">hello@nomadimpact.org</a></p>
+              <p>Contact : <a href="mailto:marchepublic@nomadimpact.org" className="text-coral hover:underline">marchepublic@nomadimpact.org</a></p>
             </div>
           </section>
 
@@ -85,7 +85,7 @@ export function CGU({ onBack }: { onBack: () => void }) {
 
           <section>
             <h2 className="font-display font-bold text-navy text-xl mb-3">9. Contact</h2>
-            <p className="mb-5">Pour toute question relative aux présentes conditions, écrivez à <a href="mailto:hello@nomadimpact.org" className="text-coral hover:underline">hello@nomadimpact.org</a> ou utilisez le formulaire ci-dessous :</p>
+            <p className="mb-5">Pour toute question relative aux présentes conditions, écrivez à <a href="mailto:marchepublic@nomadimpact.org" className="text-coral hover:underline">marchepublic@nomadimpact.org</a> ou utilisez le formulaire ci-dessous :</p>
             <ContactForm />
           </section>
 
