@@ -33,8 +33,10 @@ export function Confidentialite({ onBack }: { onBack: () => void }) {
             <h2 className="font-display font-bold text-navy text-xl mb-3">Responsable du traitement</h2>
             <div className="bg-white rounded-2xl border border-line p-6 shadow-card space-y-1.5">
               <p><strong className="text-navy">Nomad Impact ASBL</strong></p>
+              <p>Responsable du traitement : Charlotte Jeuniaux</p>
               <p>ASBL de droit belge — BCE 1033.998.026</p>
               <p>Avenue Cardinal Mercier 50, 5000 Namur — Belgique</p>
+              <p>Contact : <a href="mailto:hello@nomadimpact.org" className="text-coral hover:underline">hello@nomadimpact.org</a></p>
             </div>
           </section>
 

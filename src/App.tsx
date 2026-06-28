@@ -5,8 +5,9 @@ import { Diagnostic } from './pages/Diagnostic'
 import { Intro } from './components/Intro'
 import { MentionsLegales } from './pages/MentionsLegales'
 import { Confidentialite } from './pages/Confidentialite'
+import { CGU } from './pages/CGU'
 
-type Page = 'home' | 'diagnostic' | 'mentions-legales' | 'confidentialite'
+type Page = 'home' | 'diagnostic' | 'mentions-legales' | 'confidentialite' | 'cgu'
 
 export default function App() {
   const [page, setPage] = useState<Page>('home')
@@ -34,6 +35,8 @@ export default function App() {
         ? <MentionsLegales onBack={() => go('home')} />
         : page === 'confidentialite'
         ? <Confidentialite onBack={() => go('home')} />
+        : page === 'cgu'
+        ? <CGU onBack={() => go('home')} />
         : <Home onStart={() => go('diagnostic')} onLegal={go} />}
     </>
   )

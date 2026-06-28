@@ -554,7 +554,7 @@ function BottomCTA({ onStart }: { onStart: () => void }) {
   )
 }
 
-function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-legales' | 'confidentialite') => void }) {
+function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-legales' | 'confidentialite' | 'cgu') => void }) {
   return (
     <footer className="bg-ink text-aqua/50 border-t border-white/5">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14">
@@ -604,6 +604,7 @@ function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-l
             <ul className="space-y-2.5">
               <li><button onClick={() => onLegal('mentions-legales')} className="hover:text-white transition-colors text-xs text-left">Mentions légales</button></li>
               <li><button onClick={() => onLegal('confidentialite')} className="hover:text-white transition-colors text-xs text-left">Confidentialité</button></li>
+              <li><button onClick={() => onLegal('cgu')} className="hover:text-white transition-colors text-xs text-left">Conditions d'utilisation</button></li>
               <li><a href="mailto:hello@nomadimpact.org" className="hover:text-white transition-colors text-xs">Contact</a></li>
             </ul>
           </div>
@@ -621,7 +622,7 @@ function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-l
   )
 }
 
-export function Home({ onStart, onLegal }: { onStart: () => void; onLegal: (page: 'mentions-legales' | 'confidentialite') => void }) {
+export function Home({ onStart, onLegal }: { onStart: () => void; onLegal: (page: 'mentions-legales' | 'confidentialite' | 'cgu') => void }) {
   return (
     <div className="min-h-screen bg-cream">
       <Header onStart={onStart} />

@@ -5,9 +5,10 @@ export function ContactForm() {
   const [name, setName]       = useState('')
   const [email, setEmail]     = useState('')
   const [message, setMessage] = useState('')
+  const [consent, setConsent] = useState(false)
   const [status, setStatus]   = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
 
-  const isValid = name.trim() && email.includes('@') && message.trim()
+  const isValid = name.trim() && email.includes('@') && message.trim() && consent
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -86,6 +87,24 @@ export function ContactForm() {
           placeholder="Votre question ou demande…"
           className="w-full px-3.5 py-2.5 rounded-lg border border-line bg-cream text-navy text-sm placeholder:text-slate/40 focus:outline-none focus:border-navy/40 focus:bg-white transition-colors resize-none"
         />
+      </div>
+      <div className="bg-sable rounded-xl p-4 border border-line">
+        <label className="flex items-start gap-3 cursor-pointer">
+          <div className="relative shrink-0 mt-0.5">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={e => setConsent(e.target.checked)}
+              className="sr-only"
+            />
+            <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${consent ? 'bg-navy border-navy' : 'bg-white border-line'}`}>
+              {consent && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
+            </div>
+          </div>
+          <p className="text-xs text-slate leading-relaxed">
+            J'accepte que Nomad Impact ASBL traite les données de ce formulaire afin de répondre à ma demande, conformément à la <a href="https://marchepublic.be/" className="text-coral hover:underline">politique de confidentialité</a>. Je peux demander la suppression de mes données à tout moment. <span className="text-coral">*</span>
+          </p>
+        </label>
       </div>
       {status === 'error' && (
         <p className="text-xs text-coral bg-coral/8 rounded-lg px-3 py-2">
