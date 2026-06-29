@@ -663,15 +663,15 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
     ? [
         { value: 'moins_3k', label: 'Moins de 3 000 €', description: 'Petits travaux ponctuels' },
         { value: '3k_30k', label: 'Entre 3 000 € et 30 000 €', description: 'Rénovation limitée' },
-        { value: '30k_seuil', label: 'Entre 30 000 € et 5 382 000 €', description: 'Travaux significatifs' },
-        { value: 'sup_seuil', label: 'Plus de 5 382 000 €', description: 'Grands projets de construction' },
+        { value: '30k_seuil', label: 'Entre 30 000 € et 5 404 000 €', description: 'Travaux significatifs' },
+        { value: 'sup_seuil', label: 'Plus de 5 404 000 €', description: 'Grands projets de construction' },
         { value: 'nsp', label: 'Je ne sais pas encore', description: 'Budget non défini' },
       ]
     : [
         { value: 'moins_3k', label: 'Moins de 3 000 €', description: 'Petite dépense ponctuelle' },
         { value: '3k_30k', label: 'Entre 3 000 € et 30 000 €', description: 'Prestation modérée' },
-        { value: '30k_seuil', label: 'Entre 30 000 € et 221 000 €', description: 'Contrat important' },
-        { value: 'sup_seuil', label: 'Plus de 221 000 €', description: 'Au-dessus du seuil européen' },
+        { value: '30k_seuil', label: 'Entre 30 000 € et 216 000 €', description: 'Contrat important' },
+        { value: 'sup_seuil', label: 'Plus de 216 000 €', description: 'Au-dessus du seuil européen' },
         { value: 'nsp', label: 'Je ne sais pas encore', description: 'Budget non défini' },
       ]
 

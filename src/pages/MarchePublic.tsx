@@ -202,7 +202,7 @@ const VERDICTS: Record<
     couleur: 'text-red-700',
     bg: 'bg-red-50 border-red-200',
     explication:
-      'Vous dépassez les seuils européens (143 000 € pour fournitures/services, 5 538 000 € pour travaux). La procédure ouverte avec publication au Journal Officiel de l\'UE est obligatoire.',
+      'Vous dépassez les seuils européens (140 000 € pour fournitures/services, 5 538 000 € pour travaux). La procédure ouverte avec publication au Journal Officiel de l\'UE est obligatoire.',
     etapes: [
       'Publication obligatoire au Journal Officiel de l\'Union Européenne (JOUE)',
       'Délai de réception des offres : minimum 35 jours (procédure ouverte)',
@@ -377,8 +377,8 @@ function Step5({ state, setState }: { state: State; setState: (s: State) => void
           </>
         ) : (
           <>
-            <OptionBtn label="Entre 30 000 € et 143 000 €" selected={state.montant === '30k_seuil'} onClick={() => set('30k_seuil')} />
-            <OptionBtn label="Plus de 143 000 €" selected={state.montant === 'sup_seuil'} onClick={() => set('sup_seuil')} />
+            <OptionBtn label="Entre 30 000 € et 140 000 €" selected={state.montant === '30k_seuil'} onClick={() => set('30k_seuil')} />
+            <OptionBtn label="Plus de 140 000 €" selected={state.montant === 'sup_seuil'} onClick={() => set('sup_seuil')} />
           </>
         )}
       </div>
