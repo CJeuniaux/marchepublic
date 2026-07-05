@@ -65,6 +65,7 @@ export function LeadGateModal({ documentId, documentTitle, documentFile, score, 
         score,
         band,
       })
+      window.gtag('event', 'diag_email', { document_id: documentId })
     }
     // Déclenche le téléchargement
     const a = document.createElement('a')

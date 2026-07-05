@@ -5,8 +5,8 @@ export function Intro({ onDone }: { onDone: () => void }) {
   const [leaving, setLeaving] = useState(false)
 
   useEffect(() => {
-    const t1 = window.setTimeout(() => setLeaving(true), 4200)
-    const t2 = window.setTimeout(onDone, 4850)
+    const t1 = window.setTimeout(() => setLeaving(true), 1000)
+    const t2 = window.setTimeout(onDone, 1500)
     return () => { window.clearTimeout(t1); window.clearTimeout(t2) }
   }, [onDone])
 
@@ -21,7 +21,8 @@ export function Intro({ onDone }: { onDone: () => void }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-navy overflow-hidden"
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-navy overflow-hidden cursor-pointer"
+      onClick={onDone}
       initial={{ opacity: 1 }}
       animate={{ opacity: leaving ? 0 : 1 }}
       exit={{ opacity: 0 }}

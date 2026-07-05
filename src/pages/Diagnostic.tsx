@@ -630,6 +630,12 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
 
   const set = (key: keyof DiagState, value: string | number | null) => setState(prev => ({ ...prev, [key]: value }))
 
+  const track = (event: string) => {
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') window.gtag('event', event)
+  }
+
+  useEffect(() => { track('diag_start') }, [])
+
   const canProceed = () => {
     if (state.step === 1) return !!state.structureType
     if (state.step === 2) return !!state.financementPct
@@ -639,7 +645,12 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
     return false
   }
 
-  const advance = () => { setDir(1); if (state.step < TOTAL_STEPS) set('step', state.step + 1); else setShowResult(true) }
+  const advance = () => {
+    setDir(1)
+    track(`diag_step_${state.step}`)
+    if (state.step < TOTAL_STEPS) set('step', state.step + 1)
+    else { track('diag_result'); setShowResult(true) }
+  }
   const goBack = () => { setDir(-1); if (state.step > 1) set('step', state.step - 1); else onBack() }
 
   if (showResult) {

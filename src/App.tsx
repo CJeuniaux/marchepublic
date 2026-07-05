@@ -13,11 +13,11 @@ export default function App() {
   const [page, setPage] = useState<Page>('home')
   const [intro, setIntro] = useState(() => {
     if (typeof window === 'undefined') return true
-    return !window.sessionStorage.getItem('mp_intro_seen')
+    return !window.localStorage.getItem('mp_intro_seen')
   })
 
   const finishIntro = () => {
-    try { window.sessionStorage.setItem('mp_intro_seen', '1') } catch { /* ignore */ }
+    try { window.localStorage.setItem('mp_intro_seen', '1') } catch { /* ignore */ }
     setIntro(false)
   }
 
