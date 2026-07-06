@@ -554,7 +554,7 @@ function BottomCTA({ onStart }: { onStart: () => void }) {
   )
 }
 
-function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-legales' | 'confidentialite' | 'cgu') => void }) {
+function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-legales' | 'confidentialite' | 'cgu' | 'cookies') => void }) {
   return (
     <footer className="bg-ink text-aqua/50 border-t border-white/5">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14">
@@ -602,9 +602,10 @@ function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-l
           <div>
             <p className="text-white text-[10px] font-bold uppercase tracking-widest mb-4">Informations</p>
             <ul className="space-y-2.5">
-              <li><button onClick={() => onLegal('mentions-legales')} className="hover:text-white transition-colors text-xs text-left">Mentions légales</button></li>
-              <li><button onClick={() => onLegal('confidentialite')} className="hover:text-white transition-colors text-xs text-left">Confidentialité</button></li>
-              <li><button onClick={() => onLegal('cgu')} className="hover:text-white transition-colors text-xs text-left">Conditions d'utilisation</button></li>
+              <li><a href="/mentions-legales" onClick={e => { e.preventDefault(); onLegal('mentions-legales') }} className="hover:text-white transition-colors text-xs">Mentions légales</a></li>
+              <li><a href="/confidentialite" onClick={e => { e.preventDefault(); onLegal('confidentialite') }} className="hover:text-white transition-colors text-xs">Confidentialité</a></li>
+              <li><a href="/cookies" onClick={e => { e.preventDefault(); onLegal('cookies') }} className="hover:text-white transition-colors text-xs">Cookies</a></li>
+              <li><a href="/cgu" onClick={e => { e.preventDefault(); onLegal('cgu') }} className="hover:text-white transition-colors text-xs">Conditions d'utilisation</a></li>
               <li><a href="mailto:marchepublic@nomadimpact.org" className="hover:text-white transition-colors text-xs">Contact</a></li>
             </ul>
           </div>
@@ -622,7 +623,7 @@ function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-l
   )
 }
 
-export function Home({ onStart, onLegal }: { onStart: () => void; onLegal: (page: 'mentions-legales' | 'confidentialite' | 'cgu') => void }) {
+export function Home({ onStart, onLegal }: { onStart: () => void; onLegal: (page: 'mentions-legales' | 'confidentialite' | 'cgu' | 'cookies') => void }) {
   return (
     <div className="min-h-screen bg-cream">
       <Header onStart={onStart} />

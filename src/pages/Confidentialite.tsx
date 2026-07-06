@@ -63,6 +63,16 @@ export function Confidentialite({ onBack }: { onBack: () => void }) {
           </section>
 
           <section>
+            <h2 className="font-display font-bold text-navy text-xl mb-3">Emails transactionnels</h2>
+            <p>Lorsque vous demandez un document, votre adresse email sert à envoyer deux messages automatiques :</p>
+            <ul className="mt-2 space-y-1 list-disc list-inside text-slate">
+              <li><strong className="text-navy">Livraison</strong> : un email vous transmet le lien de téléchargement de la ressource demandée.</li>
+              <li><strong className="text-navy">Notification interne</strong> : un email informe l'équipe de Nomad Impact qu'une nouvelle demande a été reçue.</li>
+            </ul>
+            <p className="mt-3">Ces envois sont assurés par notre sous-traitant d'emailing <strong>Brevo</strong> (Sendinblue SAS, France). Le téléchargement reste également disponible immédiatement dans votre navigateur, sans attendre l'email.</p>
+          </section>
+
+          <section>
             <h2 className="font-display font-bold text-navy text-xl mb-3">Pourquoi ces données ?</h2>
             <div className="space-y-3">
               {[
@@ -92,6 +102,7 @@ export function Confidentialite({ onBack }: { onBack: () => void }) {
             <p className="mt-3">Elles peuvent être partagées uniquement avec :</p>
             <ul className="mt-2 space-y-1 list-disc list-inside">
               <li>Supabase (sous-traitant hébergeur des données, serveurs en Europe)</li>
+              <li>Brevo / Sendinblue SAS (sous-traitant d'envoi des emails transactionnels, France)</li>
               <li>Vercel (hébergeur du site, États-Unis — avec garanties RGPD)</li>
             </ul>
           </section>
