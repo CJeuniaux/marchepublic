@@ -123,7 +123,7 @@ Deno.serve(async (req) => {
         Vous recevez cet email car vous avez demandé cette ressource sur marchépublic.be et accepté que nous conservions votre adresse.
         Vous pouvez demander la suppression de vos données à tout moment en écrivant à
         <a href="mailto:marchepublic@nomadimpact.org">marchepublic@nomadimpact.org</a>.
-        Détails : <a href="${SITE}/">politique de confidentialité</a>.
+        Détails : <a href="${SITE}/confidentialite">politique de confidentialité</a>.
       </p>`;
     await sendBrevo(record.email, "Votre ressource MarchéPublic.be", livraison);
   } catch (e) {
