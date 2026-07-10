@@ -13,6 +13,8 @@ import { RequireAuth } from './components/premium/RequireAuth'
 import { Login } from './pages/premium/Login'
 import { Register } from './pages/premium/Register'
 import { Compte } from './pages/premium/Compte'
+import { Profil } from './pages/premium/Profil'
+import { Prestataires } from './pages/premium/Prestataires'
 
 type LegalPage = 'mentions-legales' | 'confidentialite' | 'cgu' | 'cookies'
 
@@ -63,6 +65,8 @@ export default function App() {
           <Route path="/register" element={<Register />} />
 
           <Route path="/compte" element={<RequireAuth><Compte /></RequireAuth>} />
+          <Route path="/compte/profil" element={<RequireAuth><Profil /></RequireAuth>} />
+          <Route path="/compte/prestataires" element={<RequireAuth><Prestataires /></RequireAuth>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
