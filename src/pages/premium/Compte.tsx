@@ -31,11 +31,11 @@ export function Compte() {
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="font-display text-3xl font-bold text-navy">Vos marchés</h1>
+            <h1 className="font-display text-3xl font-bold text-navy">Vos marchés publics</h1>
             <p className="text-slate text-sm mt-1">{user?.email}</p>
           </div>
           <Link to="/compte/marches/nouveau" className="px-5 py-2.5 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all shadow-coral">
-            Nouveau marché
+            Nouveau marché public
           </Link>
         </div>
 
@@ -47,15 +47,15 @@ export function Compte() {
         {!organisation ? (
           <div className="bg-white rounded-2xl border border-line p-10 text-center shadow-card">
             <p className="text-navy font-semibold mb-1">Commencez par votre profil</p>
-            <p className="text-slate text-sm mb-4">Complétez votre profil organisation avant de créer un marché.</p>
+            <p className="text-slate text-sm mb-4">Complétez votre profil organisation avant de créer un marché public.</p>
             <Link to="/compte/profil" className="inline-block px-5 py-2.5 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-105">Compléter mon profil</Link>
           </div>
         ) : loading ? (
           <p className="text-slate text-sm">Chargement…</p>
         ) : marches.length === 0 ? (
           <div className="bg-white rounded-2xl border border-line p-10 text-center shadow-card">
-            <p className="text-navy font-semibold mb-1">Aucun marché pour l'instant</p>
-            <p className="text-slate text-sm">Créez votre premier marché pour générer vos documents.</p>
+            <p className="text-navy font-semibold mb-1">Aucun marché public pour l'instant</p>
+            <p className="text-slate text-sm">Créez votre premier marché public pour générer vos documents.</p>
           </div>
         ) : (
           <div className="space-y-3">

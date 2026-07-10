@@ -6,7 +6,7 @@ import { useOrganisation } from '../../hooks/useOrganisation'
 import { usePrestataires } from '../../hooks/usePrestataires'
 import { useMarches } from '../../hooks/useMarches'
 import { useProcedure } from '../../hooks/useProcedure'
-import { DOCUMENTS_OPTIONNELS, libelleDocument, PRIX_PAR_DOCUMENT_EUR } from '../../lib/documents'
+import { DOCUMENTS_OPTIONNELS, libelleDocument, PRIX_MARCHE_PUBLIC_EUR } from '../../lib/documents'
 import type { TypeAchat } from '../../lib/premium-types'
 
 const STEPS = ['Identification', 'Dates & prestataires', 'Contenu', 'Documents & récap']
@@ -43,7 +43,6 @@ export function NouveauMarche() {
   // Étape 4 — documents cochés (par défaut : tous ceux de la procédure)
   const [docsSel, setDocsSel] = useState<string[] | null>(null)
   const docs = docsSel ?? proc.documents
-  const prixTotal = docs.length * PRIX_PAR_DOCUMENT_EUR
 
   const toggle = (arr: string[], v: string) => arr.includes(v) ? arr.filter(x => x !== v) : [...arr, v]
 
@@ -78,7 +77,7 @@ export function NouveauMarche() {
       <Shell>
         <div className="bg-white rounded-2xl border border-line p-8 text-center shadow-card max-w-md mx-auto">
           <p className="text-navy font-semibold mb-1">Complétez d'abord votre profil</p>
-          <p className="text-slate text-sm mb-4">Un marché est rattaché à votre organisation.</p>
+          <p className="text-slate text-sm mb-4">Un marché public est rattaché à votre organisation.</p>
           <Link to="/compte/profil" className="inline-block px-5 py-2.5 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-105">Compléter mon profil</Link>
         </div>
       </Shell>
@@ -87,7 +86,7 @@ export function NouveauMarche() {
 
   return (
     <Shell>
-      <h1 className="font-display text-3xl font-bold text-navy mb-1">Nouveau marché</h1>
+      <h1 className="font-display text-3xl font-bold text-navy mb-1">Nouveau marché public</h1>
       <p className="text-slate text-sm mb-6">Étape {step} sur 4 · {STEPS[step - 1]}</p>
 
       <div className="flex gap-1.5 mb-8">
@@ -177,10 +176,10 @@ export function NouveauMarche() {
               ))}
             </div>
             <div className="bg-sable rounded-xl border border-line p-4 flex items-center justify-between">
-              <span className="text-sm text-navy">{docs.length} document{docs.length > 1 ? 's' : ''} × {PRIX_PAR_DOCUMENT_EUR} EUR</span>
-              <span className="font-display font-bold text-navy text-lg">{prixTotal} EUR</span>
+              <span className="text-sm text-navy">Marché public complet ({docs.length} document{docs.length > 1 ? 's' : ''})</span>
+              <span className="font-display font-bold text-navy text-lg">{PRIX_MARCHE_PUBLIC_EUR} EUR</span>
             </div>
-            <p className="text-[11px] text-slate">TVA incluse. Le paiement sera demandé à l'étape suivante.</p>
+            <p className="text-[11px] text-slate">9 EUR TVA incluse, tous les documents du marché public compris. Le paiement sera demandé à l'étape suivante.</p>
             {error && <p className="text-xs text-coral bg-coral/8 rounded-lg px-3 py-2">{error}</p>}
           </>
         )}
@@ -192,7 +191,7 @@ export function NouveauMarche() {
           <button onClick={() => canNext && setStep(step + 1)} disabled={!canNext} className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${canNext ? 'bg-navy text-white hover:brightness-105' : 'bg-line text-slate/50 cursor-not-allowed'}`}>Continuer</button>
         ) : (
           <button onClick={finish} disabled={saving || docs.length === 0} className="px-5 py-2.5 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all disabled:opacity-60 inline-flex items-center gap-1.5">
-            {saving ? 'Enregistrement…' : <>Valider le marché <Check className="w-4 h-4" /></>}
+            {saving ? 'Enregistrement…' : <>Valider le marché public <Check className="w-4 h-4" /></>}
           </button>
         )}
       </div>

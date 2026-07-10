@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { LogoMark } from '../../components/Graphics'
 import { useMarche } from '../../hooks/useMarches'
-import { libelleDocument, LIBELLE_PROCEDURE, PRIX_PAR_DOCUMENT_EUR } from '../../lib/documents'
+import { libelleDocument, LIBELLE_PROCEDURE, PRIX_MARCHE_PUBLIC_EUR } from '../../lib/documents'
 import type { Procedure } from '../../lib/documents'
 
 export function DetailMarche() {
@@ -10,7 +10,6 @@ export function DetailMarche() {
   const { marche, loading } = useMarche(id)
 
   const docs = marche?.documents_selectionnes ?? []
-  const prix = docs.length * PRIX_PAR_DOCUMENT_EUR
 
   return (
     <div className="min-h-screen bg-cream">
@@ -28,7 +27,7 @@ export function DetailMarche() {
         {loading ? (
           <p className="text-slate text-sm">Chargement…</p>
         ) : !marche ? (
-          <p className="text-slate text-sm">Marché introuvable.</p>
+          <p className="text-slate text-sm">Marché public introuvable.</p>
         ) : (
           <>
             <div className="flex items-center gap-3 mb-6">
@@ -56,8 +55,8 @@ export function DetailMarche() {
             ) : (
               <div className="bg-sable rounded-2xl border border-line p-6 flex items-center justify-between">
                 <div>
-                  <p className="text-navy font-semibold">{prix} EUR TVA incluse</p>
-                  <p className="text-slate text-xs">{docs.length} document{docs.length > 1 ? 's' : ''} à générer</p>
+                  <p className="text-navy font-semibold">{PRIX_MARCHE_PUBLIC_EUR} EUR TVA incluse</p>
+                  <p className="text-slate text-xs">Marché public complet · {docs.length} document{docs.length > 1 ? 's' : ''}</p>
                 </div>
                 <Link to={`/compte/marches/${marche.id}/paiement`} className="px-5 py-2.5 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all shadow-coral">
                   Payer et générer

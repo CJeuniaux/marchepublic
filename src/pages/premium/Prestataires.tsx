@@ -68,8 +68,9 @@ export function Prestataires() {
                 </select>
               </div>
               <div><label className={lbl}>Entreprise *</label><input className={field} required value={form.nom_entreprise} onChange={e => set('nom_entreprise', e.target.value)} /></div>
-              <div><label className={lbl}>Contact</label><input className={field} value={form.contact_nom ?? ''} onChange={e => set('contact_nom', e.target.value)} /></div>
+              <div><label className={lbl}>Contact (Prénom Nom)</label><input className={field} value={form.contact_nom ?? ''} onChange={e => set('contact_nom', e.target.value)} /></div>
               <div><label className={lbl}>Email</label><input type="email" className={field} value={form.email ?? ''} onChange={e => set('email', e.target.value)} /></div>
+              <div><label className={lbl}>Adresse / siège social</label><input className={field} value={form.adresse ?? ''} onChange={e => set('adresse', e.target.value)} /></div>
               <div><label className={lbl}>Numéro BCE / TVA</label><input className={field} value={form.numero_bce_tva ?? ''} onChange={e => set('numero_bce_tva', e.target.value)} /></div>
               {status === 'error' && <p className="text-xs text-coral bg-coral/8 rounded-lg px-3 py-2">{error}</p>}
               <button type="submit" disabled={status === 'saving'} className="w-full px-5 py-2.5 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all disabled:opacity-60">

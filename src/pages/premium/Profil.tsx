@@ -95,8 +95,8 @@ export function Profil() {
             <div className="pt-2 border-t border-line" />
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2"><label className={lbl}>Pouvoir adjudicateur</label><input className={field} placeholder="Ex. Le Conseil d'Administration de l'ASBL X" value={form.pouvoir_adjudicateur ?? ''} onChange={e => set('pouvoir_adjudicateur', e.target.value)} /></div>
-              <div><label className={lbl}>Représentant légal — nom</label><input className={field} value={form.representant_legal_nom ?? ''} onChange={e => set('representant_legal_nom', e.target.value)} /></div>
-              <div><label className={lbl}>Représentant légal — fonction</label><input className={field} value={form.representant_legal_fonction ?? ''} onChange={e => set('representant_legal_fonction', e.target.value)} /></div>
+              <div><label className={lbl}>Représentant légal (Prénom Nom)</label><input className={field} value={form.representant_legal_nom ?? ''} onChange={e => set('representant_legal_nom', e.target.value)} /></div>
+              <div><label className={lbl}>Fonction</label><input className={field} value={form.representant_legal_fonction ?? ''} onChange={e => set('representant_legal_fonction', e.target.value)} /></div>
             </div>
 
             <div><label className={lbl}>Introduction standard</label><textarea rows={3} className={`${field} resize-none`} placeholder="Paragraphe d'introduction repris dans vos cahiers des charges." value={form.introduction_standard ?? ''} onChange={e => set('introduction_standard', e.target.value)} /></div>

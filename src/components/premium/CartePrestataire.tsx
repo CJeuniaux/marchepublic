@@ -17,6 +17,7 @@ export function CartePrestataire({ prestataire, onDelete }: { prestataire: Prest
       <div className="mt-2 space-y-0.5 text-xs text-slate">
         {p.contact_nom && <p>{p.contact_nom}</p>}
         {p.email && <p>{p.email}</p>}
+        {p.adresse && <p>{p.adresse}</p>}
         {p.numero_bce_tva && <p>BCE/TVA : {p.numero_bce_tva}</p>}
       </div>
     </div>
