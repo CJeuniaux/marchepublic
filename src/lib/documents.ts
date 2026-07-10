@@ -121,6 +121,9 @@ export function libelleDocument(slug: string): string {
   return LIBELLE_DOCUMENT[slug] ?? slug
 }
 
-// Le marché public généré est facturé 9 EUR TVA incluse au FORFAIT (tous documents compris).
-// Les lettres, mails types et modèles DMA sont gratuits.
+// Modèle de prix :
+// - Marché public généré : 9 EUR TVA incluse au FORFAIT (tous documents compris).
+// - Courriers / mails types « tels quels » : gratuits.
+// - Courrier / mail « sur mesure » (pré-rempli avec le profil) : 1 EUR par fichier.
 export const PRIX_MARCHE_PUBLIC_EUR = 9
+export const PRIX_COURRIER_SUR_MESURE_EUR = 1
