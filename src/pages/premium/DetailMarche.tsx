@@ -12,6 +12,8 @@ import { TimelineMarche } from './TimelineMarche'
 import { EtapeConsultation } from './EtapeConsultation'
 import { EtapeReceptionOffres } from './EtapeReceptionOffres'
 import { EtapeComparatif } from './EtapeComparatif'
+import { EtapeAttribution } from './EtapeAttribution'
+import { ChecklistArchives } from './ChecklistArchives'
 
 export function DetailMarche() {
   const { id } = useParams()
@@ -125,13 +127,14 @@ export function DetailMarche() {
               <EtapeReceptionOffres marche={marche} organisation={organisation} prestataires={prestataires} />
             ) : etapeVue === 'comparatif' ? (
               <EtapeComparatif marche={marche} />
+            ) : etapeVue === 'attribution' && organisation ? (
+              <EtapeAttribution marche={marche} organisation={organisation} onUpdate={update} />
+            ) : etapeVue === 'archive' ? (
+              <ChecklistArchives marche={marche} onUpdate={update} />
             ) : (
-              // Étapes Attribution et Archives : interfaces livrées à la Phase 12.
               <div className="bg-white rounded-2xl border border-line p-6 shadow-card">
                 <p className="font-semibold text-navy text-sm mb-1">{LIBELLE_ETAPE[etapeVue]}</p>
-                <p className="text-sm text-slate">
-                  Cette étape sera pilotable ici prochainement (décision motivée d'attribution et archives).
-                </p>
+                <p className="text-sm text-slate">Chargement…</p>
               </div>
             )}
 
