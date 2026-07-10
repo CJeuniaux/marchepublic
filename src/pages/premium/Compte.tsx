@@ -1,9 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { FileText, Users, Mail, Building2, ArrowRight } from 'lucide-react'
 import { LogoMark } from '../../components/Graphics'
 import { useAuth } from '../../context/AuthContext'
 import { useOrganisation } from '../../hooks/useOrganisation'
 import { useMarches } from '../../hooks/useMarches'
 import { LIBELLE_PROCEDURE, type Procedure } from '../../lib/documents'
+
+const SECTIONS = [
+  { to: '/compte/marches/nouveau', icon: FileText, titre: 'Marchés publics', desc: 'Créez et générez vos marchés publics.' },
+  { to: '/compte/prestataires', icon: Users, titre: 'Mes prestataires', desc: 'Votre carnet réutilisable.' },
+  { to: '/compte/courriers', icon: Mail, titre: 'Mes courriers types', desc: 'Lettres et mails, gratuits.' },
+  { to: '/compte/profil', icon: Building2, titre: 'Profil organisation', desc: 'Vos informations réutilisées.' },
+]
 
 export function Compte() {
   const { user, signOut } = useAuth()
@@ -11,10 +19,7 @@ export function Compte() {
   const { organisation } = useOrganisation()
   const { marches, loading } = useMarches(organisation?.id)
 
-  const handleSignOut = async () => {
-    await signOut()
-    navigate('/')
-  }
+  const handleSignOut = async () => { await signOut(); navigate('/') }
 
   return (
     <div className="min-h-screen bg-cream">
@@ -29,28 +34,34 @@ export function Compte() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="font-display text-3xl font-bold text-navy">Vos marchés publics</h1>
-            <p className="text-slate text-sm mt-1">{user?.email}</p>
+        <h1 className="font-display text-3xl font-bold text-navy">Mon espace</h1>
+        <p className="text-slate text-sm mt-1 mb-8">{user?.email}</p>
+
+        {!organisation && (
+          <div className="bg-sun/20 border border-sun/50 rounded-2xl p-5 mb-8 flex items-center justify-between gap-4">
+            <p className="text-navy text-sm">Complétez votre profil organisation pour créer un marché public.</p>
+            <Link to="/compte/profil" className="shrink-0 px-4 py-2 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-105">Compléter</Link>
           </div>
-          <Link to="/compte/marches/nouveau" className="px-5 py-2.5 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all shadow-coral">
-            Nouveau marché public
-          </Link>
+        )}
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          {SECTIONS.map(({ to, icon: Icon, titre, desc }) => (
+            <Link key={to} to={to} className="group bg-white rounded-2xl border border-line p-5 shadow-card hover:border-coral/40 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-sable border border-line flex items-center justify-center mb-3">
+                <Icon className="w-5 h-5 text-navy" />
+              </div>
+              <p className="font-semibold text-navy text-sm flex items-center gap-1">{titre} <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" /></p>
+              <p className="text-xs text-slate mt-1 leading-snug">{desc}</p>
+            </Link>
+          ))}
         </div>
 
-        <div className="flex gap-4 mb-8 text-sm">
-          <Link to="/compte/profil" className="text-coral hover:underline">Profil organisation</Link>
-          <Link to="/compte/prestataires" className="text-coral hover:underline">Carnet prestataires</Link>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-display text-xl font-bold text-navy">Vos marchés publics</h2>
+          <Link to="/compte/marches/nouveau" className="px-4 py-2 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all shadow-coral">Nouveau marché public</Link>
         </div>
 
-        {!organisation ? (
-          <div className="bg-white rounded-2xl border border-line p-10 text-center shadow-card">
-            <p className="text-navy font-semibold mb-1">Commencez par votre profil</p>
-            <p className="text-slate text-sm mb-4">Complétez votre profil organisation avant de créer un marché public.</p>
-            <Link to="/compte/profil" className="inline-block px-5 py-2.5 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-105">Compléter mon profil</Link>
-          </div>
-        ) : loading ? (
+        {loading ? (
           <p className="text-slate text-sm">Chargement…</p>
         ) : marches.length === 0 ? (
           <div className="bg-white rounded-2xl border border-line p-10 text-center shadow-card">

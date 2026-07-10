@@ -15,6 +15,7 @@ import { Register } from './pages/premium/Register'
 import { Compte } from './pages/premium/Compte'
 import { Profil } from './pages/premium/Profil'
 import { Prestataires } from './pages/premium/Prestataires'
+import { Courriers } from './pages/premium/Courriers'
 import { NouveauMarche } from './pages/premium/NouveauMarche'
 import { DetailMarche } from './pages/premium/DetailMarche'
 
@@ -69,6 +70,7 @@ export default function App() {
           <Route path="/compte" element={<RequireAuth><Compte /></RequireAuth>} />
           <Route path="/compte/profil" element={<RequireAuth><Profil /></RequireAuth>} />
           <Route path="/compte/prestataires" element={<RequireAuth><Prestataires /></RequireAuth>} />
+          <Route path="/compte/courriers" element={<RequireAuth><Courriers /></RequireAuth>} />
           <Route path="/compte/marches/nouveau" element={<RequireAuth><NouveauMarche /></RequireAuth>} />
           <Route path="/compte/marches/:id" element={<RequireAuth><DetailMarche /></RequireAuth>} />
 

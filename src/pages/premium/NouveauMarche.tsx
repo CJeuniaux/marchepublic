@@ -34,6 +34,9 @@ export function NouveauMarche() {
   const [dateDebut, setDateDebut] = useState('')
   const [duree, setDuree] = useState('')
   const [prestaSel, setPrestaSel] = useState<string[]>([])
+  const [filtreCat, setFiltreCat] = useState('Toutes')
+  const categoriesDispo = ['Toutes', ...Array.from(new Set(prestataires.map(p => p.categorie)))]
+  const prestatairesFiltres = filtreCat === 'Toutes' ? prestataires : prestataires.filter(p => p.categorie === filtreCat)
 
   // Étape 3
   const [description, setDescription] = useState('')
@@ -98,18 +101,16 @@ export function NouveauMarche() {
       <div className="bg-white rounded-2xl border border-line p-6 shadow-card space-y-5">
         {step === 1 && (
           <>
-            <div><label className={lbl}>Objet du marché *</label><input className={field} value={objet} onChange={e => setObjet(e.target.value)} placeholder="Ex. Refonte du site web de l'association" /></div>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className={lbl}>Type d'achat *</label>
-                <select className={field} value={typeAchat} onChange={e => setTypeAchat(e.target.value as TypeAchat)}>
-                  <option value="fournitures">Fournitures</option>
-                  <option value="services">Services</option>
-                  <option value="travaux">Travaux</option>
-                </select>
-              </div>
-              <div><label className={lbl}>Montant estimé (EUR HTVA) *</label><input type="number" min={0} className={field} value={montant} onChange={e => setMontant(e.target.value)} placeholder="Ex. 45000" /></div>
+            <div>
+              <label className={lbl}>Type d'achat *</label>
+              <select className={field} value={typeAchat} onChange={e => setTypeAchat(e.target.value as TypeAchat)}>
+                <option value="fournitures">Fournitures</option>
+                <option value="services">Services</option>
+                <option value="travaux">Travaux</option>
+              </select>
             </div>
+            <div><label className={lbl}>Objet du marché public *</label><input className={field} value={objet} onChange={e => setObjet(e.target.value)} placeholder="Ex. Refonte du site web de l'association" /></div>
+            <div><label className={lbl}>Montant estimé (EUR HTVA) *</label><input type="number" min={0} className={field} value={montant} onChange={e => setMontant(e.target.value)} placeholder="Ex. 45000" /></div>
             {montantNum > 0 && (
               <div className="bg-sable rounded-xl border border-line p-4 text-sm">
                 <p className="text-navy"><strong>Procédure applicable :</strong> {proc.libelle}</p>
@@ -128,12 +129,21 @@ export function NouveauMarche() {
               <div><label className={lbl}>Durée du marché</label><input className={field} value={duree} onChange={e => setDuree(e.target.value)} placeholder="Ex. 12 mois" /></div>
             </div>
             <div>
-              <label className={lbl}>Prestataires à consulter</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-semibold text-navy">Prestataires à consulter</label>
+                {prestataires.length > 0 && (
+                  <select value={filtreCat} onChange={e => setFiltreCat(e.target.value)} className="text-xs border border-line rounded-lg px-2 py-1 bg-white text-navy focus:outline-none">
+                    {categoriesDispo.map(c => <option key={c} value={c}>{c === 'Toutes' ? 'Toutes catégories' : c}</option>)}
+                  </select>
+                )}
+              </div>
               {prestataires.length === 0 ? (
                 <p className="text-xs text-slate">Aucun prestataire. <Link to="/compte/prestataires" className="text-coral hover:underline">Ajoutez-en</Link> (optionnel).</p>
+              ) : prestatairesFiltres.length === 0 ? (
+                <p className="text-xs text-slate">Aucun prestataire dans cette catégorie.</p>
               ) : (
                 <div className="space-y-1.5">
-                  {prestataires.map(p => (
+                  {prestatairesFiltres.map(p => (
                     <label key={p.id} className="flex items-center gap-2 text-sm text-navy cursor-pointer">
                       <input type="checkbox" checked={prestaSel.includes(p.id)} onChange={() => setPrestaSel(prev => toggle(prev, p.id))} />
                       {p.nom_entreprise} <span className="text-slate text-xs">· {p.categorie}</span>
