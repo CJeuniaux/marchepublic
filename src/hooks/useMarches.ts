@@ -50,5 +50,13 @@ export function useMarche(id: string | undefined) {
 
   useEffect(() => { reload() }, [reload])
 
-  return { marche, loading, reload }
+  const update = useCallback(async (patch: Partial<Marche>): Promise<{ error: string | null }> => {
+    if (!id) return { error: 'Marché introuvable' }
+    const { error } = await supabase.from('marches').update(patch).eq('id', id)
+    if (error) return { error: error.message }
+    await reload()
+    return { error: null }
+  }, [id, reload])
+
+  return { marche, loading, reload, update }
 }
