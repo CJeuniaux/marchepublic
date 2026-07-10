@@ -39,12 +39,13 @@ export async function seedDemoAccount(userId: string): Promise<{ error: string |
     if (presErr) return { error: presErr.message }
   }
 
-  // Marchés : ajoutés seulement s'il n'y en a pas déjà.
-  const { count: marchesCount } = await supabase
+  // Marchés : ajout additif — on n'insère que les marchés de démo dont l'objet
+  // n'existe pas déjà, pour ne pas dupliquer ni écraser des marchés existants.
+  const { data: existingMarches } = await supabase
     .from('marches')
-    .select('*', { count: 'exact', head: true })
+    .select('objet')
     .eq('organisation_id', orgId)
-  if (marchesCount) return { error: null }
+  const objetsPresents = new Set((existingMarches ?? []).map(m => (m as { objet: string }).objet))
 
   // On recharge les prestataires pour disposer de leurs ids, groupés par catégorie.
   const { data: presData } = await supabase
@@ -55,6 +56,7 @@ export async function seedDemoAccount(userId: string): Promise<{ error: string |
   const parCategorie = (cat: string) => prestataires.filter(p => p.categorie === cat)
 
   for (const dm of DEMO_MARCHES) {
+    if (objetsPresents.has(dm.objet)) continue
     const pres = parCategorie(dm.categorie)
     const { procedure, seuil } = calculerProcedure(dm.montant, dm.type_achat)
     const documents = DOCUMENTS_PAR_PROCEDURE[mappingKey(procedure, dm.type_achat)] ?? []
