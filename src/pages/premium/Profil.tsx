@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { LogoMark } from '../../components/Graphics'
 import { useOrganisation } from '../../hooks/useOrganisation'
+import { RGPD_STANDARD } from '../../lib/premium-constants'
 import type { OrganisationInput, TypeOrganisation } from '../../lib/premium-types'
 
 const EMPTY: OrganisationInput = {
@@ -100,7 +101,13 @@ export function Profil() {
             </div>
 
             <div><label className={lbl}>Introduction standard</label><textarea rows={3} className={`${field} resize-none`} placeholder="Paragraphe d'introduction repris dans vos cahiers des charges." value={form.introduction_standard ?? ''} onChange={e => set('introduction_standard', e.target.value)} /></div>
-            <div><label className={lbl}>Clause RGPD standard</label><textarea rows={3} className={`${field} resize-none`} value={form.clause_rgpd_standard ?? ''} onChange={e => set('clause_rgpd_standard', e.target.value)} /></div>
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-semibold text-navy">Clause RGPD standard</label>
+                <button type="button" onClick={() => set('clause_rgpd_standard', RGPD_STANDARD)} className="text-xs text-coral hover:underline font-medium">Insérer un texte type</button>
+              </div>
+              <textarea rows={4} className={`${field} resize-none`} placeholder="Cliquez sur « Insérer un texte type » ou rédigez votre clause." value={form.clause_rgpd_standard ?? ''} onChange={e => set('clause_rgpd_standard', e.target.value)} />
+            </div>
 
             {status === 'error' && <p className="text-xs text-coral bg-coral/8 rounded-lg px-3 py-2">{error}</p>}
             {status === 'saved' && <p className="text-xs text-teal bg-teal/10 rounded-lg px-3 py-2">Profil enregistré.</p>}

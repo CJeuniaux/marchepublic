@@ -1,15 +1,36 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, FileDown } from 'lucide-react'
 import { LogoMark } from '../../components/Graphics'
 import { useMarche } from '../../hooks/useMarches'
+import { useOrganisation } from '../../hooks/useOrganisation'
+import { usePrestataires } from '../../hooks/usePrestataires'
 import { libelleDocument, LIBELLE_PROCEDURE, PRIX_MARCHE_PUBLIC_EUR } from '../../lib/documents'
 import type { Procedure } from '../../lib/documents'
 
 export function DetailMarche() {
   const { id } = useParams()
   const { marche, loading } = useMarche(id)
+  const { organisation } = useOrganisation()
+  const { prestataires } = usePrestataires(organisation?.id)
+  const [generating, setGenerating] = useState(false)
 
   const docs = marche?.documents_selectionnes ?? []
+
+  const handleExport = async () => {
+    if (!marche || !organisation) return
+    setGenerating(true)
+    try {
+      const ids = marche.prestataires_selectionnes ?? []
+      const presSel = prestataires.filter(p => ids.includes(p.id))
+      const { downloadMarcheDocx } = await import('../../lib/generateMarcheDocx')
+      await downloadMarcheDocx(marche, organisation, presSel)
+    } catch (e) {
+      alert('Erreur de génération : ' + String(e))
+    } finally {
+      setGenerating(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-cream">
@@ -42,10 +63,16 @@ export function DetailMarche() {
             </div>
 
             <div className="bg-white rounded-2xl border border-line p-6 shadow-card mb-6">
-              <p className="font-semibold text-navy text-sm mb-3">Documents ({docs.length})</p>
+              <div className="flex items-center justify-between mb-3">
+                <p className="font-semibold text-navy text-sm">Documents ({docs.length})</p>
+                <button onClick={handleExport} disabled={generating || !organisation} className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy border border-line rounded-lg px-3 py-1.5 hover:border-coral/50 hover:text-coral transition-colors disabled:opacity-50">
+                  <FileDown className="w-3.5 h-3.5" /> {generating ? 'Génération…' : 'Aperçu .docx (gratuit)'}
+                </button>
+              </div>
               <ul className="space-y-1 text-sm text-slate list-disc list-inside">
                 {docs.map(slug => <li key={slug}>{libelleDocument(slug)}</li>)}
               </ul>
+              <p className="text-[11px] text-slate mt-3">Aperçu temporaire du récapitulatif rempli avec vos données. La génération complète des documents officiels sera disponible après paiement (Phase 6).</p>
             </div>
 
             {marche.statut === 'paye' ? (

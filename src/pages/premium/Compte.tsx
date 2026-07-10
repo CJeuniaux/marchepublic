@@ -5,6 +5,9 @@ import { useAuth } from '../../context/AuthContext'
 import { useOrganisation } from '../../hooks/useOrganisation'
 import { useMarches } from '../../hooks/useMarches'
 import { LIBELLE_PROCEDURE, type Procedure } from '../../lib/documents'
+import { DEMO_EMAILS } from '../../lib/premium-constants'
+import { seedDemoAccount } from '../../lib/seed'
+import { useState } from 'react'
 
 const SECTIONS = [
   { to: '/compte/marches/nouveau', icon: FileText, titre: 'Marchés publics', desc: 'Créez et générez vos marchés publics.' },
@@ -16,10 +19,22 @@ const SECTIONS = [
 export function Compte() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
-  const { organisation } = useOrganisation()
+  const { organisation, reload: reloadOrg } = useOrganisation()
   const { marches, loading } = useMarches(organisation?.id)
+  const [seeding, setSeeding] = useState(false)
+  const showDemo = !!user?.email && DEMO_EMAILS.includes(user.email)
 
   const handleSignOut = async () => { await signOut(); navigate('/') }
+
+  const handleSeed = async () => {
+    if (!user) return
+    setSeeding(true)
+    const { error } = await seedDemoAccount(user.id)
+    setSeeding(false)
+    if (error) { alert('Erreur démo : ' + error); return }
+    await reloadOrg()
+    window.location.reload()
+  }
 
   return (
     <div className="min-h-screen bg-cream">
@@ -35,7 +50,16 @@ export function Compte() {
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
         <h1 className="font-display text-3xl font-bold text-navy">Mon espace</h1>
-        <p className="text-slate text-sm mt-1 mb-8">{user?.email}</p>
+        <p className="text-slate text-sm mt-1 mb-6">{user?.email}</p>
+
+        {showDemo && (
+          <div className="bg-navy/5 border border-navy/15 rounded-2xl p-4 mb-8 flex items-center justify-between gap-4">
+            <p className="text-navy text-sm">Compte de test : remplir un profil, des prestataires et une clause RGPD de démonstration.</p>
+            <button onClick={handleSeed} disabled={seeding} className="shrink-0 px-4 py-2 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-105 disabled:opacity-60">
+              {seeding ? 'Remplissage…' : 'Remplir le jeu de démo'}
+            </button>
+          </div>
+        )}
 
         {!organisation && (
           <div className="bg-sun/20 border border-sun/50 rounded-2xl p-5 mb-8 flex items-center justify-between gap-4">

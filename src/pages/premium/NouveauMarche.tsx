@@ -8,6 +8,7 @@ import { useMarches } from '../../hooks/useMarches'
 import { useProcedure } from '../../hooks/useProcedure'
 import { DOCUMENTS_OPTIONNELS, libelleDocument, PRIX_MARCHE_PUBLIC_EUR } from '../../lib/documents'
 import { getTemplatesByType } from '../../lib/besoin-templates'
+import { SUGGESTIONS_OBJET } from '../../lib/premium-constants'
 import type { TypeAchat } from '../../lib/premium-types'
 
 const STEPS = ['Identification', 'Dates & prestataires', 'Contenu', 'Documents & récap']
@@ -110,7 +111,15 @@ export function NouveauMarche() {
                 <option value="travaux">Travaux</option>
               </select>
             </div>
-            <div><label className={lbl}>Objet du marché public *</label><input className={field} value={objet} onChange={e => setObjet(e.target.value)} placeholder="Ex. Refonte du site web de l'association" /></div>
+            <div>
+              <label className={lbl}>Objet du marché public *</label>
+              <input className={field} value={objet} onChange={e => setObjet(e.target.value)} placeholder="Ex. Refonte du site web de l'association" />
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {SUGGESTIONS_OBJET[typeAchat].map(s => (
+                  <button key={s} type="button" onClick={() => setObjet(s)} className="text-xs px-2.5 py-1 rounded-full border border-line bg-cream hover:border-coral/50 hover:text-coral text-navy transition-colors">{s}</button>
+                ))}
+              </div>
+            </div>
             <div><label className={lbl}>Montant estimé (EUR HTVA) *</label><input type="number" min={0} className={field} value={montant} onChange={e => setMontant(e.target.value)} placeholder="Ex. 45000" /></div>
             {montantNum > 0 && (
               <div className="bg-sable rounded-xl border border-line p-4 text-sm">
