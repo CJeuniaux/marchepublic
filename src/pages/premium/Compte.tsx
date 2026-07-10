@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useOrganisation } from '../../hooks/useOrganisation'
 import { useMarches } from '../../hooks/useMarches'
 import { LIBELLE_PROCEDURE, type Procedure } from '../../lib/documents'
+import { LIBELLE_ETAPE } from '../../lib/premium-types'
 import { DEMO_EMAILS } from '../../lib/premium-constants'
 import { seedDemoAccount } from '../../lib/seed'
 import { useState } from 'react'
@@ -54,7 +55,7 @@ export function Compte() {
 
         {showDemo && (
           <div className="bg-navy/5 border border-navy/15 rounded-2xl p-4 mb-8 flex items-center justify-between gap-4">
-            <p className="text-navy text-sm">Compte de test : remplir un profil, des prestataires et une clause RGPD de démonstration.</p>
+            <p className="text-navy text-sm">Compte de test : profil, 3 prestataires par type, et 6 marchés publics de démonstration couvrant toutes les étapes (préparation, consultation, offres reçues, comparatif, attribution, archives).</p>
             <button onClick={handleSeed} disabled={seeding} className="shrink-0 px-4 py-2 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-105 disabled:opacity-60">
               {seeding ? 'Remplissage…' : 'Remplir le jeu de démo'}
             </button>
@@ -99,9 +100,15 @@ export function Compte() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="font-semibold text-navy text-sm">{m.objet}</p>
-                    <p className="text-xs text-slate mt-0.5">{LIBELLE_PROCEDURE[m.procedure as Procedure] ?? m.procedure} · {m.montant_estime_htva.toLocaleString('fr-BE')} EUR HTVA</p>
+                    <p className="text-xs text-slate mt-0.5">
+                      {LIBELLE_PROCEDURE[m.procedure as Procedure] ?? m.procedure} · {m.montant_estime_htva.toLocaleString('fr-BE')} EUR HTVA
+                      {m.date_limite_offres ? ` · offres pour le ${new Date(m.date_limite_offres).toLocaleDateString('fr-BE')}` : ''}
+                    </p>
                   </div>
-                  <span className={`text-[11px] font-bold uppercase tracking-wide px-2 py-0.5 rounded shrink-0 ${m.statut === 'paye' ? 'bg-teal/10 text-teal' : 'bg-sun/30 text-navy'}`}>{m.statut}</span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-navy/5 text-navy border border-navy/10">{LIBELLE_ETAPE[m.workflow_etape]}</span>
+                    <span className={`text-[11px] font-bold uppercase tracking-wide px-2 py-0.5 rounded ${m.statut === 'paye' ? 'bg-teal/10 text-teal' : m.statut === 'archive' ? 'bg-slate/10 text-slate' : 'bg-sun/30 text-navy'}`}>{m.statut}</span>
+                  </div>
                 </div>
               </Link>
             ))}
