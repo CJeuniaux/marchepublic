@@ -9,6 +9,9 @@ import { libelleDocument, LIBELLE_PROCEDURE, PRIX_MARCHE_PUBLIC_EUR } from '../.
 import type { Procedure } from '../../lib/documents'
 import { WORKFLOW_ETAPES, LIBELLE_ETAPE, type WorkflowEtape } from '../../lib/premium-types'
 import { TimelineMarche } from './TimelineMarche'
+import { EtapeConsultation } from './EtapeConsultation'
+import { EtapeReceptionOffres } from './EtapeReceptionOffres'
+import { EtapeComparatif } from './EtapeComparatif'
 
 export function DetailMarche() {
   const { id } = useParams()
@@ -116,13 +119,18 @@ export function DetailMarche() {
                   </div>
                 )}
               </>
+            ) : etapeVue === 'consultation' && organisation ? (
+              <EtapeConsultation marche={marche} organisation={organisation} prestataires={prestataires} />
+            ) : etapeVue === 'reception_offres' && organisation ? (
+              <EtapeReceptionOffres marche={marche} organisation={organisation} prestataires={prestataires} />
+            ) : etapeVue === 'comparatif' ? (
+              <EtapeComparatif marche={marche} />
             ) : (
-              // Étapes Consultation → Archives : interfaces livrées aux Phases 11 et 12.
+              // Étapes Attribution et Archives : interfaces livrées à la Phase 12.
               <div className="bg-white rounded-2xl border border-line p-6 shadow-card">
                 <p className="font-semibold text-navy text-sm mb-1">{LIBELLE_ETAPE[etapeVue]}</p>
                 <p className="text-sm text-slate">
-                  Cette étape sera pilotable ici prochainement (suivi des envois, saisie des offres,
-                  comparatif, décision motivée d'attribution et archives).
+                  Cette étape sera pilotable ici prochainement (décision motivée d'attribution et archives).
                 </p>
               </div>
             )}
