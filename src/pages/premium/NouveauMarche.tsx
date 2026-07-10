@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Check } from 'lucide-react'
+import { ArrowLeft, Check, Plus, Trash2 } from 'lucide-react'
 import { LogoMark } from '../../components/Graphics'
 import { useOrganisation } from '../../hooks/useOrganisation'
 import { usePrestataires } from '../../hooks/usePrestataires'
@@ -9,7 +9,7 @@ import { useProcedure } from '../../hooks/useProcedure'
 import { DOCUMENTS_OPTIONNELS, libelleDocument, PRIX_MARCHE_PUBLIC_EUR } from '../../lib/documents'
 import { getTemplatesByType } from '../../lib/besoin-templates'
 import { SUGGESTIONS_OBJET } from '../../lib/premium-constants'
-import type { TypeAchat } from '../../lib/premium-types'
+import type { TypeAchat, CritereAttribution } from '../../lib/premium-types'
 
 const STEPS = ['Identification', 'Dates & prestataires', 'Contenu', 'Documents & récap']
 
@@ -44,6 +44,13 @@ export function NouveauMarche() {
   const [description, setDescription] = useState('')
   const [inclureRgpd, setInclureRgpd] = useState(false)
   const [inclureRecours, setInclureRecours] = useState(false)
+  // Critères d'attribution : par défaut « Prix — 100 % » (cas fréquent en faible montant).
+  const [criteres, setCriteres] = useState<CritereAttribution[]>([{ critere: 'Prix', ponderation: 100 }])
+  const totalPonderation = criteres.reduce((s, c) => s + (Number(c.ponderation) || 0), 0)
+  const setCritere = (i: number, patch: Partial<CritereAttribution>) =>
+    setCriteres(cs => cs.map((c, idx) => idx === i ? { ...c, ...patch } : c))
+  const addCritere = () => setCriteres(cs => [...cs, { critere: '', ponderation: 0 }])
+  const removeCritere = (i: number) => setCriteres(cs => cs.filter((_, idx) => idx !== i))
 
   // Étape 4 — documents cochés (par défaut : tous ceux de la procédure)
   const [docsSel, setDocsSel] = useState<string[] | null>(null)
@@ -59,11 +66,22 @@ export function NouveauMarche() {
     return true
   }, [step, objet, montantNum])
 
+  // Contrôle des critères d'attribution : libellés non vides + somme = 100 %.
+  const critereError = (): string | null => {
+    if (criteres.some(c => !c.critere.trim())) return 'Chaque critère d\'attribution doit avoir un libellé.'
+    if (totalPonderation !== 100) return `La somme des pondérations doit être égale à 100 % (actuellement ${totalPonderation} %).`
+    return null
+  }
+
   const goNext = () => {
     // À l'étape Contenu, on bloque tant que des variables ne sont pas remplacées.
     if (step === 3 && variablesManquantes.length > 0) {
       setError(`Complétez les champs manquants dans la description : ${variablesManquantes.join(', ')}`)
       return
+    }
+    if (step === 3) {
+      const ce = critereError()
+      if (ce) { setError(ce); return }
     }
     setError('')
     if (canNext) setStep(step + 1)
@@ -76,6 +94,8 @@ export function NouveauMarche() {
       setError(`Complétez les champs manquants dans la description : ${variablesManquantes.join(', ')}`)
       return
     }
+    const ce = critereError()
+    if (ce) { setStep(3); setError(ce); return }
     setSaving(true); setError('')
     const { id, error } = await create({
       organisation_id: organisation.id,
@@ -84,6 +104,7 @@ export function NouveauMarche() {
       date_lancement: dateLancement || null, date_limite_offres: dateLimite || null,
       date_debut_execution: dateDebut || null, duree_marche: duree || null,
       description_besoin: description || null,
+      criteres_attribution: criteres.map(c => ({ critere: c.critere.trim(), ponderation: Number(c.ponderation) || 0 })),
       prestataires_selectionnes: prestaSel, documents_selectionnes: docs,
       inclure_rgpd: inclureRgpd, inclure_voies_recours: inclureRecours,
     })
@@ -197,6 +218,45 @@ export function NouveauMarche() {
               </div>
               <textarea rows={7} className={`${field} resize-none`} value={description} onChange={e => setDescription(e.target.value)} placeholder="Choisissez un texte type ci-dessus, ou rédigez librement. Remplacez les {{variables}} par vos informations." />
             </div>
+
+            {/* Critères d'attribution — figurent dans le CSC avant la consultation */}
+            <div>
+              <label className={lbl}>Critères d'attribution *</label>
+              <p className="text-[11px] text-slate mb-2">Libellé + pondération. La somme doit être égale à 100 %. Par défaut « Prix — 100 % » (fréquent en faible montant).</p>
+              <div className="space-y-2">
+                {criteres.map((c, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <input
+                      className={`${field} flex-1`}
+                      value={c.critere}
+                      onChange={e => setCritere(i, { critere: e.target.value })}
+                      placeholder="Ex. Prix, Qualité technique, Délai…"
+                    />
+                    <div className="relative w-24 shrink-0">
+                      <input
+                        type="number" min={0} max={100}
+                        className={`${field} pr-6 text-right`}
+                        value={c.ponderation}
+                        onChange={e => setCritere(i, { ponderation: Number(e.target.value) })}
+                      />
+                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate text-sm">%</span>
+                    </div>
+                    <button type="button" onClick={() => removeCritere(i)} disabled={criteres.length === 1} className="text-slate hover:text-coral p-1.5 disabled:opacity-30 disabled:cursor-not-allowed" title="Supprimer">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center justify-between mt-2.5">
+                <button type="button" onClick={addCritere} className="inline-flex items-center gap-1.5 text-xs font-semibold text-navy border border-line rounded-lg px-3 py-1.5 hover:border-coral/50 hover:text-coral transition-colors">
+                  <Plus className="w-3.5 h-3.5" /> Ajouter un critère
+                </button>
+                <span className={`text-xs font-semibold ${totalPonderation === 100 ? 'text-teal' : 'text-coral'}`}>
+                  Total : {totalPonderation} %{totalPonderation === 100 ? ' ✓' : ''}
+                </span>
+              </div>
+            </div>
+
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm text-navy cursor-pointer"><input type="checkbox" checked={inclureRgpd} onChange={e => setInclureRgpd(e.target.checked)} /> Inclure les clauses RGPD</label>
               <label className="flex items-center gap-2 text-sm text-navy cursor-pointer"><input type="checkbox" checked={inclureRecours} onChange={e => setInclureRecours(e.target.checked)} /> Inclure les voies de recours</label>
