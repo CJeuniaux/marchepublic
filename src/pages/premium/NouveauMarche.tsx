@@ -7,6 +7,7 @@ import { usePrestataires } from '../../hooks/usePrestataires'
 import { useMarches } from '../../hooks/useMarches'
 import { useProcedure } from '../../hooks/useProcedure'
 import { DOCUMENTS_OPTIONNELS, libelleDocument, PRIX_MARCHE_PUBLIC_EUR } from '../../lib/documents'
+import { getTemplatesByType } from '../../lib/besoin-templates'
 import type { TypeAchat } from '../../lib/premium-types'
 
 const STEPS = ['Identification', 'Dates & prestataires', 'Contenu', 'Documents & récap']
@@ -157,7 +158,18 @@ export function NouveauMarche() {
 
         {step === 3 && (
           <>
-            <div><label className={lbl}>Description du besoin</label><textarea rows={5} className={`${field} resize-none`} value={description} onChange={e => setDescription(e.target.value)} placeholder="Complète l'introduction standard de votre organisation." /></div>
+            <div>
+              <label className={lbl}>Description du besoin</label>
+              <p className="text-[11px] text-slate mb-2">Insérez un texte type (éditable ensuite) selon votre besoin :</p>
+              <div className="flex flex-wrap gap-1.5 mb-2.5">
+                {getTemplatesByType(typeAchat).map(t => (
+                  <button key={t.slug} type="button" onClick={() => setDescription(t.texte)} className="text-xs px-2.5 py-1 rounded-full border border-line bg-cream hover:border-coral/50 hover:text-coral text-navy transition-colors">
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+              <textarea rows={7} className={`${field} resize-none`} value={description} onChange={e => setDescription(e.target.value)} placeholder="Choisissez un texte type ci-dessus, ou rédigez librement. Remplacez les {{variables}} par vos informations." />
+            </div>
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm text-navy cursor-pointer"><input type="checkbox" checked={inclureRgpd} onChange={e => setInclureRgpd(e.target.checked)} /> Inclure les clauses RGPD</label>
               <label className="flex items-center gap-2 text-sm text-navy cursor-pointer"><input type="checkbox" checked={inclureRecours} onChange={e => setInclureRecours(e.target.checked)} /> Inclure les voies de recours</label>
