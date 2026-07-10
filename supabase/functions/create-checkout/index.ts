@@ -19,8 +19,11 @@ import Stripe from "https://esm.sh/stripe@14.21.0?target=deno&deno-std=0.177.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY") ?? "";
-const PRICE_MARCHE = Deno.env.get("STRIPE_PRICE_MARCHE_PUBLIC") ?? "";
-const PRICE_DMA = Deno.env.get("STRIPE_PRICE_DMA") ?? "";
+// On accepte les deux conventions de nommage (celle du code et celle de la config Cowork).
+const PRICE_MARCHE = Deno.env.get("STRIPE_PRICE_MARCHE_PUBLIC")
+  ?? Deno.env.get("STRIPE_PRICE_MARCHE_COMPLET") ?? "";
+const PRICE_DMA = Deno.env.get("STRIPE_PRICE_DMA")
+  ?? Deno.env.get("STRIPE_PRICE_DOC_PERSO") ?? "";
 const SITE_URL = (Deno.env.get("SITE_URL") ?? "https://marchepublic.be").replace(/\/$/, "");
 
 const stripe = new Stripe(STRIPE_SECRET_KEY, {
