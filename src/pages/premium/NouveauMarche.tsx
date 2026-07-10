@@ -51,13 +51,31 @@ export function NouveauMarche() {
 
   const toggle = (arr: string[], v: string) => arr.includes(v) ? arr.filter(x => x !== v) : [...arr, v]
 
+  // Variables {{...}} laissées non complétées dans la description.
+  const variablesManquantes = description.match(/\{\{[\w_]+\}\}/g) ?? []
+
   const canNext = useMemo(() => {
     if (step === 1) return objet.trim() && montantNum > 0
     return true
   }, [step, objet, montantNum])
 
+  const goNext = () => {
+    // À l'étape Contenu, on bloque tant que des variables ne sont pas remplacées.
+    if (step === 3 && variablesManquantes.length > 0) {
+      setError(`Complétez les champs manquants dans la description : ${variablesManquantes.join(', ')}`)
+      return
+    }
+    setError('')
+    if (canNext) setStep(step + 1)
+  }
+
   const finish = async () => {
     if (!organisation) return
+    if (variablesManquantes.length > 0) {
+      setStep(3)
+      setError(`Complétez les champs manquants dans la description : ${variablesManquantes.join(', ')}`)
+      return
+    }
     setSaving(true); setError('')
     const { id, error } = await create({
       organisation_id: organisation.id,
@@ -216,10 +234,12 @@ export function NouveauMarche() {
         )}
       </div>
 
+      {step !== 4 && error && <p className="text-xs text-coral bg-coral/8 rounded-lg px-3 py-2 mt-4">{error}</p>}
+
       <div className="flex items-center justify-between mt-6">
         <button onClick={() => step > 1 ? setStep(step - 1) : navigate('/compte')} className="text-sm font-medium text-slate hover:text-navy flex items-center gap-1.5"><ArrowLeft className="w-4 h-4" /> {step > 1 ? 'Précédent' : 'Annuler'}</button>
         {step < 4 ? (
-          <button onClick={() => canNext && setStep(step + 1)} disabled={!canNext} className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${canNext ? 'bg-navy text-white hover:brightness-105' : 'bg-line text-slate/50 cursor-not-allowed'}`}>Continuer</button>
+          <button onClick={goNext} disabled={!canNext} className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${canNext ? 'bg-navy text-white hover:brightness-105' : 'bg-line text-slate/50 cursor-not-allowed'}`}>Continuer</button>
         ) : (
           <button onClick={finish} disabled={saving || docs.length === 0} className="px-5 py-2.5 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all disabled:opacity-60 inline-flex items-center gap-1.5">
             {saving ? 'Enregistrement…' : <>Valider le marché public <Check className="w-4 h-4" /></>}
