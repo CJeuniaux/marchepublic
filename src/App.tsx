@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, type ComponentType } from 'react'
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { Home } from './pages/Home'
 import { Diagnostic } from './pages/Diagnostic'
@@ -7,65 +8,65 @@ import { MentionsLegales } from './pages/MentionsLegales'
 import { Confidentialite } from './pages/Confidentialite'
 import { CGU } from './pages/CGU'
 import { Cookies } from './pages/Cookies'
+import { AuthProvider } from './context/AuthContext'
+import { RequireAuth } from './components/premium/RequireAuth'
+import { Login } from './pages/premium/Login'
+import { Register } from './pages/premium/Register'
+import { Compte } from './pages/premium/Compte'
 
-type Page = 'home' | 'diagnostic' | 'mentions-legales' | 'confidentialite' | 'cgu' | 'cookies'
+type LegalPage = 'mentions-legales' | 'confidentialite' | 'cgu' | 'cookies'
 
-const PATHS: Partial<Record<Page, string>> = {
-  'mentions-legales': '/mentions-legales',
-  confidentialite: '/confidentialite',
-  cgu: '/cgu',
-  cookies: '/cookies',
-}
-
-function pageFromPath(pathname: string): Page {
-  if (pathname.startsWith('/mentions-legales')) return 'mentions-legales'
-  if (pathname.startsWith('/confidentialite')) return 'confidentialite'
-  if (pathname.startsWith('/cookies')) return 'cookies'
-  if (pathname.startsWith('/cgu')) return 'cgu'
-  return 'home'
-}
-
-export default function App() {
-  const [page, setPage] = useState<Page>(() =>
-    typeof window === 'undefined' ? 'home' : pageFromPath(window.location.pathname),
-  )
+// Route "/" : gère l'intro (1re visite) + home + diagnostic (bascule d'état, sans URL dédiée).
+function HomeRoute() {
+  const navigate = useNavigate()
+  const [inDiagnostic, setInDiagnostic] = useState(false)
   const [intro, setIntro] = useState(() => {
     if (typeof window === 'undefined') return true
     return !window.localStorage.getItem('mp_intro_seen')
   })
-
-  useEffect(() => {
-    const onPop = () => setPage(pageFromPath(window.location.pathname))
-    window.addEventListener('popstate', onPop)
-    return () => window.removeEventListener('popstate', onPop)
-  }, [])
 
   const finishIntro = () => {
     try { window.localStorage.setItem('mp_intro_seen', '1') } catch { /* ignore */ }
     setIntro(false)
   }
 
-  const go = (p: Page) => {
-    setPage(p)
-    const target = PATHS[p] ?? '/'
-    if (window.location.pathname !== target) window.history.pushState({}, '', target)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  const goLegal = (p: LegalPage) => navigate(`/${p}`)
 
   return (
     <>
       <AnimatePresence>{intro && <Intro key="intro" onDone={finishIntro} />}</AnimatePresence>
-      {page === 'diagnostic'
-        ? <Diagnostic onBack={() => go('home')} />
-        : page === 'mentions-legales'
-        ? <MentionsLegales onBack={() => go('home')} />
-        : page === 'confidentialite'
-        ? <Confidentialite onBack={() => go('home')} />
-        : page === 'cgu'
-        ? <CGU onBack={() => go('home')} />
-        : page === 'cookies'
-        ? <Cookies onBack={() => go('home')} />
-        : <Home onStart={() => go('diagnostic')} onLegal={go} />}
+      {inDiagnostic
+        ? <Diagnostic onBack={() => setInDiagnostic(false)} />
+        : <Home onStart={() => setInDiagnostic(true)} onLegal={goLegal} />}
     </>
+  )
+}
+
+// Enveloppe les pages légales (qui attendent une prop onBack) avec la navigation.
+function LegalRoute({ Component }: { Component: ComponentType<{ onBack: () => void }> }) {
+  const navigate = useNavigate()
+  return <Component onBack={() => navigate('/')} />
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<HomeRoute />} />
+          <Route path="/mentions-legales" element={<LegalRoute Component={MentionsLegales} />} />
+          <Route path="/confidentialite" element={<LegalRoute Component={Confidentialite} />} />
+          <Route path="/cgu" element={<LegalRoute Component={CGU} />} />
+          <Route path="/cookies" element={<LegalRoute Component={Cookies} />} />
+
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          <Route path="/compte" element={<RequireAuth><Compte /></RequireAuth>} />
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
