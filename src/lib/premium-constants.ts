@@ -84,10 +84,13 @@ export interface DemoOffre {
   presIndex: number | null   // index dans les prestataires de la catégorie, ou null = saisie libre
   nomLibre?: string
   montant_htva: number
+  montant_tvac?: number
+  delai?: string
   conforme: boolean
   joursDepuisReception: number
   scores?: Record<string, number>
   score_total?: number
+  motif?: string             // motif de non-attribution (si offre écartée)
 }
 export interface DemoEnvoi {
   presIndex: number
@@ -170,9 +173,9 @@ export const DEMO_MARCHES: DemoMarche[] = [
     workflow_etape: 'attribution', limiteJours: -20,
     criteres: CRIT_STD,
     offres: [
-      { presIndex: 0, montant_htva: 84000, conforme: true, joursDepuisReception: 25, scores: { 'Prix': 78, 'Qualité technique': 88, 'Délai': 80 }, score_total: 81.4 },
-      { presIndex: 1, montant_htva: 91500, conforme: true, joursDepuisReception: 24, scores: { 'Prix': 62, 'Qualité technique': 82, 'Délai': 78 }, score_total: 71.2 },
-      { presIndex: 2, montant_htva: 86500, conforme: true, joursDepuisReception: 22, scores: { 'Prix': 72, 'Qualité technique': 75, 'Délai': 70 }, score_total: 72.5 },
+      { presIndex: 0, montant_htva: 84000, montant_tvac: 101640, delai: '45 jours ouvrables', conforme: true, joursDepuisReception: 25, scores: { 'Prix': 78, 'Qualité technique': 88, 'Délai': 80 }, score_total: 81.4 },
+      { presIndex: 1, montant_htva: 91500, montant_tvac: 110715, delai: '60 jours ouvrables', conforme: true, joursDepuisReception: 24, scores: { 'Prix': 62, 'Qualité technique': 82, 'Délai': 78 }, score_total: 71.2, motif: 'Offre régulière mais prix sensiblement plus élevé et score global inférieur au regard des critères annoncés.' },
+      { presIndex: 2, montant_htva: 86500, montant_tvac: 104665, delai: '50 jours ouvrables', conforme: true, joursDepuisReception: 22, scores: { 'Prix': 72, 'Qualité technique': 75, 'Délai': 70 }, score_total: 72.5, motif: 'Offre régulière mais qualité technique et délai jugés moins favorables que l\'offre retenue.' },
     ],
     retenuIndex: 0,
     justification: 'L\'offre de BâtiRénov SPRL est régulière et obtient le meilleur score global (81,4/100). Elle présente le meilleur équilibre entre le prix, la qualité technique proposée (matériaux et références de chantiers comparables) et le respect du délai imposé hors périodes d\'occupation.',
@@ -185,8 +188,8 @@ export const DEMO_MARCHES: DemoMarche[] = [
     workflow_etape: 'archive', statut: 'archive', limiteJours: -60,
     criteres: CRIT_STD,
     offres: [
-      { presIndex: 0, montant_htva: 30500, conforme: true, joursDepuisReception: 55, scores: { 'Prix': 85, 'Qualité technique': 88, 'Délai': 82 }, score_total: 85.3 },
-      { presIndex: 1, montant_htva: 33000, conforme: true, joursDepuisReception: 54, scores: { 'Prix': 72, 'Qualité technique': 80, 'Délai': 75 }, score_total: 75 },
+      { presIndex: 0, montant_htva: 30500, montant_tvac: 36905, delai: '3 mois', conforme: true, joursDepuisReception: 55, scores: { 'Prix': 85, 'Qualité technique': 88, 'Délai': 82 }, score_total: 85.3 },
+      { presIndex: 1, montant_htva: 33000, montant_tvac: 39930, delai: '3 mois', conforme: true, joursDepuisReception: 54, scores: { 'Prix': 72, 'Qualité technique': 80, 'Délai': 75 }, score_total: 75, motif: 'Offre régulière mais proposition créative et rapport qualité-prix jugés moins avantageux que l\'offre retenue.' },
     ],
     retenuIndex: 0,
     justification: 'L\'offre de Studio Kréa est économiquement la plus avantageuse au regard des critères annoncés (score global 85,3/100), avec une proposition créative aboutie et un planning conforme.',

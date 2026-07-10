@@ -69,8 +69,11 @@ export interface Offre {
   created_at: string
   nom_operateur: string
   montant_htva: number | null
+  montant_tvac: number | null
+  delai_execution: string | null
   date_reception: string | null
   conforme: boolean | null
+  motif_non_retenu: string | null
   notes: string | null
   scores: Record<string, number> | null
   score_total: number | null
@@ -128,6 +131,7 @@ export interface Marche {
   prestataire_retenu_id: string | null
   justification_choix: string | null
   date_attribution: string | null
+  lieu_decision: string | null
   dma_paye: boolean
   dma_stripe_payment_intent_id: string | null
   checklist_archives: Record<string, boolean> | null

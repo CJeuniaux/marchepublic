@@ -10,11 +10,12 @@ export function EtapeAttribution({ marche, organisation, onUpdate }: {
   organisation: Organisation
   onUpdate: (patch: Partial<Marche>) => Promise<{ error: string | null }>
 }) {
-  const { offres } = useOffres(marche.id)
+  const { offres, update: updateOffre } = useOffres(marche.id)
   const conformes = offres.filter(o => o.conforme)
 
   const [retenuId, setRetenuId] = useState<string>(marche.prestataire_retenu_id ?? '')
   const [justif, setJustif] = useState(marche.justification_choix ?? '')
+  const [lieu, setLieu] = useState(marche.lieu_decision ?? '')
   const [date, setDate] = useState(marche.date_attribution ?? new Date().toISOString().slice(0, 10))
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -28,6 +29,7 @@ export function EtapeAttribution({ marche, organisation, onUpdate }: {
     await onUpdate({
       prestataire_retenu_id: retenuId || null,
       justification_choix: justif || null,
+      lieu_decision: lieu.trim() || null,
       date_attribution: date || null,
     })
     setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2000)
@@ -68,15 +70,43 @@ export function EtapeAttribution({ marche, organisation, onUpdate }: {
           <textarea value={justif} onChange={e => setJustif(e.target.value)} rows={5} placeholder="Exposez les motifs de fait et de droit : offre régulière, économiquement la plus avantageuse au regard des critères annoncés…" className="w-full mt-1 text-sm border border-line rounded-lg px-3 py-2 leading-relaxed" />
         </div>
 
-        <div className="max-w-xs">
-          <label className="text-xs text-slate">Date de la décision</label>
-          <input value={date} onChange={e => setDate(e.target.value)} type="date" className="w-full mt-1 text-sm border border-line rounded-lg px-3 py-2" />
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label className="text-xs text-slate">Lieu de la décision</label>
+            <input value={lieu} onChange={e => setLieu(e.target.value)} placeholder="ex. Namur" className="w-full mt-1 text-sm border border-line rounded-lg px-3 py-2" />
+          </div>
+          <div>
+            <label className="text-xs text-slate">Date de la décision</label>
+            <input value={date} onChange={e => setDate(e.target.value)} type="date" className="w-full mt-1 text-sm border border-line rounded-lg px-3 py-2" />
+          </div>
         </div>
 
         <button onClick={enregistrer} disabled={saving} className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-navy rounded-lg px-4 py-2 hover:brightness-110 transition-all disabled:opacity-50">
           {saved ? <><Check className="w-4 h-4" /> Enregistré</> : saving ? 'Enregistrement…' : 'Enregistrer la décision'}
         </button>
       </div>
+
+      {/* Motifs de non-attribution (requis pour chaque offre conforme écartée) */}
+      {retenuId && conformes.some(o => o.prestataire_id !== retenuId) && (
+        <div className="bg-white rounded-2xl border border-line p-6 shadow-card space-y-3">
+          <div>
+            <p className="font-semibold text-navy text-sm">Motifs de non-attribution</p>
+            <p className="text-xs text-slate">Motivez le rejet de chaque offre écartée — cette information est requise et figurera dans la décision.</p>
+          </div>
+          {conformes.filter(o => o.prestataire_id !== retenuId).map(o => (
+            <div key={o.id}>
+              <label className="text-xs font-medium text-navy">{o.nom_operateur}</label>
+              <textarea
+                defaultValue={o.motif_non_retenu ?? ''}
+                onBlur={e => updateOffre(o.id, { motif_non_retenu: e.target.value.trim() || null })}
+                rows={2}
+                placeholder="ex. Offre régulière mais score global inférieur au regard des critères annoncés."
+                className="w-full mt-1 text-sm border border-line rounded-lg px-3 py-2 leading-relaxed"
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Génération de la DMA */}
       <div className="bg-sable rounded-2xl border border-line p-6">

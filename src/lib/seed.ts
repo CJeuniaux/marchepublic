@@ -90,6 +90,7 @@ export async function seedDemoAccount(userId: string): Promise<{ error: string |
         prestataire_retenu_id: retenu?.id ?? null,
         justification_choix: dm.justification ?? null,
         date_attribution: dm.retenuIndex != null ? jour(-2) : null,
+        lieu_decision: dm.retenuIndex != null ? 'Namur' : null,
         checklist_archives: checklist,
       })
       .select('id')
@@ -119,8 +120,11 @@ export async function seedDemoAccount(userId: string): Promise<{ error: string |
           marche_id: marcheId, prestataire_id: p?.id ?? null,
           nom_operateur: p?.nom_entreprise ?? o.nomLibre ?? 'Opérateur',
           montant_htva: o.montant_htva,
+          montant_tvac: o.montant_tvac ?? null,
+          delai_execution: o.delai ?? null,
           date_reception: jour(-o.joursDepuisReception),
           conforme: o.conforme,
+          motif_non_retenu: o.motif ?? null,
           scores: o.scores ?? null,
           score_total: o.score_total ?? null,
           notes: null, preuve_storage_path: null,

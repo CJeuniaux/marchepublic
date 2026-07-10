@@ -14,6 +14,8 @@ export function EtapeReceptionOffres({ marche, organisation, prestataires }: {
   const [nom, setNom] = useState('')
   const [prestId, setPrestId] = useState('')
   const [montant, setMontant] = useState('')
+  const [tvac, setTvac] = useState('')
+  const [delai, setDelai] = useState('')
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
   const [saving, setSaving] = useState(false)
   const [uploadId, setUploadId] = useState<string | null>(null)
@@ -31,12 +33,14 @@ export function EtapeReceptionOffres({ marche, organisation, prestataires }: {
       marche_id: marche.id, prestataire_id: p?.id ?? null,
       nom_operateur: nomOp,
       montant_htva: montant ? Number(montant) : null,
+      montant_tvac: tvac ? Number(tvac) : null,
+      delai_execution: delai.trim() || null,
       date_reception: date || null,
-      conforme: null, notes: null, scores: null, score_total: null, preuve_storage_path: null,
+      conforme: null, motif_non_retenu: null, notes: null, scores: null, score_total: null, preuve_storage_path: null,
     })
     setSaving(false)
     if (error) { setError(error); return }
-    setNom(''); setPrestId(''); setMontant('')
+    setNom(''); setPrestId(''); setMontant(''); setTvac(''); setDelai('')
   }
 
   const uploaderPreuve = async (offreId: string, file: File) => {
@@ -71,6 +75,14 @@ export function EtapeReceptionOffres({ marche, organisation, prestataires }: {
             <input value={montant} onChange={e => setMontant(e.target.value)} type="number" inputMode="decimal" placeholder="0.00" className="w-full mt-1 text-sm border border-line rounded-lg px-3 py-2" />
           </div>
           <div>
+            <label className="text-xs text-slate">Montant TVAC (EUR)</label>
+            <input value={tvac} onChange={e => setTvac(e.target.value)} type="number" inputMode="decimal" placeholder="0.00" className="w-full mt-1 text-sm border border-line rounded-lg px-3 py-2" />
+          </div>
+          <div>
+            <label className="text-xs text-slate">Délai d'exécution proposé</label>
+            <input value={delai} onChange={e => setDelai(e.target.value)} placeholder="ex. 30 jours ouvrables" className="w-full mt-1 text-sm border border-line rounded-lg px-3 py-2" />
+          </div>
+          <div>
             <label className="text-xs text-slate">Date de réception</label>
             <input value={date} onChange={e => setDate(e.target.value)} type="date" className="w-full mt-1 text-sm border border-line rounded-lg px-3 py-2" />
           </div>
@@ -96,7 +108,9 @@ export function EtapeReceptionOffres({ marche, organisation, prestataires }: {
                   <div className="flex-1 min-w-[140px]">
                     <p className="text-sm font-medium text-navy">{o.nom_operateur}</p>
                     <p className="text-xs text-slate">
-                      {o.montant_htva != null ? `${o.montant_htva.toLocaleString('fr-BE')} EUR HTVA` : 'Montant non renseigné'}
+                      {o.montant_htva != null ? `${o.montant_htva.toLocaleString('fr-BE')} € HTVA` : 'HTVA non renseigné'}
+                      {o.montant_tvac != null ? ` · ${o.montant_tvac.toLocaleString('fr-BE')} € TVAC` : ''}
+                      {o.delai_execution ? ` · délai ${o.delai_execution}` : ''}
                       {o.date_reception ? ` · reçue le ${new Date(o.date_reception).toLocaleDateString('fr-BE')}` : ''}
                     </p>
                   </div>
@@ -110,6 +124,15 @@ export function EtapeReceptionOffres({ marche, organisation, prestataires }: {
                     <input type="file" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) uploaderPreuve(o.id, f) }} />
                   </label>
                   <button onClick={() => remove(o.id)} className="text-slate hover:text-coral p-1"><Trash2 className="w-4 h-4" /></button>
+                </div>
+                {/* Complément TVAC / délai (éditable en ligne) */}
+                <div className="flex flex-wrap items-center gap-2 mt-2 pt-2 border-t border-line/60">
+                  <label className="text-[11px] text-slate">TVAC
+                    <input type="number" defaultValue={o.montant_tvac ?? ''} onBlur={e => { const v = e.target.value; update(o.id, { montant_tvac: v ? Number(v) : null }) }} placeholder="EUR" className="ml-1 w-24 text-xs border border-line rounded px-2 py-1" />
+                  </label>
+                  <label className="text-[11px] text-slate">Délai
+                    <input defaultValue={o.delai_execution ?? ''} onBlur={e => update(o.id, { delai_execution: e.target.value.trim() || null })} placeholder="ex. 30 jours" className="ml-1 w-36 text-xs border border-line rounded px-2 py-1" />
+                  </label>
                 </div>
               </li>
             ))}
