@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { FileDown, Check } from 'lucide-react'
+import { FileDown, Check, CreditCard } from 'lucide-react'
 import { useOffres } from '../../hooks/useOffres'
 import type { Marche, Organisation } from '../../lib/premium-types'
 import { PRIX_COURRIER_SUR_MESURE_EUR } from '../../lib/documents'
+import { startCheckout } from '../../lib/checkout'
 
 // Étape Attribution : choix de l'adjudicataire, motivation, et génération de la DMA.
 export function EtapeAttribution({ marche, organisation, onUpdate }: {
@@ -20,6 +21,17 @@ export function EtapeAttribution({ marche, organisation, onUpdate }: {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [generating, setGenerating] = useState(false)
+  const [paying, setPaying] = useState(false)
+
+  const payerDma = async () => {
+    setPaying(true)
+    try {
+      await startCheckout(marche.id, 'dma')
+    } catch (e) {
+      alert('Paiement indisponible : ' + String(e))
+      setPaying(false)
+    }
+  }
 
   // L'offre retenue est identifiée par son prestataire_id (offres du carnet).
   const offreRetenue = conformes.find(o => o.prestataire_id === retenuId) ?? null
@@ -115,12 +127,21 @@ export function EtapeAttribution({ marche, organisation, onUpdate }: {
             <p className="font-semibold text-navy text-sm">Décision Motivée d'Attribution (.docx)</p>
             <p className="text-xs text-slate">Document officiel notifiant le choix de l'adjudicataire.</p>
           </div>
-          <button onClick={genererDma} disabled={generating} className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy border border-line bg-white rounded-lg px-4 py-2 hover:border-coral/50 hover:text-coral transition-colors disabled:opacity-50">
-            <FileDown className="w-4 h-4" /> {generating ? 'Génération…' : 'Aperçu .docx (gratuit)'}
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={genererDma} disabled={generating} className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy border border-line bg-white rounded-lg px-4 py-2 hover:border-coral/50 hover:text-coral transition-colors disabled:opacity-50">
+              <FileDown className="w-4 h-4" /> {generating ? 'Génération…' : 'Aperçu (gratuit)'}
+            </button>
+            {marche.dma_paye ? (
+              <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-teal"><Check className="w-4 h-4" /> Payé</span>
+            ) : (
+              <button onClick={payerDma} disabled={paying} className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-coral rounded-lg px-4 py-2 hover:brightness-105 transition-all shadow-coral disabled:opacity-60">
+                <CreditCard className="w-4 h-4" /> {paying ? 'Redirection…' : `Version définitive · ${PRIX_COURRIER_SUR_MESURE_EUR} EUR`}
+              </button>
+            )}
+          </div>
         </div>
         <p className="text-[11px] text-slate mt-3">
-          Aperçu rempli avec vos données. La version définitive de la DMA (relecture, mise en forme finale) sera facturée {PRIX_COURRIER_SUR_MESURE_EUR} EUR une fois le paiement Stripe activé.
+          L'aperçu est gratuit et rempli avec vos données. La version définitive de la DMA est facturée {PRIX_COURRIER_SUR_MESURE_EUR} EUR TVA incluse.
         </p>
       </div>
     </div>

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, FileDown } from 'lucide-react'
 import { LogoMark } from '../../components/Graphics'
 import { useMarche } from '../../hooks/useMarches'
@@ -14,15 +14,39 @@ import { EtapeReceptionOffres } from './EtapeReceptionOffres'
 import { EtapeComparatif } from './EtapeComparatif'
 import { EtapeAttribution } from './EtapeAttribution'
 import { ChecklistArchives } from './ChecklistArchives'
+import { startCheckout } from '../../lib/checkout'
 
 export function DetailMarche() {
   const { id } = useParams()
-  const { marche, loading, update } = useMarche(id)
+  const { marche, loading, reload, update } = useMarche(id)
   const { organisation } = useOrganisation()
   const { prestataires } = usePrestataires(organisation?.id)
   const [generating, setGenerating] = useState(false)
+  const [paying, setPaying] = useState(false)
+  const [searchParams, setSearchParams] = useSearchParams()
   // Étape affichée : par défaut celle du marché, mais navigable via la timeline.
   const [vue, setVue] = useState<WorkflowEtape | null>(null)
+
+  // Retour de Stripe : le webhook met à jour le statut de façon asynchrone.
+  // On recharge quelques fois pour refléter le paiement dès qu'il est enregistré.
+  useEffect(() => {
+    if (searchParams.get('paye') !== '1') return
+    let n = 0
+    const t = setInterval(() => { reload(); if (++n >= 5) clearInterval(t) }, 1500)
+    const clean = setTimeout(() => setSearchParams({}, { replace: true }), 8000)
+    return () => { clearInterval(t); clearTimeout(clean) }
+  }, [searchParams, reload, setSearchParams])
+
+  const payer = async (type: 'marche_public' | 'dma') => {
+    if (!marche) return
+    setPaying(true)
+    try {
+      await startCheckout(marche.id, type)
+    } catch (e) {
+      alert('Paiement indisponible : ' + String(e))
+      setPaying(false)
+    }
+  }
 
   const docs = marche?.documents_selectionnes ?? []
   const etape = marche?.workflow_etape ?? 'preparation'
@@ -115,9 +139,9 @@ export function DetailMarche() {
                       <p className="text-navy font-semibold">{PRIX_MARCHE_PUBLIC_EUR} EUR TVA incluse</p>
                       <p className="text-slate text-xs">Marché public complet · {docs.length} document{docs.length > 1 ? 's' : ''}</p>
                     </div>
-                    <Link to={`/compte/marches/${marche.id}/paiement`} className="px-5 py-2.5 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all shadow-coral">
-                      Payer et générer
-                    </Link>
+                    <button onClick={() => payer('marche_public')} disabled={paying} className="px-5 py-2.5 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all shadow-coral disabled:opacity-60">
+                      {paying ? 'Redirection…' : 'Payer et générer'}
+                    </button>
                   </div>
                 )}
               </>
