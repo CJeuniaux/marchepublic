@@ -5,7 +5,9 @@ import {
   Globe, Cloud, Users, PenTool, Code2, Boxes, GraduationCap, Server,
   ChevronDown, Check, Clock, ShieldCheck, Lock, BookOpen, Briefcase, Building2, ClipboardList,
 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { LogoMark, StepGlyph, Signpost } from '../components/Graphics'
+import { useAuth } from '../context/AuthContext'
 
 const NOMAD_URL = 'https://nomadimpact.org'
 
@@ -76,6 +78,7 @@ const TRUST_ITEMS: TrustItem[] = [
 ]
 
 function Header({ onStart }: { onStart: () => void }) {
+  const { user } = useAuth()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   useEffect(() => {
@@ -97,6 +100,9 @@ function Header({ onStart }: { onStart: () => void }) {
           ))}
         </nav>
         <div className="flex items-center gap-2">
+          <Link to={user ? '/compte' : '/login'} className="hidden sm:inline-flex items-center px-3.5 py-2.5 rounded-lg text-sm font-semibold text-navy hover:bg-navy/5 transition-colors">
+            {user ? 'Mon compte' : 'Connexion'}
+          </Link>
           <button onClick={onStart} className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
             Faire le diagnostic <ArrowRight className="w-4 h-4" />
           </button>
@@ -110,6 +116,7 @@ function Header({ onStart }: { onStart: () => void }) {
           {links.map(([href, label]) => (
             <a key={href} href={href} onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-lg text-slate hover:bg-cream text-sm font-medium">{label}</a>
           ))}
+          <Link to={user ? '/compte' : '/login'} onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-lg text-navy hover:bg-cream text-sm font-medium">{user ? 'Mon compte' : 'Connexion'}</Link>
           <button onClick={onStart} className="w-full mt-2 py-3 rounded-lg bg-coral text-white font-semibold text-sm">Faire le diagnostic</button>
         </div>
       )}

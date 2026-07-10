@@ -1,0 +1,72 @@
+import { Link, useParams } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react'
+import { LogoMark } from '../../components/Graphics'
+import { useMarche } from '../../hooks/useMarches'
+import { libelleDocument, LIBELLE_PROCEDURE, PRIX_PAR_DOCUMENT_EUR } from '../../lib/documents'
+import type { Procedure } from '../../lib/documents'
+
+export function DetailMarche() {
+  const { id } = useParams()
+  const { marche, loading } = useMarche(id)
+
+  const docs = marche?.documents_selectionnes ?? []
+  const prix = docs.length * PRIX_PAR_DOCUMENT_EUR
+
+  return (
+    <div className="min-h-screen bg-cream">
+      <header className="bg-white border-b border-line">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2.5">
+            <LogoMark className="h-6 w-auto" nodeColor="#2E2348" />
+            <span className="font-display font-bold text-navy text-[15px]">marchépublic<span className="text-coral">.be</span></span>
+          </Link>
+          <Link to="/compte" className="flex items-center gap-2 text-sm font-medium text-slate hover:text-navy"><ArrowLeft className="w-4 h-4" /> Mon espace</Link>
+        </div>
+      </header>
+
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+        {loading ? (
+          <p className="text-slate text-sm">Chargement…</p>
+        ) : !marche ? (
+          <p className="text-slate text-sm">Marché introuvable.</p>
+        ) : (
+          <>
+            <div className="flex items-center gap-3 mb-6">
+              <h1 className="font-display text-3xl font-bold text-navy">{marche.objet}</h1>
+              <span className={`text-[11px] font-bold uppercase tracking-wide px-2 py-0.5 rounded ${marche.statut === 'paye' ? 'bg-teal/10 text-teal' : 'bg-sun/30 text-navy'}`}>{marche.statut}</span>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-line p-6 shadow-card space-y-2 text-sm mb-6">
+              <p><span className="text-slate">Type :</span> <span className="text-navy font-medium">{marche.type_achat}</span></p>
+              <p><span className="text-slate">Montant estimé :</span> <span className="text-navy font-medium">{marche.montant_estime_htva.toLocaleString('fr-BE')} EUR HTVA</span></p>
+              <p><span className="text-slate">Procédure :</span> <span className="text-navy font-medium">{LIBELLE_PROCEDURE[marche.procedure as Procedure] ?? marche.procedure}</span></p>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-line p-6 shadow-card mb-6">
+              <p className="font-semibold text-navy text-sm mb-3">Documents ({docs.length})</p>
+              <ul className="space-y-1 text-sm text-slate list-disc list-inside">
+                {docs.map(slug => <li key={slug}>{libelleDocument(slug)}</li>)}
+              </ul>
+            </div>
+
+            {marche.statut === 'paye' ? (
+              <div className="bg-teal/10 border border-teal/30 rounded-2xl p-6 text-sm text-navy">
+                Paiement confirmé. La génération et le téléchargement des documents seront disponibles ici (Phase 6).
+              </div>
+            ) : (
+              <div className="bg-sable rounded-2xl border border-line p-6 flex items-center justify-between">
+                <div>
+                  <p className="text-navy font-semibold">{prix} EUR TVA incluse</p>
+                  <p className="text-slate text-xs">{docs.length} document{docs.length > 1 ? 's' : ''} à générer</p>
+                </div>
+                <Link to={`/compte/marches/${marche.id}/paiement`} className="px-5 py-2.5 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all shadow-coral">
+                  Payer et générer
+                </Link>
+              </div>
+            )}
+          </>
+        )}
+      </main>
+    </div>
+  )
+}
