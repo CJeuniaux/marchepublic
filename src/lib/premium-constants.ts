@@ -52,4 +52,4 @@ export const DEMO_PRESTATAIRES: PrestataireInput[] = [
 ]
 
 // Compte(s) autorisé(s) à voir le bouton de démo / accès premium gratuit de test.
-export const DEMO_EMAILS = ['hello@nomadimpact.org', 'marchepublic@nomadimpact.org']
+export const DEMO_EMAILS = ['hello@nomadimpact.org', 'marchepublic@nomadimpact.org', 'info@nomadimpact.org', 'charshow@gmail.com']
