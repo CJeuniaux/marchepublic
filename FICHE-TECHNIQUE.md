@@ -1,172 +1,148 @@
 # Fiche technique — marchépublic.be
 
-_Mise à jour : 2026-06-27 · Version projet : 0.3.0_
+_Mise à jour : 2026-07-14 · Version projet : 0.9.0 (MP Premium + workflow + paiement)_
 
 ## 1. Identité
 
-- **Produit** : outil de pré-diagnostic indépendant. Aide une ASBL belge à repérer si la question des marchés publics se pose pour un achat.
-- **Positionnement** : premier repère pédagogique, pas avis juridique.
+- **Produit** : deux volets.
+  1. **Diagnostic gratuit** : pré-diagnostic indépendant qui aide une ASBL belge à repérer si la question des marchés publics se pose pour un achat.
+  2. **MP Premium** : espace compte payant pour préparer, piloter et documenter un marché public de bout en bout (CSC → consultation → offres → comparatif → attribution → archives).
+- **Positionnement** : repère pédagogique et outil de préparation, **pas un avis juridique**.
 - **Éditeur** : Nomad Impact.
-- **Domaine** : marchepublic.be
-- **Langue** : fr-BE
+- **Domaine** : marchepublic.be · **Langue** : fr-BE
 
 ## 2. Stack technique
 
 | Couche | Choix |
 |--------|-------|
-| Build | Vite 5 |
+| Build | Vite 5 (`tsc -b && vite build`) |
 | UI | React 18 + TypeScript 5 |
+| Routing | react-router-dom v7 (BrowserRouter) |
 | CSS | Tailwind 3 |
 | Animation | Framer Motion 11 |
 | Icônes | lucide-react |
-| Hébergement | Vercel |
-| Capture lead | Supabase REST (fetch direct, pas de SDK) |
+| Génération .docx | `docx` v9 (client-side, lazy-loaded) |
+| Auth + données | Supabase (Auth email/mot de passe, Postgres + RLS, Storage, Edge Functions) |
+| E-mails transactionnels | Brevo (API) |
+| Paiement | Stripe Checkout (Live) + webhook |
+| Hébergement front | Vercel (SPA, rewrites → index.html) |
 
-Scripts :
-- `npm run dev` — serveur Vite
-- `npm run build` — `tsc -b && vite build`
-- `npm run preview` — preview build
+## 3. Architecture applicative
 
-## 3. Architecture app
+SPA React avec react-router. Le diagnostic gratuit reste en état interne sur `/`, l'espace payant vit sous `/compte/*`.
 
-SPA mono-page. Routing par état React, pas de react-router.
-
+### Routes principales
 ```
-type Page = 'home' | 'diagnostic' | 'mentions-legales' | 'confidentialite'
-```
-
-Diagnostic tourne dans l'état SPA, pas d'URL dédiée.
-
-### Fichiers source (src/, ~3000 lignes)
-
-| Fichier | Lignes | Rôle |
-|---------|--------|------|
-| pages/Diagnostic.tsx | 828 | Logique diagnostic, scoring, bandes, recommandations |
-| pages/Home.tsx | 641 | Page accueil, hero, FAQ, footer |
-| pages/MarchePublic.tsx | 480 | Page contenu marchés publics |
-| components/Graphics.tsx | 293 | SVG, illustrations, LogoMark |
-| components/LeadGateModal.tsx | 189 | Modal capture lead |
-| pages/Confidentialite.tsx | 133 | RGPD |
-| pages/MentionsLegales.tsx | 110 | Mentions légales |
-| components/ContactForm.tsx | 105 | Formulaire contact |
-| components/Intro.tsx | 88 | Intro diagnostic |
-| lib/leads.ts | 79 | POST lead vers Supabase |
-| App.tsx | 40 | Router état |
-
-### Logique diagnostic (ne pas modifier)
-
-`computeScore` · `BANDS` · `bandFor` · `nomadTier` · `explain` · recommandation docs/sources. Scoring, questions, flux, calcul résultat : intouchés.
-
-## 4. Capture lead
-
-`src/lib/leads.ts` → POST `${baseUrl}/rest/v1/leads`.
-
-Env :
-```
-VITE_SUPABASE_URL = https://[projet].supabase.co
-VITE_SUPABASE_ANON_KEY = [clé anon publique]
+/                         Accueil + intro + diagnostic (état)
+/login  /register         Auth Supabase
+/compte                   Hub espace (profil, prestataires, courriers, marchés)
+/compte/profil            Profil organisation (1 par utilisateur)
+/compte/prestataires      Carnet de prestataires
+/compte/courriers         Courriers/mails types (copiables + .docx)
+/compte/marches/nouveau   Wizard de création (4 étapes)
+/compte/marches/:id       Détail + cycle de vie (timeline)
+/mentions-legales /confidentialite /cgu /cookies
 ```
 
-URL normalisée : strip trailing slash + suffixe `/rest/v1` si présent (fix PGRST125).
+### Zones protégées (ne pas modifier)
+Diagnostic (`Diagnostic.tsx` : scoring, questions, flux, résultat), capture de leads (table `leads`, webhook Brevo), SEO (dossier `public/`, JSON-LD, sitemap, robots, redirections), ressources téléchargeables.
 
-## 5. Design system
+## 4. MP Premium — modèle fonctionnel
 
-### Couleurs
+### Cycle de vie d'un marché public (6 étapes)
+`preparation → consultation → reception_offres → comparatif → attribution → archive`
 
-| Token | Hex | Usage |
-|-------|-----|-------|
-| navy | #2E2348 | fond sombre, titres |
-| aubergine | #3B3171 | aubergine moyen (réserve) |
-| ink | #1C1534 | footer |
-| teal | #415338 | checks, accents verts |
-| bleu | #2E5C8A | liens |
-| aqua | #C8BEF5 | texte sur fond sombre uniquement |
-| coral | #E63948 | CTA principal, sélection active |
-| sun | #F4C48F | badges pédagogie |
-| cream | #FBF7F1 | fond page |
-| sable | #F4E9D8 | fond cartes |
-| slate | #5E6B7D | texte secondaire |
-| gris | #A8A096 | détails secondaires |
-| line | #E4D9CC | bordure chaude |
+- **Préparation** : documents du marché + paiement (9 €).
+- **Consultation** : modèle de demande d'offre + suivi des envois (canal/statut).
+- **Réception des offres** : saisie des offres (HTVA, TVAC, délai, conformité) + dépôt de preuve (bucket privé `preuves`).
+- **Comparatif** : notation /100 par critère, score global pondéré (ou classement au prix).
+- **Attribution** : choix de l'adjudicataire, motivation, motifs de non-attribution, génération de la DMA.
+- **Archives** : checklist de conservation + clôture (`statut = archive`).
 
-### Typo
+### Tarification
+- **Marché public complet** : 9 € TVA incluse, forfait (tous documents compris).
+- **Document sur mesure / DMA** : 1 € TVA incluse par fichier.
+- **Courriers/mails types « tels quels »** : gratuits.
 
-- Display/titres : DM Serif Display
-- Body/UI : DM Sans
+### Génération de documents (client-side, `docx`)
+- `generateMarcheDocx.ts` — récapitulatif CSC.
+- `generateDmaDocx.ts` — Décision Motivée d'Attribution complète : pouvoir adjudicateur (BCE, contact), objet/procédure/dates/durée, critères + pondération (tableau), tableau des offres (HTVA/TVAC/délai/date/scores par critère), retenu + montants, motifs de non-attribution, bloc signature (lieu/date).
 
-### Ombres
+## 5. Base de données (Postgres / Supabase, RLS par utilisateur)
 
-card · float · coral · teal · elevated
+| Table | Rôle |
+|-------|------|
+| `organisations` | 1 par utilisateur (profil, RGPD type, coordonnées) |
+| `prestataires` | carnet réutilisable (catégorie, contact, adresse, BCE/TVA) |
+| `marches` | marché public : montant, procédure, dates, critères, documents, workflow_etape, attribution, checklist, champs Stripe |
+| `offres` | offres reçues (HTVA, TVAC, délai, conformité, scores, motif non-retenu, preuve) |
+| `consultations_envois` | trace des demandes d'offre (canal, statut) |
+| `telechargements` | journal de téléchargement |
+| `leads` | capture diagnostic (zone protégée) |
 
-### Interdits marque
+Storage : bucket privé **`preuves`** (chemin `organisation_id/marche_id/…`, policies par organisation).
 
-Pas de coq, symbole wallon, emblème régional/fédéral, couleurs faisant croire à site officiel. aqua = texte fond sombre seulement.
+Migrations SQL : `supabase/migrations/` (schéma premium, workflow, champs DMA, durcissement RLS leads).
 
-## 6. SEO
+### Hooks d'accès (src/hooks/)
+`useOrganisation` · `usePrestataires` · `useMarches` / `useMarche` · `useOffres` · `useConsultationsEnvois` · `useProcedure`.
 
-### Pages statiques (public/, servies avant rewrite SPA Vercel)
+## 6. Paiement Stripe
 
-| URL | Rôle | Priorité sitemap |
-|-----|------|-----------------|
-| /asbl-et-marche-public/ | pilier | 0.9 |
-| /seuils-marches-publics-asbl/ | seuils + tableau officiel | 0.9 |
-| /faq-marches-publics-asbl/ | FAQ 15 questions | 0.8 |
-| /achat-subsidie-marche-public/ | support | 0.8 |
-| /devis-ou-marche-public/ | support | 0.8 |
-| /subvention-marche-public/ | support | 0.7 |
-| /marche-public-site-web-asbl/ | support | 0.7 |
+- **`create-checkout`** (Edge Function) : crée une Checkout Session (mode `payment`, EUR), vérifie la propriété du marché sous RLS, métadonnées `marche_id` + `type` (`marche_public` | `dma`). JWT **activé**.
+- **`stripe-webhook`** (Edge Function) : vérifie la signature Stripe, met à jour via service role (`statut='paye'` + passage en `consultation`, ou `dma_paye=true`). JWT **désactivé**.
+- Secrets Supabase : `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, (optionnel) `STRIPE_PRICE_MARCHE_COMPLET` / `STRIPE_PRICE_DOC_PERSO`, `SITE_URL`.
+- Retour front `?paye=1` → rechargement automatique du statut.
+- Runbook : `docs/stripe-SETUP.md`.
 
-CSS partagé : `public/seo.css`.
+## 7. Edge Functions (Deno)
 
-### Redirections 301 (vercel.json)
+| Fonction | Déclencheur | Rôle | JWT |
+|----------|-------------|------|-----|
+| `lead-notify` | Database Webhook INSERT `leads` | notification équipe + livraison ressource (Brevo) | OFF |
+| `create-checkout` | appel front | crée la session de paiement Stripe | ON |
+| `stripe-webhook` | webhook Stripe | enregistre le paiement | OFF |
 
-- /marche-public-asbl/ → /asbl-et-marche-public/
-- /seuils-marche-public-asbl/ → /seuils-marches-publics-asbl/
+## 8. Seuils & procédures (officiels 01/01/2026, Guide MP Wallonie)
 
-Motif : anti-cannibalisation, paires intent identique fusionnées vers page canonique.
+| Seuil | Montant HTVA |
+|-------|--------------|
+| Faible montant | < 30 000 € |
+| Publicité belge | ≥ 140 000 € |
+| Européen fournitures/services | 216 000 € |
+| Européen travaux | 5 404 000 € |
 
-### Données structurées (JSON-LD)
+Procédures : `faible_montant`, `pnspp_belge`, `po_europeen` (mapping documents par procédure × type d'achat).
 
-| Schema | Où |
-|--------|-----|
-| WebApplication | homepage (index.html) |
-| Organization | homepage |
-| FAQPage | homepage + /asbl-et-marche-public/ + /seuils-marches-publics-asbl/ + /faq-marches-publics-asbl/ + pages support |
-| Article | toutes pages SEO |
+## 9. Design system
 
-### Technique
+**Couleurs** : navy `#2E2348` · ink `#1C1534` · teal `#415338` · bleu `#2E5C8A` · aqua `#C8BEF5` (texte fond sombre seulement) · coral `#E63948` (CTA/sélection) · sun `#F4C48F` · cream `#FBF7F1` (fond) · sable `#F4E9D8` (cartes) · slate `#5E6B7D` · line `#E4D9CC`.
 
-- sitemap.xml : 8 URLs canoniques, homepage incluse, URLs redirigées retirées
-- robots.txt : `Allow: /` + référence sitemap
-- Chaque page : title unique, meta description unique, canonical self-ref, OG, Twitter card, 1 seul H1
-- Pas de tirets longs (—) en prose
-- Sources officielles citées : loi 17 juin 2016, BOSA belgium.be, publicprocurement.be
+**Typo** : DM Serif Display (titres) · DM Sans (UI).
+**Ombres** : card · float · coral · teal · elevated.
+**Interdits marque** : pas de coq, symbole wallon, emblème régional/fédéral, ni couleurs évoquant un site officiel.
 
-### Config Vercel
+## 10. SEO (zone protégée)
 
-```json
-{
-  "redirects": [ ... 4 redirects 301 ... ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
-}
+Pages statiques `public/` servies avant le rewrite SPA. 8 URLs canoniques dans `sitemap.xml`, `robots.txt` `Allow: /`. JSON-LD : WebApplication, Organization, FAQPage, Article. Redirections 301 anti-cannibalisation dans `vercel.json`. Titre/description/canonical uniques, un seul H1, pas de tirets longs en prose, sources officielles citées.
+
+## 11. Variables d'environnement
+
+**Front (Vercel)**
 ```
+VITE_SUPABASE_URL       = https://[projet].supabase.co
+VITE_SUPABASE_ANON_KEY  = [clé anon publique]
+```
+**Edge Functions (secrets Supabase)** : `BREVO_API_KEY`, `SENDER_EMAIL`, `LEAD_NOTIFY_TO`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, (optionnel) price IDs, `SITE_URL`. La clé secrète Stripe ne doit jamais être exposée côté front.
 
-Fichiers statiques prioritaires sur rewrite wildcard. Rewrite ne tire que si aucun fichier statique match.
+## 12. Contraintes permanentes
 
-## 7. Ressources téléchargeables (public/resources/)
+- Ne pas toucher : diagnostic (scoring/questions/flux/résultat), leads, SEO, ressources téléchargeables.
+- Ton : humain, prudent, pratique, pédagogique, non-juridique, vouvoiement.
+- Jamais promettre un avis juridique ; toujours citer les sources officielles.
+- Pas de tirets longs (—) en prose.
+- Dire « marché public » en toutes lettres.
 
-PDF + DOCX : acheter-sous-30000 · asbl-subsidiee-obligations · au-dela-de-30000 · cadrer-projet-digital · comparer-prestataires · template-demande-de-prix.
+## 13. Build
 
-## 8. Contraintes permanentes
-
-- Pas toucher : logique diagnostic, scoring, questions, flux, calcul résultat, routing, copy légale
-- Pas redesign, pas changement layout
-- Ton : humain, prudent, pratique, pédagogique, non-juridique, vouvoiement
-- Jamais promettre avis juridique
-- Toujours citer sources officielles
-
-## 9. Build
-
-`tsc -b && vite build` — passe sans erreur.
-
-Sortie : `dist/index.html` (~6 kB) · CSS ~30 kB (gzip 6.5 kB) · JS ~382 kB (gzip 115 kB).
+`tsc -b && vite build` — passe sans erreur. Le module `docx` est lazy-loaded (chunk séparé, chargé uniquement à la génération de document).
