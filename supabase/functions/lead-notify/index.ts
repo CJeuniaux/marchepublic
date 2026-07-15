@@ -49,6 +49,30 @@ function esc(s: unknown): string {
   return String(s ?? "").replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c]!));
 }
 
+// Ajoute (ou met à jour) le lead comme contact Brevo dans la liste 8 ("Leads MP").
+// Déclenche l'automation d'onboarding côté Brevo. Non bloquant : toute erreur est loggée.
+const BREVO_LIST_ID = Number(Deno.env.get("BREVO_LEADS_LIST_ID") ?? "8");
+async function addBrevoContact(email: string, prenom = "", nom = ""): Promise<void> {
+  const res = await fetch("https://api.brevo.com/v3/contacts", {
+    method: "POST",
+    headers: {
+      "api-key": BREVO_API_KEY,
+      "content-type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      attributes: { PRENOM: prenom, NOM: nom },
+      listIds: [BREVO_LIST_ID],
+      updateEnabled: true,
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Brevo contacts ${res.status}: ${body.slice(0, 300)}`);
+  }
+}
+
 async function sendBrevo(to: string, subject: string, htmlContent: string): Promise<void> {
   const res = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
@@ -128,6 +152,14 @@ Deno.serve(async (req) => {
     await sendBrevo(record.email, "Votre ressource MarchéPublic.be", livraison);
   } catch (e) {
     console.error("[lead-notify] échec email LIVRAISON:", String(e));
+  }
+
+  // (c) AJOUT À LA LISTE BREVO 8 -> déclenche l'automation d'onboarding.
+  // Non bloquant : le lead est déjà stocké, un échec Brevo ne doit rien casser.
+  try {
+    await addBrevoContact(record.email);
+  } catch (e) {
+    console.error("[lead-notify] échec ajout contact Brevo (liste " + BREVO_LIST_ID + "):", String(e));
   }
 
   // Toujours 200 : l'insertion est déjà committée, on ne veut pas de retry destructif.
