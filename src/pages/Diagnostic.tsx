@@ -585,6 +585,23 @@ function ResultScreen({ state, onRestart }: { state: DiagState; onRestart: () =>
         </div>
       </section>
 
+      {/* Écosystème — accompagnement numérique global */}
+      <section className="bg-sable/50 py-12 border-t border-line print:hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="rounded-2xl bg-white shadow-card border border-line p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-5">
+            <div className="flex-1">
+              <h3 className="font-display text-lg sm:text-xl font-bold text-navy">Et pour le reste de votre numérique ?</h3>
+              <p className="mt-2 text-sm text-slate leading-relaxed">
+                Les marchés publics ne sont qu'un aspect de votre gestion associative. Découvrez comment Nomad Impact peut vous accompagner sur l'ensemble de vos défis numériques — diagnostic, missions, outils et formation.
+              </p>
+            </div>
+            <a href={NOMAD_URL} target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-navy text-white text-sm font-semibold hover:brightness-110 transition-all">
+              Découvrir l'accompagnement numérique Nomad Impact <ArrowUpRight className="w-4 h-4" />
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Actions bar + disclaimer */}
       <section className="bg-white py-10 border-t border-line print:hidden">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-4">

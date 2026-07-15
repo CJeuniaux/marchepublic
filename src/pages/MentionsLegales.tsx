@@ -54,6 +54,9 @@ export function MentionsLegales({ onBack }: { onBack: () => void }) {
             <p className="mt-3">
               marchépublic.be est un <strong>outil d'orientation pédagogique</strong>. Il ne constitue pas un avis juridique et ne remplace pas l'analyse d'un·e juriste ou d'un service compétent en marchés publics.
             </p>
+            <p className="mt-3">
+              MarchéPublic.be est un outil développé dans le cadre de l'écosystème Nomad Impact, une initiative basée à Namur et dédiée à l'autonomie numérique des ASBL et organisations à impact en Wallonie. Pour un accompagnement numérique plus global, visitez <a href="https://nomadimpact.org" target="_blank" rel="noopener noreferrer" className="text-coral hover:underline">nomadimpact.org</a>.
+            </p>
           </section>
 
           <section>

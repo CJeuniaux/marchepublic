@@ -11,6 +11,13 @@ import { useAuth } from '../context/AuthContext'
 
 const NOMAD_URL = 'https://nomadimpact.org'
 
+// Écosystème Nomad Impact (sites partenaires).
+const ECOSYSTEME = [
+  { nom: 'Nomad Impact', accroche: 'Soutien numérique pour ASBL en Wallonie', desc: "L'organisation qui coordonne l'écosystème et accompagne les associations wallonnes dans leur transition numérique.", url: 'https://nomadimpact.org' },
+  { nom: 'Cotizio', accroche: 'Gestion des membres et cotisations pour ASBL', desc: 'Simplifiez la gestion administrative de votre association : membres, cotisations, dons et rappels automatiques.', url: 'https://cotizio.app' },
+  { nom: 'Maîtrisez le Digital', accroche: 'Formations digitales pour associations', desc: "Développez les compétences numériques de votre équipe avec des formations accessibles et pratiques.", url: 'https://maitrisezledigital.be' },
+]
+
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
@@ -561,11 +568,44 @@ function BottomCTA({ onStart }: { onStart: () => void }) {
   )
 }
 
+function EcosystemSection() {
+  return (
+    <section className="bg-sable/50 border-t border-line py-20 sm:py-24">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <Reveal>
+          <div className="text-center mb-12">
+            <Eyebrow tone="bleu">Écosystème</Eyebrow>
+            <h2 className="mt-5 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance max-w-3xl mx-auto">
+              MarchéPublic.be fait partie de l'écosystème Nomad Impact
+            </h2>
+            <p className="mt-4 text-slate max-w-2xl mx-auto text-sm leading-relaxed">
+              Comprendre les marchés publics n'est qu'une étape. Nomad Impact et ses outils partenaires vous accompagnent dans tous les aspects du numérique pour votre ASBL.
+            </p>
+          </div>
+        </Reveal>
+        <div className="grid sm:grid-cols-3 gap-4">
+          {ECOSYSTEME.map((e, i) => (
+            <Reveal key={e.nom} delay={i * 0.08}>
+              <a href={e.url} target="_blank" rel="noopener noreferrer" className="group flex flex-col h-full bg-white border border-line rounded-xl p-5 shadow-card hover:border-coral/40 transition-colors">
+                <h3 className="font-display font-semibold text-navy text-sm flex items-center gap-1.5">
+                  {e.nom} <ArrowUpRight className="w-3.5 h-3.5 text-coral opacity-0 group-hover:opacity-100 transition-opacity" />
+                </h3>
+                <p className="text-[11px] font-semibold text-bleu mt-0.5">{e.accroche}</p>
+                <p className="text-slate text-xs leading-relaxed mt-2">{e.desc}</p>
+              </a>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-legales' | 'confidentialite' | 'cgu' | 'cookies') => void }) {
   return (
     <footer className="bg-ink text-aqua/50 border-t border-white/5">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-10">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-8 mb-10">
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-3">
               <LogoMark className="h-6 w-auto" nodeColor="#FFFFFF" lineColor="#FFFFFF" finalColor="#FFFFFF" />
@@ -607,6 +647,18 @@ function Footer({ onLegal }: { onStart?: () => void; onLegal: (page: 'mentions-l
             </ul>
           </div>
           <div>
+            <p className="text-white text-[10px] font-bold uppercase tracking-widest mb-4">Notre écosystème</p>
+            <ul className="space-y-2.5 text-sm">
+              {([
+                ['https://nomadimpact.org', 'Nomad Impact'],
+                ['https://cotizio.app', 'Cotizio'],
+                ['https://maitrisezledigital.be', 'Maîtrisez le Digital'],
+              ] as [string, string][]).map(([h, l]) => (
+                <li key={l}><a href={h} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-xs">{l}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
             <p className="text-white text-[10px] font-bold uppercase tracking-widest mb-4">Informations</p>
             <ul className="space-y-2.5">
               <li><a href="/mentions-legales" onClick={e => { e.preventDefault(); onLegal('mentions-legales') }} className="hover:text-white transition-colors text-xs">Mentions légales</a></li>
@@ -643,6 +695,7 @@ export function Home({ onStart, onLegal }: { onStart: () => void; onLegal: (page
         <FAQSection />
         <AudienceSection onStart={onStart} />
         <BottomCTA onStart={onStart} />
+        <EcosystemSection />
       </main>
       <Footer onStart={onStart} onLegal={onLegal} />
     </div>
