@@ -1,6 +1,5 @@
 import { ArrowLeft } from 'lucide-react'
 import { LogoMark } from '../components/Graphics'
-import { ContactForm } from '../components/ContactForm'
 
 export function MentionsLegales({ onBack }: { onBack: () => void }) {
   return (
@@ -100,8 +99,7 @@ export function MentionsLegales({ onBack }: { onBack: () => void }) {
 
           <section>
             <h2 className="font-display font-bold text-navy text-xl mb-3">Contact</h2>
-            <p className="mb-5">Pour toute question relative au site ou à vos données personnelles, utilisez le formulaire ci-dessous :</p>
-            <ContactForm />
+            <p>Pour toute question relative au site ou à vos données personnelles, écrivez-nous à <a href="mailto:marchepublic@nomadimpact.org" className="text-coral hover:underline">marchepublic@nomadimpact.org</a>.</p>
           </section>
 
         </div>

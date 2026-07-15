@@ -1,6 +1,5 @@
 import { ArrowLeft } from 'lucide-react'
 import { LogoMark } from '../components/Graphics'
-import { ContactForm } from '../components/ContactForm'
 
 export function CGU({ onBack }: { onBack: () => void }) {
   return (
@@ -85,8 +84,7 @@ export function CGU({ onBack }: { onBack: () => void }) {
 
           <section>
             <h2 className="font-display font-bold text-navy text-xl mb-3">9. Contact</h2>
-            <p className="mb-5">Pour toute question relative aux présentes conditions, écrivez à <a href="mailto:marchepublic@nomadimpact.org" className="text-coral hover:underline">marchepublic@nomadimpact.org</a> ou utilisez le formulaire ci-dessous :</p>
-            <ContactForm />
+            <p>Pour toute question relative aux présentes conditions, écrivez à <a href="mailto:marchepublic@nomadimpact.org" className="text-coral hover:underline">marchepublic@nomadimpact.org</a>.</p>
           </section>
 
         </div>

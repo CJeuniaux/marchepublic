@@ -1,6 +1,5 @@
 import { ArrowLeft } from 'lucide-react'
 import { LogoMark } from '../components/Graphics'
-import { ContactForm } from '../components/ContactForm'
 
 export function Confidentialite({ onBack }: { onBack: () => void }) {
   return (
@@ -131,8 +130,7 @@ export function Confidentialite({ onBack }: { onBack: () => void }) {
 
           <section>
             <h2 className="font-display font-bold text-navy text-xl mb-3">Contact</h2>
-            <p className="mb-5">Pour exercer vos droits ou poser toute question relative à vos données personnelles :</p>
-            <ContactForm />
+            <p>Pour exercer vos droits ou poser toute question relative à vos données personnelles, écrivez-nous à <a href="mailto:marchepublic@nomadimpact.org" className="text-coral hover:underline">marchepublic@nomadimpact.org</a>.</p>
           </section>
 
         </div>
