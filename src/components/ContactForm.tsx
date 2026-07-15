@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Send, Check } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 export function ContactForm() {
   const [name, setName]       = useState('')
@@ -15,17 +16,12 @@ export function ContactForm() {
     if (!isValid) return
     setStatus('loading')
     try {
-      // Formspree endpoint — routes to marchepublicwallonie.proton.me without exposing the address
-      const res = await fetch('https://formspree.io/f/marchepublic', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ name, email, message, _subject: 'Contact marchépublic.be' }),
+      // Envoi via l'edge function Brevo -> marchepublic@nomadimpact.org
+      const { data, error } = await supabase.functions.invoke('contact-send', {
+        body: { name, email, message },
       })
-      if (res.ok) {
-        setStatus('done')
-      } else {
-        setStatus('error')
-      }
+      if (error || (data as { error?: string } | null)?.error) setStatus('error')
+      else setStatus('done')
     } catch {
       setStatus('error')
     }

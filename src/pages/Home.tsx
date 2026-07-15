@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { LogoMark, StepGlyph, Signpost } from '../components/Graphics'
+import { ContactForm } from '../components/ContactForm'
 import { useAuth } from '../context/AuthContext'
 
 const NOMAD_URL = 'https://nomadimpact.org'
@@ -93,7 +94,7 @@ function Header({ onStart }: { onStart: () => void }) {
     fn(); window.addEventListener('scroll', fn, { passive: true })
     return () => window.removeEventListener('scroll', fn)
   }, [])
-  const links: [string, string][] = [['#comment', 'Comment ça marche'], ['#cas', 'Cas fréquents'], ['#faq', 'FAQ'], ['#pour-qui', 'Pour qui']]
+  const links: [string, string][] = [['#comment', 'Comment ça marche'], ['#cas', 'Cas fréquents'], ['#faq', 'FAQ'], ['#pour-qui', 'Pour qui'], ['#contact', 'Contact']]
   return (
     <header className={`sticky top-0 z-50 transition-all duration-200 ${scrolled ? 'bg-white border-b border-line shadow-[0_1px_8px_rgba(8,43,76,0.06)]' : 'bg-white/95 border-b border-line'}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -568,6 +569,31 @@ function BottomCTA({ onStart }: { onStart: () => void }) {
   )
 }
 
+function ContactSection() {
+  return (
+    <section id="contact" className="bg-cream py-20 sm:py-24 border-t border-line scroll-mt-20">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+        <Reveal>
+          <div className="text-center mb-10">
+            <Eyebrow tone="coral">Contact</Eyebrow>
+            <h2 className="mt-5 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">
+              Une question ? Écrivez-nous.
+            </h2>
+            <p className="mt-4 text-slate max-w-xl mx-auto text-sm leading-relaxed">
+              Votre message nous parvient directement. Nous vous répondons dans les meilleurs délais.
+            </p>
+          </div>
+        </Reveal>
+        <Reveal delay={0.05}>
+          <div className="bg-white rounded-2xl border border-line p-6 sm:p-8 shadow-card">
+            <ContactForm />
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  )
+}
+
 function EcosystemSection() {
   return (
     <section className="bg-sable/50 border-t border-line py-20 sm:py-24">
@@ -695,6 +721,7 @@ export function Home({ onStart, onLegal }: { onStart: () => void; onLegal: (page
         <FAQSection />
         <AudienceSection onStart={onStart} />
         <BottomCTA onStart={onStart} />
+        <ContactSection />
         <EcosystemSection />
       </main>
       <Footer onStart={onStart} onLegal={onLegal} />
