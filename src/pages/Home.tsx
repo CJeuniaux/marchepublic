@@ -93,7 +93,7 @@ function Header({ onStart }: { onStart: () => void }) {
     fn(); window.addEventListener('scroll', fn, { passive: true })
     return () => window.removeEventListener('scroll', fn)
   }, [])
-  const links: [string, string][] = [['#comment', 'Comment ça marche'], ['#cas', 'Cas fréquents'], ['#faq', 'FAQ'], ['#pour-qui', 'Pour qui'], ['mailto:marchepublic@nomadimpact.org', 'Contact']]
+  const links: [string, string][] = [['#comment', 'Comment ça marche'], ['#cas', 'Cas fréquents'], ['#faq', 'FAQ'], ['#pour-qui', 'Pour qui']]
   return (
     <header className={`sticky top-0 z-50 transition-all duration-200 ${scrolled ? 'bg-white border-b border-line shadow-[0_1px_8px_rgba(8,43,76,0.06)]' : 'bg-white/95 border-b border-line'}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
