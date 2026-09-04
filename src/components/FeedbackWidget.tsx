@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { MessageCircle, X, Check, Bug, Sparkles } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
@@ -6,8 +7,11 @@ import { useAuth } from '../context/AuthContext'
 type FeedbackType = 'bug' | 'ux'
 
 // Bouton flottant + modale de feedback beta (bug ou retour UX).
+// Affiché uniquement dans l'espace compte (/compte, /admin), pas sur le site public.
 export function FeedbackWidget() {
   const { user } = useAuth()
+  const { pathname } = useLocation()
+  const inAccountArea = pathname.startsWith('/compte') || pathname.startsWith('/admin')
   const [open, setOpen] = useState(false)
   const [type, setType] = useState<FeedbackType>('ux')
   const [sending, setSending] = useState(false)
@@ -67,6 +71,9 @@ export function FeedbackWidget() {
 
   const field = 'w-full px-3 py-2 rounded-lg border border-line bg-white text-navy text-sm focus:outline-none focus:border-navy/40 transition-colors'
   const lbl = 'block text-xs font-semibold text-navy mb-1'
+
+  // N'affiche rien en dehors de l'espace compte.
+  if (!inAccountArea) return null
 
   return (
     <>
