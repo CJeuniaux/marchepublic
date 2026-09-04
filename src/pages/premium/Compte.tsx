@@ -7,6 +7,7 @@ import { useMarches } from '../../hooks/useMarches'
 import { LIBELLE_PROCEDURE, type Procedure } from '../../lib/documents'
 import { LIBELLE_ETAPE } from '../../lib/premium-types'
 import { DEMO_EMAILS } from '../../lib/premium-constants'
+import { isAdmin } from '../../lib/admin'
 import { seedDemoAccount } from '../../lib/seed'
 import { useState } from 'react'
 
@@ -24,6 +25,13 @@ export function Compte() {
   const { marches, loading } = useMarches(organisation?.id)
   const [seeding, setSeeding] = useState(false)
   const showDemo = !!user?.email && DEMO_EMAILS.includes(user.email)
+  const [betaDismissed, setBetaDismissed] = useState(() => {
+    try { return !!window.localStorage.getItem('mp_beta_banner_dismissed') } catch { return false }
+  })
+  const dismissBeta = () => {
+    try { window.localStorage.setItem('mp_beta_banner_dismissed', '1') } catch { /* ignore */ }
+    setBetaDismissed(true)
+  }
 
   const handleSignOut = async () => { await signOut(); navigate('/') }
 
@@ -51,7 +59,17 @@ export function Compte() {
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
         <h1 className="font-display text-3xl font-bold text-navy">Mon espace</h1>
-        <p className="text-slate text-sm mt-1 mb-6">{user?.email}</p>
+        <p className="text-slate text-sm mt-1 mb-6">
+          {user?.email}
+          {isAdmin(user?.email) && <> · <Link to="/admin/feedback" className="text-coral hover:underline font-medium">Feedbacks beta</Link></>}
+        </p>
+
+        {!betaDismissed && (
+          <div className="rounded-2xl p-4 mb-6 flex items-start justify-between gap-4 text-white" style={{ backgroundColor: '#2E2348' }}>
+            <p className="text-sm leading-relaxed">🚀 Vous testez la version beta de MarchéPublic.be — gratuit ce mois-ci ! Vos retours nous aident à l'améliorer. Utilisez le bouton « Votre avis » en bas à droite.</p>
+            <button onClick={dismissBeta} aria-label="Fermer" className="shrink-0 text-white/70 hover:text-white text-lg leading-none">×</button>
+          </div>
+        )}
 
         {showDemo && (
           <div className="bg-navy/5 border border-navy/15 rounded-2xl p-4 mb-8 flex items-center justify-between gap-4">

@@ -18,6 +18,8 @@ import { Prestataires } from './pages/premium/Prestataires'
 import { Courriers } from './pages/premium/Courriers'
 import { NouveauMarche } from './pages/premium/NouveauMarche'
 import { DetailMarche } from './pages/premium/DetailMarche'
+import { AdminFeedback } from './pages/admin/AdminFeedback'
+import { FeedbackWidget } from './components/FeedbackWidget'
 
 type LegalPage = 'mentions-legales' | 'confidentialite' | 'cgu' | 'cookies'
 
@@ -74,8 +76,11 @@ export default function App() {
           <Route path="/compte/marches/nouveau" element={<RequireAuth><NouveauMarche /></RequireAuth>} />
           <Route path="/compte/marches/:id" element={<RequireAuth><DetailMarche /></RequireAuth>} />
 
+          <Route path="/admin/feedback" element={<RequireAuth><AdminFeedback /></RequireAuth>} />
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <FeedbackWidget />
       </AuthProvider>
     </BrowserRouter>
   )
