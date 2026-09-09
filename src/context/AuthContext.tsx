@@ -6,7 +6,7 @@ interface AuthContextValue {
   user: User | null
   session: Session | null
   loading: boolean
-  signUp: (email: string, password: string) => Promise<{ error: string | null }>
+  signUp: (email: string, password: string) => Promise<{ error: string | null; needsConfirmation?: boolean }>
   signIn: (email: string, password: string) => Promise<{ error: string | null }>
   signOut: () => Promise<void>
 }
@@ -29,13 +29,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({ email, password })
-    return { error: error?.message ?? null }
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        // Le lien de confirmation (si activé) doit revenir sur le domaine courant,
+        // pas sur l'URL par défaut de Supabase.
+        options: { emailRedirectTo: `${window.location.origin}/login` },
+      })
+      if (error) return { error: error.message }
+      // Confirmation email désactivée -> une session est créée d'emblée.
+      // Activée -> pas de session, l'utilisateur doit confirmer son adresse.
+      // (identities vide = adresse déjà enregistrée, on ne le divulgue pas.)
+      return { error: null, needsConfirmation: !data.session }
+    } catch (e) {
+      return { error: e instanceof Error ? e.message : 'Erreur inattendue lors de la création du compte.' }
+    }
   }
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    return { error: error?.message ?? null }
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      return { error: error?.message ?? null }
+    } catch (e) {
+      return { error: e instanceof Error ? e.message : 'Erreur inattendue lors de la connexion.' }
+    }
   }
 
   const signOut = async () => {

@@ -15,6 +15,7 @@ import { EtapeComparatif } from './EtapeComparatif'
 import { EtapeAttribution } from './EtapeAttribution'
 import { ChecklistArchives } from './ChecklistArchives'
 import { startCheckout } from '../../lib/checkout'
+import { BETA_MODE, BETA_FREE_LABEL } from '../../lib/beta'
 
 export function DetailMarche() {
   const { id } = useParams()
@@ -40,6 +41,20 @@ export function DetailMarche() {
   const payer = async (type: 'marche_public' | 'dma') => {
     if (!marche) return
     setPaying(true)
+    // Beta gratuite : on n'ouvre PAS Stripe, on débloque directement l'accès.
+    if (BETA_MODE) {
+      try {
+        if (type === 'marche_public') {
+          await update({
+            statut: 'paye',
+            workflow_etape: etape === 'preparation' ? 'consultation' : etape,
+          })
+        }
+      } finally {
+        setPaying(false)
+      }
+      return
+    }
     try {
       await startCheckout(marche.id, type)
     } catch (e) {
@@ -131,16 +146,21 @@ export function DetailMarche() {
 
                 {marche.statut === 'paye' ? (
                   <div className="bg-teal/10 border border-teal/30 rounded-2xl p-6 text-sm text-navy">
-                    Paiement confirmé. La génération et le téléchargement des documents seront disponibles ici (Phase 6).
+                    {BETA_MODE ? 'Accès débloqué (gratuit pendant la beta). ' : 'Paiement confirmé. '}
+                    La génération et le téléchargement des documents seront disponibles ici (Phase 6).
                   </div>
                 ) : (
                   <div className="bg-sable rounded-2xl border border-line p-6 flex items-center justify-between">
                     <div>
-                      <p className="text-navy font-semibold">{PRIX_MARCHE_PUBLIC_EUR} EUR TVA incluse</p>
+                      {BETA_MODE ? (
+                        <p className="font-semibold" style={{ color: '#2E2348' }}>{BETA_FREE_LABEL} <span className="text-slate text-xs font-normal line-through ml-1">{PRIX_MARCHE_PUBLIC_EUR} EUR</span></p>
+                      ) : (
+                        <p className="text-navy font-semibold">{PRIX_MARCHE_PUBLIC_EUR} EUR TVA incluse</p>
+                      )}
                       <p className="text-slate text-xs">Marché public complet · {docs.length} document{docs.length > 1 ? 's' : ''}</p>
                     </div>
                     <button onClick={() => payer('marche_public')} disabled={paying} className="px-5 py-2.5 rounded-lg bg-coral text-white text-sm font-semibold hover:brightness-105 transition-all shadow-coral disabled:opacity-60">
-                      {paying ? 'Redirection…' : 'Payer et générer'}
+                      {paying ? '…' : BETA_MODE ? 'Générer (gratuit)' : 'Payer et générer'}
                     </button>
                   </div>
                 )}

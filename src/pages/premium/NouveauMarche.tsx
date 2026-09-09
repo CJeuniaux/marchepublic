@@ -9,6 +9,7 @@ import { useProcedure } from '../../hooks/useProcedure'
 import { DOCUMENTS_OPTIONNELS, libelleDocument, PRIX_MARCHE_PUBLIC_EUR } from '../../lib/documents'
 import { getTemplatesByType } from '../../lib/besoin-templates'
 import { SUGGESTIONS_OBJET } from '../../lib/premium-constants'
+import { BETA_MODE, BETA_FREE_LABEL } from '../../lib/beta'
 import type { TypeAchat, CritereAttribution } from '../../lib/premium-types'
 
 const STEPS = ['Identification', 'Dates & prestataires', 'Contenu', 'Documents & récap']
@@ -286,9 +287,13 @@ export function NouveauMarche() {
             </div>
             <div className="bg-sable rounded-xl border border-line p-4 flex items-center justify-between">
               <span className="text-sm text-navy">Marché public complet ({docs.length} document{docs.length > 1 ? 's' : ''})</span>
-              <span className="font-display font-bold text-navy text-lg">{PRIX_MARCHE_PUBLIC_EUR} EUR</span>
+              {BETA_MODE ? (
+                <span className="font-display font-bold text-lg" style={{ color: '#2E2348' }}>{BETA_FREE_LABEL} <span className="text-slate text-xs font-normal line-through">{PRIX_MARCHE_PUBLIC_EUR} EUR</span></span>
+              ) : (
+                <span className="font-display font-bold text-navy text-lg">{PRIX_MARCHE_PUBLIC_EUR} EUR</span>
+              )}
             </div>
-            <p className="text-[11px] text-slate">9 EUR TVA incluse, tous les documents du marché public compris. Le paiement sera demandé à l'étape suivante.</p>
+            <p className="text-[11px] text-slate">{BETA_MODE ? 'Gratuit pendant la beta : tous les documents du marché public sont compris, sans paiement.' : '9 EUR TVA incluse, tous les documents du marché public compris. Le paiement sera demandé à l\'étape suivante.'}</p>
             {error && <p className="text-xs text-coral bg-coral/8 rounded-lg px-3 py-2">{error}</p>}
           </>
         )}

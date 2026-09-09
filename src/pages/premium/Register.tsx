@@ -1,10 +1,11 @@
 import { useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { LogoMark } from '../../components/Graphics'
 import { useAuth } from '../../context/AuthContext'
 
 export function Register() {
   const { signUp } = useAuth()
+  const navigate = useNavigate()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -19,13 +20,18 @@ export function Register() {
     if (!isValid) return
     setStatus('loading')
     setError('')
-    const { error } = await signUp(email, password)
+    const { error, needsConfirmation } = await signUp(email, password)
     if (error) {
       setError(error)
       setStatus('error')
       return
     }
-    // Selon la configuration Supabase, une confirmation par email peut être requise.
+    // Confirmation email désactivée : la session est déjà active -> on entre dans le compte.
+    if (!needsConfirmation) {
+      navigate('/compte/profil')
+      return
+    }
+    // Confirmation requise : on invite à vérifier la boîte mail.
     setStatus('done')
   }
 

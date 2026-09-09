@@ -4,6 +4,7 @@ import { useOffres } from '../../hooks/useOffres'
 import type { Marche, Organisation } from '../../lib/premium-types'
 import { PRIX_COURRIER_SUR_MESURE_EUR } from '../../lib/documents'
 import { startCheckout } from '../../lib/checkout'
+import { BETA_MODE, BETA_FREE_LABEL } from '../../lib/beta'
 
 // Étape Attribution : choix de l'adjudicataire, motivation, et génération de la DMA.
 export function EtapeAttribution({ marche, organisation, onUpdate }: {
@@ -25,6 +26,11 @@ export function EtapeAttribution({ marche, organisation, onUpdate }: {
 
   const payerDma = async () => {
     setPaying(true)
+    // Beta gratuite : on débloque la DMA sans passer par Stripe.
+    if (BETA_MODE) {
+      try { await onUpdate({ dma_paye: true }) } finally { setPaying(false) }
+      return
+    }
     try {
       await startCheckout(marche.id, 'dma')
     } catch (e) {
@@ -132,16 +138,18 @@ export function EtapeAttribution({ marche, organisation, onUpdate }: {
               <FileDown className="w-4 h-4" /> {generating ? 'Génération…' : 'Aperçu (gratuit)'}
             </button>
             {marche.dma_paye ? (
-              <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-teal"><Check className="w-4 h-4" /> Payé</span>
+              <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-teal"><Check className="w-4 h-4" /> {BETA_MODE ? 'Débloquée' : 'Payé'}</span>
             ) : (
               <button onClick={payerDma} disabled={paying} className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-coral rounded-lg px-4 py-2 hover:brightness-105 transition-all shadow-coral disabled:opacity-60">
-                <CreditCard className="w-4 h-4" /> {paying ? 'Redirection…' : `Version définitive · ${PRIX_COURRIER_SUR_MESURE_EUR} EUR`}
+                <CreditCard className="w-4 h-4" /> {paying ? '…' : BETA_MODE ? `Version définitive · ${BETA_FREE_LABEL}` : `Version définitive · ${PRIX_COURRIER_SUR_MESURE_EUR} EUR`}
               </button>
             )}
           </div>
         </div>
         <p className="text-[11px] text-slate mt-3">
-          L'aperçu est gratuit et rempli avec vos données. La version définitive de la DMA est facturée {PRIX_COURRIER_SUR_MESURE_EUR} EUR TVA incluse.
+          {BETA_MODE
+            ? `L'aperçu est gratuit et rempli avec vos données. Pendant la beta, la version définitive de la DMA est également gratuite (habituellement ${PRIX_COURRIER_SUR_MESURE_EUR} EUR).`
+            : `L'aperçu est gratuit et rempli avec vos données. La version définitive de la DMA est facturée ${PRIX_COURRIER_SUR_MESURE_EUR} EUR TVA incluse.`}
         </p>
       </div>
     </div>

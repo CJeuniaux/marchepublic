@@ -1,5 +1,5 @@
 import { useState, type ComponentType } from 'react'
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { Home } from './pages/Home'
 import { Diagnostic } from './pages/Diagnostic'
@@ -20,6 +20,14 @@ import { NouveauMarche } from './pages/premium/NouveauMarche'
 import { DetailMarche } from './pages/premium/DetailMarche'
 import { AdminFeedback } from './pages/admin/AdminFeedback'
 import { FeedbackWidget } from './components/FeedbackWidget'
+import { BetaBanner } from './components/premium/BetaBanner'
+
+// Bannière beta en haut de chaque page de l'espace compte (et admin).
+function BetaChrome() {
+  const { pathname } = useLocation()
+  if (!(pathname.startsWith('/compte') || pathname.startsWith('/admin'))) return null
+  return <BetaBanner />
+}
 
 type LegalPage = 'mentions-legales' | 'confidentialite' | 'cgu' | 'cookies'
 
@@ -59,6 +67,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <BetaChrome />
         <Routes>
           <Route path="/" element={<HomeRoute />} />
           <Route path="/mentions-legales" element={<LegalRoute Component={MentionsLegales} />} />
