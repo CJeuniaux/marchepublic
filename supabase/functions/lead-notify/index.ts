@@ -23,6 +23,14 @@ const SUPABASE_TABLE_URL = Deno.env.get("SUPABASE_TABLE_URL") ?? "https://supaba
 
 const SITE = "https://marchepublic.be";
 
+// CORS : la fonction est appelée directement depuis le front (marchepublic.be)
+// juste après l'insertion du lead, en plus (ou à la place) d'un Database Webhook.
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
 // Mapping document_id -> fichier (miroir de DOCS dans src/pages/Diagnostic.tsx)
 const DOC_FILES: Record<string, string> = {
   sous30k: "/resources/acheter-sous-30000.docx",
@@ -95,24 +103,31 @@ async function sendBrevo(to: string, subject: string, htmlContent: string): Prom
 }
 
 Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
+
+  console.log(`[lead-notify] invoquée (${req.method})`);
+
   let record: LeadRecord | null = null;
   try {
     const payload = await req.json();
+    // Accepte le format Database Webhook ({record}) ET l'appel direct front ({...lead} ou {record}).
     record = (payload?.record ?? payload) as LeadRecord;
   } catch (e) {
     console.error("[lead-notify] payload invalide:", String(e));
-    return new Response("bad payload", { status: 200 }); // 200 : ne pas déclencher de retry storm
+    return new Response("bad payload", { status: 200, headers: CORS }); // 200 : ne pas déclencher de retry storm
   }
 
   if (!record?.email) {
     console.error("[lead-notify] enregistrement sans email, ignoré");
-    return new Response("no email", { status: 200 });
+    return new Response("no email", { status: 200, headers: CORS });
   }
 
   if (!BREVO_API_KEY) {
     console.error("[lead-notify] BREVO_API_KEY absente : envoi impossible (lead déjà stocké)");
-    return new Response("missing key", { status: 200 });
+    return new Response("missing key", { status: 200, headers: CORS });
   }
+
+  console.log(`[lead-notify] traitement lead ${record.email} (doc: ${record.document_id ?? "?"})`);
 
   const filePath = record.document_id ? DOC_FILES[record.document_id] : undefined;
   const downloadUrl = filePath ? `${SITE}${filePath}` : SITE;
@@ -158,10 +173,11 @@ Deno.serve(async (req) => {
   // Non bloquant : le lead est déjà stocké, un échec Brevo ne doit rien casser.
   try {
     await addBrevoContact(record.email);
+    console.log(`[lead-notify] contact ${record.email} ajouté à la liste Brevo ${BREVO_LIST_ID}`);
   } catch (e) {
     console.error("[lead-notify] échec ajout contact Brevo (liste " + BREVO_LIST_ID + "):", String(e));
   }
 
   // Toujours 200 : l'insertion est déjà committée, on ne veut pas de retry destructif.
-  return new Response("ok", { status: 200 });
+  return new Response("ok", { status: 200, headers: CORS });
 });

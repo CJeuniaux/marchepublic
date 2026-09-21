@@ -71,9 +71,37 @@ export async function saveLead(payload: LeadPayload): Promise<{ ok: boolean; err
       console.error('[leads] Supabase insert failed:', res.status, text)
       return { ok: false, error: text }
     }
+    // Le lead est stocké : on déclenche la synchro Brevo (email + liste 8) via l'Edge Function.
+    // Non bloquant : un échec Brevo ne remet jamais en cause l'enregistrement du lead.
+    await syncLeadToBrevo(baseUrl, key, payload)
     return { ok: true }
   } catch (e) {
     console.error('[leads] Network error:', e)
     return { ok: false, error: String(e) }
+  }
+}
+
+// Appelle l'Edge Function lead-notify (emails Brevo + ajout à la liste 8).
+// Auparavant censée être déclenchée par un Database Webhook qui ne se déclenchait pas :
+// on l'appelle désormais explicitement, ce qui garantit la synchro à chaque lead.
+async function syncLeadToBrevo(baseUrl: string, key: string, payload: LeadPayload): Promise<void> {
+  try {
+    const res = await fetch(`${baseUrl}/functions/v1/lead-notify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': key,
+        'Authorization': `Bearer ${key}`,
+      },
+      body: JSON.stringify({ record: payload }),
+    })
+    if (!res.ok) {
+      console.error('[leads] Brevo sync (lead-notify) failed:', res.status, await res.text())
+    } else {
+      console.log('[leads] Brevo sync (lead-notify) OK')
+    }
+  } catch (e) {
+    // Ne jamais faire échouer la capture du lead à cause de la synchro Brevo.
+    console.error('[leads] Brevo sync (lead-notify) error:', e)
   }
 }
