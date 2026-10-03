@@ -126,9 +126,9 @@ function Header({ onStart }: { onStart: () => void }) {
 
 function Hero({ onStart }: { onStart: () => void }) {
   return (
-    <section id="top" className="relative overflow-hidden bg-cream">
+    <section id="top" className="relative overflow-hidden bg-cream lg:min-h-[calc(100svh-4rem)] lg:flex lg:items-center">
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-coral" />
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-8 sm:pt-24 sm:pb-12">
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 pt-10 pb-12 sm:pt-12">
         <div className="grid lg:grid-cols-[0.78fr_1.22fr] gap-8 lg:gap-12 items-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}>
             <div className="inline-flex items-center gap-2 border border-line text-navy/70 text-[11px] font-bold uppercase tracking-wide px-3 py-1.5 rounded mb-6 bg-sable">
@@ -145,6 +145,15 @@ function Hero({ onStart }: { onStart: () => void }) {
               <a href="#comment" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg border border-navy/20 text-navy font-semibold text-sm hover:bg-navy/5 transition-all">
                 Comment ça marche
               </a>
+            </div>
+            {/* 3 infos clés, en petit sous les boutons */}
+            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 border-t border-line pt-4 max-w-md">
+              {([['5 min', 'Pour tracer votre réponse'], ['8 questions', 'Guidées, sans jargon'], ['100 %', 'Gratuit']] as [string, string][]).map(([n, l]) => (
+                <div key={n} className="flex items-baseline gap-1.5">
+                  <span className="font-display font-bold text-coral text-base leading-none">{n}</span>
+                  <span className="text-[11px] text-slate/70 leading-snug">{l}</span>
+                </div>
+              ))}
             </div>
           </motion.div>
 
@@ -170,19 +179,6 @@ function Hero({ onStart }: { onStart: () => void }) {
               className="relative w-full max-w-[720px] h-auto rounded-2xl object-contain"
             />
           </motion.div>
-        </div>
-      </div>
-
-      <div className="bg-sable border-t border-line">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-          <div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto">
-            {([['5 min', 'Pour tracer votre réponse'], ['8 questions', 'Guidées, sans jargon'], ['100 %', 'Gratuit']] as [string, string][]).map(([n, l]) => (
-              <div key={n} className="text-center">
-                <p className="font-display font-bold text-xl sm:text-2xl text-coral">{n}</p>
-                <p className="text-xs text-slate/70 mt-1 leading-snug">{l}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
