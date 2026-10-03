@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight, ArrowUpRight, Menu, X,
   Globe, Cloud, Users, PenTool, Code2, Boxes, GraduationCap, Server,
-  ChevronDown, Check, Clock, ShieldCheck, Lock, BookOpen, Briefcase, Building2, ClipboardList,
+  ChevronDown, Check, ShieldCheck, BookOpen, Briefcase, Building2, ClipboardList,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { LogoMark, StepGlyph, Signpost } from '../components/Graphics'
@@ -77,14 +77,6 @@ const FAQS = [
   { q: "Y a-t-il des exemptions pour les ASBL du secteur culturel ou social ?", a: "La loi prévoit certaines exemptions sectorielles (notamment pour certains marchés de services à la personne, services sociaux ou culturels sous seuils européens), mais elles sont limitées et bien précises. L'exemption ne s'applique pas automatiquement : il faut vérifier que la prestation correspond exactement aux codes CPV exemptés." },
 ]
 
-type TrustItem = { Icon: typeof Clock; label: string }
-const TRUST_ITEMS: TrustItem[] = [
-  { Icon: Clock,       label: 'Environ 5 minutes' },
-  { Icon: ShieldCheck, label: 'Sources officielles belges' },
-  { Icon: Lock,        label: 'Sans inscription' },
-  { Icon: Check,       label: 'Premier repère, pas avis juridique' },
-]
-
 function Header({ onStart }: { onStart: () => void }) {
   const { user } = useAuth()
   const [open, setOpen] = useState(false)
@@ -137,18 +129,15 @@ function Hero({ onStart }: { onStart: () => void }) {
     <section id="top" className="relative overflow-hidden bg-cream">
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-coral" />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-8 sm:pt-24 sm:pb-12">
-        <div className="grid lg:grid-cols-[1fr_1fr] gap-8 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-[0.78fr_1.22fr] gap-8 lg:gap-12 items-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}>
-            <div className="inline-flex items-center gap-2 border border-line text-navy/70 text-[11px] font-bold uppercase tracking-widest px-3 py-1.5 rounded mb-6 bg-sable">
+            <div className="inline-flex items-center gap-2 border border-line text-navy/70 text-[11px] font-bold uppercase tracking-wide px-3 py-1.5 rounded mb-6 bg-sable">
               <ShieldCheck className="w-3.5 h-3.5 text-slate/70" />
               Diagnostic marchés publics · ASBL belges · Gratuit
             </div>
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.2rem] font-bold leading-[1.06] tracking-tight text-balance text-navy">
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-[3.2rem] font-bold leading-[1.06] text-balance text-navy">
               Vous ne savez pas si votre achat doit passer par un <span className="text-coral">marché public ?</span>
             </h1>
-            <p className="mt-5 text-lg text-slate leading-relaxed max-w-xl">
-              Avant de signer un devis ou de commander une prestation avec des subsides, faites le point. En quelques questions, marchépublic.be vous aide à repérer si la question des marchés publics peut se poser. Score indicatif, pistes concrètes, sources officielles.
-            </p>
             <div className="mt-7 flex flex-col sm:flex-row gap-3">
               <button onClick={onStart} className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-coral text-white font-semibold hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
                 Faire le diagnostic <ArrowRight className="w-4 h-4" />
@@ -156,14 +145,6 @@ function Hero({ onStart }: { onStart: () => void }) {
               <a href="#comment" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg border border-navy/20 text-navy font-semibold text-sm hover:bg-navy/5 transition-all">
                 Comment ça marche
               </a>
-            </div>
-            <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-5">
-              {TRUST_ITEMS.map(({ Icon, label }) => (
-                <span key={label} className="flex items-center gap-1.5 text-xs text-slate font-medium">
-                  <Icon className="w-3.5 h-3.5 text-slate/70" />
-                  {label}
-                </span>
-              ))}
             </div>
           </motion.div>
 
@@ -186,7 +167,7 @@ function Hero({ onStart }: { onStart: () => void }) {
               playsInline
               preload="metadata"
               aria-label="Présentation de marchépublic.be"
-              className="relative w-full max-w-[560px] h-auto rounded-2xl object-contain"
+              className="relative w-full max-w-[720px] h-auto rounded-2xl object-contain"
             />
           </motion.div>
         </div>
