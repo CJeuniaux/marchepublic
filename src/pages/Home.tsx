@@ -173,16 +173,16 @@ function Hero({ onStart }: { onStart: () => void }) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
-            <img
-              src="/hero-illustration.png?v=2"
-              alt="Diagnostic marchés publics pour ASBL belges — illustration"
-              className="w-full max-w-[540px] h-auto object-contain drop-shadow-[0_8px_32px_rgba(46,35,72,0.10)]"
-              onError={e => {
-                const el = e.currentTarget as HTMLImageElement
-                el.style.display = 'none'
-                const ph = el.parentElement
-                if (ph) ph.innerHTML = '<div class="w-full aspect-[4/3] rounded-2xl bg-sable border border-line dotgrid opacity-60"></div>'
-              }}
+            <video
+              src="/mp-hero.mp4"
+              poster="/hero-illustration.png?v=2"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-label="Présentation de marchépublic.be"
+              className="w-full max-w-[560px] h-auto rounded-2xl object-contain drop-shadow-[0_8px_32px_rgba(46,35,72,0.10)]"
             />
           </motion.div>
         </div>
