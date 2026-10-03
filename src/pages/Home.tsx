@@ -168,11 +168,15 @@ function Hero({ onStart }: { onStart: () => void }) {
           </motion.div>
 
           <motion.div
-            className="relative hidden lg:flex items-center justify-center"
+            className="relative flex items-center justify-center mt-2 lg:mt-0"
             initial={{ opacity: 0, x: 24 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
+            {/* Halo rose/corail : fond la légère différence de fond de la vidéo dans la section */}
+            <div className="absolute inset-0 -z-10 flex items-center justify-center" aria-hidden="true">
+              <div className="w-[85%] h-[80%] rounded-[3rem] bg-coral/20 blur-3xl" />
+            </div>
             <video
               src="/mp-hero.mp4"
               poster="/hero-illustration.png?v=2"
@@ -182,7 +186,7 @@ function Hero({ onStart }: { onStart: () => void }) {
               playsInline
               preload="metadata"
               aria-label="Présentation de marchépublic.be"
-              className="w-full max-w-[560px] h-auto rounded-2xl object-contain drop-shadow-[0_8px_32px_rgba(46,35,72,0.10)]"
+              className="relative w-full max-w-[560px] h-auto rounded-2xl object-contain"
             />
           </motion.div>
         </div>
