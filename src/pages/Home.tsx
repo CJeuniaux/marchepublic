@@ -215,7 +215,7 @@ function HowSection({ onStart }: { onStart: () => void }) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <Reveal className="text-center max-w-2xl mx-auto mb-14">
           <Eyebrow>Comment ça marche</Eyebrow>
-          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Comment ça se passe</h2>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy text-balance">Comment ça se passe</h2>
           <p className="mt-3 text-slate">Quelques questions, un résultat. Le parcours suit la logique des critères belges : structure, financement, montant.</p>
         </Reveal>
         <div className="grid md:grid-cols-3 gap-6">
@@ -273,7 +273,7 @@ function StructureSection() {
         <div className="grid lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-16 items-center">
           <Reveal>
             <Eyebrow tone="cream">Méthode</Eyebrow>
-            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-white tracking-tight text-balance leading-tight">
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-white text-balance leading-tight">
               Un diagnostic structuré en trois temps
             </h2>
             <p className="mt-4 text-aqua/70 leading-relaxed">
@@ -322,7 +322,7 @@ function ClarifySection() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <Reveal className="mb-10">
           <Eyebrow>Périmètre de l'outil</Eyebrow>
-          <h2 className="mt-3 font-display text-3xl font-bold text-navy tracking-tight">Ce que le diagnostic peut faire pour vous</h2>
+          <h2 className="mt-3 font-display text-3xl font-bold text-navy">Ce que le diagnostic peut faire pour vous</h2>
         </Reveal>
         <div className="grid lg:grid-cols-2 gap-5">
           <Reveal>
@@ -375,7 +375,7 @@ function UseCasesSection({ onStart }: { onStart: () => void }) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <Reveal className="max-w-2xl mb-10">
           <Eyebrow>Cas fréquents</Eyebrow>
-          <h2 className="mt-3 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Dans quels cas la question se pose</h2>
+          <h2 className="mt-3 font-display text-3xl sm:text-4xl font-bold text-navy text-balance">Dans quels cas la question se pose</h2>
           <p className="mt-3 text-slate">Ces achats du quotidien associatif déclenchent souvent la question.</p>
         </Reveal>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -405,7 +405,7 @@ function FAQSection() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <Reveal className="mb-10">
           <Eyebrow>FAQ</Eyebrow>
-          <h2 className="mt-3 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight">Questions fréquentes</h2>
+          <h2 className="mt-3 font-display text-3xl sm:text-4xl font-bold text-navy">Questions fréquentes</h2>
         </Reveal>
         <div className="space-y-2">
           {FAQS.map((f, i) => (
@@ -476,7 +476,7 @@ function AudienceSection({ onStart }: { onStart: () => void }) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <Reveal className="max-w-2xl mb-12">
           <Eyebrow>Pour qui</Eyebrow>
-          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance">Conçu pour celles et ceux qui font tourner le secteur</h2>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold text-navy text-balance">Conçu pour celles et ceux qui font tourner le secteur</h2>
           <p className="mt-3 text-slate">Si vous gérez une structure qui reçoit des fonds publics ou collabore avec des organismes publics, ce diagnostic est fait pour vous.</p>
         </Reveal>
         <div className="grid md:grid-cols-3 gap-5">
@@ -520,7 +520,7 @@ function BottomCTA({ onStart }: { onStart: () => void }) {
         <Reveal>
           <div className="text-center mb-12">
             <Eyebrow tone="cream">Un projet en tête ?</Eyebrow>
-            <h2 className="mt-5 font-display text-3xl sm:text-4xl font-bold text-white tracking-tight text-balance max-w-2xl mx-auto">
+            <h2 className="mt-5 font-display text-3xl sm:text-4xl font-bold text-white text-balance max-w-2xl mx-auto">
               Clarifiez d'abord vos obligations.
             </h2>
             <p className="mt-4 text-aqua/65 max-w-xl mx-auto text-sm leading-relaxed">
@@ -561,7 +561,7 @@ function EcosystemSection() {
         <Reveal>
           <div className="text-center mb-12">
             <Eyebrow tone="bleu">Écosystème</Eyebrow>
-            <h2 className="mt-5 font-display text-3xl sm:text-4xl font-bold text-navy tracking-tight text-balance max-w-3xl mx-auto">
+            <h2 className="mt-5 font-display text-3xl sm:text-4xl font-bold text-navy text-balance max-w-3xl mx-auto">
               MarchéPublic.be fait partie de l'écosystème Nomad Impact
             </h2>
             <p className="mt-4 text-slate max-w-2xl mx-auto text-sm leading-relaxed">

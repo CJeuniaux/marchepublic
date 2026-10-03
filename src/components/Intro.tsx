@@ -72,7 +72,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.6, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
-        <p className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
+        <p className="font-display text-3xl sm:text-4xl font-bold text-white">
           marchépublic<span className="text-coral">.be</span>
         </p>
         <p className="mt-2 text-sm text-aqua/70">Le labyrinthe juridique, transformé en parcours clair.</p>
