@@ -118,3 +118,51 @@ restent intacts.
 - `supabase/migrations/20260705_leads_rls_hardening.sql` — durcissement RLS
 - `supabase/functions/lead-notify/index.ts` — Edge Function (notif + livraison, robuste)
 - `docs/lead-notify-SETUP.md` — ce runbook
+
+---
+
+## Mise à jour 06/10/2026 — sécurisation + suivi + rattrapage
+
+**Pourquoi** : la fonction était appelée depuis le navigateur avec la clé anon publique
+et faisait confiance à l'email reçu. N'importe qui pouvait donc s'en servir pour envoyer
+des emails depuis `marchepublic@nomadimpact.org` ou injecter des contacts dans la liste
+Brevo. Les échecs Brevo n'étaient visibles que dans les logs, sans rattrapage.
+
+**Ce qui change**
+- La fonction relit le lead en base (service role). Seul un lead réellement inséré il y a
+  moins de 15 min et pas encore synchronisé est traité. Tout le reste est ignoré.
+- Chaque lead reçoit `brevo_synced_at` (succès) ou `brevo_error` (échec).
+- Mode rattrapage : `POST` avec l'en-tête `x-reconcile-key: <RECONCILE_KEY>`. Il repousse dans
+  la liste Brevo les leads non synchronisés des 30 derniers jours, sans renvoyer d'email aux
+  prospects, puis envoie un bilan à `LEAD_NOTIFY_TO` et renvoie un JSON
+  `{pending, synced, failed}`.
+
+**Mise en production (3 étapes, ~5 min)**
+1. SQL Editor : exécuter `supabase/migrations/20261006_leads_brevo_sync.sql` (additif).
+2. Secret + déploiement :
+   ```bash
+   supabase secrets set RECONCILE_KEY=$(openssl rand -hex 24)
+   supabase functions deploy lead-notify --no-verify-jwt
+   ```
+3. Rattrapage quotidien (SQL Editor, extensions `pg_cron` + `pg_net` activées) :
+   ```sql
+   select vault.create_secret('<la même RECONCILE_KEY>', 'mp_reconcile_key');
+   select cron.schedule('mp-leads-brevo-reconcile', '15 6 * * *', $$
+     select net.http_post(
+       url := 'https://<PROJECT_REF>.supabase.co/functions/v1/lead-notify',
+       headers := jsonb_build_object(
+         'content-type','application/json',
+         'x-reconcile-key', (select decrypted_secret from vault.decrypted_secrets where name='mp_reconcile_key')),
+       body := '{}'::jsonb);
+   $$);
+   ```
+
+**Contrôle à tout moment**
+```sql
+select count(*) filter (where brevo_synced_at is null) as en_attente,
+       count(*) filter (where brevo_error is not null) as en_erreur,
+       count(*) as total
+from public.leads;
+```
+⚠️ Ne pas réactiver le Database Webhook en plus de l'appel front : les deux appels
+simultanés pourraient envoyer deux fois les emails.

@@ -10,9 +10,13 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    // RGPD : tout est refusé par défaut tant que le visiteur n'a pas consenti (Consent Mode v2).
+    gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied', wait_for_update: 500 });
+    try { if (localStorage.getItem('mp_cookie_consent') === 'granted') gtag('consent', 'update', { analytics_storage: 'granted' }); } catch (e) {}
     gtag('js', new Date());
     gtag('config', 'G-08DLT3F90Q');
   </script>
+  <script src="/consent-banner.js" defer></script>
 
   <title>Seuils marchés publics ASBL 2025-2026 : tableau officiel | marchépublic.be</title>
   <meta name="description" content="Quels montants déclenchent un marché public pour votre ASBL ? Tableau des seuils officiels 2025-2026, mis à jour selon la législation belge." />

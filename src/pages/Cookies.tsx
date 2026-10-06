@@ -72,7 +72,15 @@ export function Cookies({ onBack }: { onBack: () => void }) {
                 </tbody>
               </table>
             </div>
-            <p className="mt-3 text-xs">Vous pouvez refuser ces cookies via les réglages de votre navigateur ou l'extension <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer" className="text-coral hover:underline">Google Analytics Opt-out</a>.</p>
+            <p className="mt-3 text-xs">Ces cookies ne sont déposés qu'avec votre accord (bandeau affiché lors de votre première visite). Vous pouvez modifier votre choix à tout moment :{' '}
+              <button
+                type="button"
+                onClick={() => (window as unknown as { mpOpenCookieSettings?: () => void }).mpOpenCookieSettings?.()}
+                className="text-coral hover:underline font-semibold"
+              >
+                gérer mes préférences cookies
+              </button>.
+            </p>
           </section>
 
           <section>

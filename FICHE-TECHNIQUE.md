@@ -99,7 +99,7 @@ Migrations SQL : `supabase/migrations/` (schéma premium, workflow, champs DMA, 
 
 | Fonction | Déclencheur | Rôle | JWT |
 |----------|-------------|------|-----|
-| `lead-notify` | Database Webhook INSERT `leads` | notification équipe + livraison ressource (Brevo) | OFF |
+| `lead-notify` | appel front après INSERT `leads` + rattrapage quotidien (pg_cron, `x-reconcile-key`) | notification équipe + livraison ressource + liste Brevo, statut `brevo_synced_at` / `brevo_error` | OFF (vérifie le lead en base) |
 | `create-checkout` | appel front | crée la session de paiement Stripe | ON |
 | `stripe-webhook` | webhook Stripe | enregistre le paiement | OFF |
 
