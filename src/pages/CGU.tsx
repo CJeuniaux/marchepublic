@@ -74,7 +74,7 @@ export function CGU({ onBack }: { onBack: () => void }) {
 
           <section>
             <h2 className="font-display font-bold text-navy text-xl mb-3">7. Données personnelles</h2>
-            <p>Le traitement des données personnelles est décrit dans notre <button onClick={onBack} className="text-coral hover:underline">Politique de confidentialité</button>. Le diagnostic lui-même ne collecte aucune donnée : vos réponses restent sur votre appareil.</p>
+            <p>Le traitement des données personnelles est décrit dans notre <button onClick={onBack} className="text-coral hover:underline">Politique de confidentialité</button>. Pour afficher le résultat du diagnostic, nous demandons votre adresse email (et, si vous le souhaitez, le nom de votre organisation) ; nous enregistrons aussi le score obtenu. Le détail de vos réponses aux questions n'est pas transmis.</p>
           </section>
 
           <section>

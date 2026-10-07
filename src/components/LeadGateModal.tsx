@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ArrowRight, Check, FileDown } from 'lucide-react'
 import { saveLead } from '../lib/leads'
+import { DIAG_EMAIL_KEY } from './ResultGate'
 
 declare global {
   interface Window {
@@ -19,7 +20,7 @@ interface Props {
 }
 
 export function LeadGateModal({ documentId, documentTitle, documentFile, score, band, onClose }: Props) {
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(() => { try { return sessionStorage.getItem(DIAG_EMAIL_KEY) ?? '' } catch { return '' } })
   const [organisation, setOrganisation] = useState('')
   const [consent, setConsent] = useState(false)
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')

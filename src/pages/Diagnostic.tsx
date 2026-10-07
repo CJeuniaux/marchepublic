@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { LogoMark } from '../components/Graphics'
 import { LeadGateModal } from '../components/LeadGateModal'
+import { ResultGate } from '../components/ResultGate'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type LucideIcon = ComponentType<any>
@@ -643,6 +644,8 @@ const STEP_LABELS = ['Structure', 'Financement', 'Gouvernance', 'Projet', 'Monta
 export function Diagnostic({ onBack }: { onBack: () => void }) {
   const [state, setState] = useState<DiagState>(INITIAL_STATE)
   const [showResult, setShowResult] = useState(false)
+  // L'email est demandé une fois avant le premier résultat (puis le résultat reste accessible).
+  const [unlocked, setUnlocked] = useState(false)
   const [dir, setDir] = useState(1)
 
   const set = (key: keyof DiagState, value: string | number | null) => setState(prev => ({ ...prev, [key]: value }))
@@ -681,7 +684,15 @@ export function Diagnostic({ onBack }: { onBack: () => void }) {
           </button>
           <span className="text-sm font-semibold text-navy pr-1">Votre résultat</span>
         </div>
-        <ResultScreen state={state} onRestart={() => { setState(INITIAL_STATE); setShowResult(false) }} />
+        {unlocked ? (
+          <ResultScreen state={state} onRestart={() => { setState(INITIAL_STATE); setShowResult(false) }} />
+        ) : (
+          <ResultGate
+            score={computeScore(state)}
+            band={bandFor(computeScore(state)).key}
+            onUnlock={() => { track('diag_result_unlocked'); setUnlocked(true); window.scrollTo({ top: 0, behavior: 'instant' }) }}
+          />
+        )}
       </div>
     )
   }

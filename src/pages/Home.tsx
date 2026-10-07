@@ -237,7 +237,7 @@ function HowSection({ onStart }: { onStart: () => void }) {
           <button onClick={onStart} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-coral text-white font-semibold text-sm hover:brightness-105 transition-all shadow-coral active:scale-[0.98]">
             Démarrer le diagnostic <ArrowRight className="w-4 h-4" />
           </button>
-          <p className="text-xs text-slate/60">Aucune inscription · Vos réponses restent sur votre appareil</p>
+          <p className="text-xs text-slate/60">Gratuit · Sans compte · Résultat envoyé par email</p>
         </Reveal>
       </div>
     </section>

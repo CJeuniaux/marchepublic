@@ -43,8 +43,9 @@ export function Confidentialite({ onBack }: { onBack: () => void }) {
             <h2 className="font-display font-bold text-navy text-xl mb-3">Quelles données collectons-nous ?</h2>
             <div className="space-y-4">
               <div className="bg-white rounded-xl border border-line p-5">
-                <h3 className="font-semibold text-navy mb-2">1. Diagnostic (aucune donnée collectée)</h3>
-                <p>Vos réponses aux questions du diagnostic restent <strong>uniquement sur votre appareil</strong>. Elles ne sont pas transmises à nos serveurs. Aucune donnée de diagnostic n'est conservée au-delà de votre session.</p>
+                <h3 className="font-semibold text-navy mb-2">1. Diagnostic</h3>
+                <p>Le détail de vos réponses aux questions reste <strong>uniquement sur votre appareil</strong> : il n'est pas transmis à nos serveurs.</p>
+                <p className="mt-2">Pour afficher votre résultat, nous vous demandons votre adresse email, avec votre consentement explicite. Nous enregistrons alors : votre email, le nom de votre organisation (facultatif), votre score et la catégorie de résultat, la date et votre consentement. Ces données servent à vous envoyer votre résultat et, le cas échéant, à vous recontacter à propos de votre diagnostic. Vous pouvez demander leur suppression à tout moment.</p>
               </div>
               <div className="bg-white rounded-xl border border-line p-5">
                 <h3 className="font-semibold text-navy mb-2">2. Téléchargement de documents</h3>

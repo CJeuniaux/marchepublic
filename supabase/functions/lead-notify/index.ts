@@ -188,7 +188,26 @@ async function processLead(record: LeadRecord): Promise<boolean> {
   }
 
   // (b) LIVRAISON au prospect
-  try {
+  if (record.document_id === "diagnostic") {
+    try {
+      const resultat = `
+      <p>Bonjour,</p>
+      <p>Merci d'avoir réalisé le diagnostic marchépublic.be.</p>
+      <p><strong>Votre score indicatif : ${esc(record.score)} %</strong> de probabilité que les règles des marchés publics s'appliquent à votre achat.</p>
+      <p>Pour aller plus loin : <a href="${SITE}">refaire le diagnostic</a>, consulter les <a href="${SITE}/seuils-marche-public-asbl/">seuils 2025-2026</a>, ou télécharger nos modèles gratuits (demande de prix, comparaison de prestataires) depuis votre page de résultat.</p>
+      <p style="color:#5E6B7D;font-size:14px">Pour rappel, marchépublic.be est un premier repère pédagogique, ce n'est pas un avis juridique.</p>
+      <hr style="border:none;border-top:1px solid #E4D9CC;margin:20px 0">
+      <p style="color:#5E6B7D;font-size:12px">
+        Vous recevez cet email car vous avez réalisé le diagnostic sur marchépublic.be et accepté que nous conservions votre adresse.
+        Vous pouvez demander la suppression de vos données à tout moment en écrivant à
+        <a href="mailto:marchepublic@nomadimpact.org">marchepublic@nomadimpact.org</a>.
+        Détails : <a href="${SITE}/confidentialite">politique de confidentialité</a>.
+      </p>`;
+      await sendBrevo(record.email, "Votre résultat MarchéPublic.be", resultat);
+    } catch (e) {
+      console.error("[lead-notify] échec email RÉSULTAT:", String(e));
+    }
+  } else try {
     const livraison = `
       <p>Bonjour,</p>
       <p>Merci d'avoir utilisé marchépublic.be. Voici la ressource que vous avez demandée :</p>
